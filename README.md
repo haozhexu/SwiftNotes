@@ -1,191 +1,189 @@
-// //: Playground - noun: a place where people can play //!
 
-import UIKit //!
 
-// # Hao's Swift Study Notes
+# Hao's Swift Study Notes
 
-// This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097-CH3-ID0) from Apple, took notes and wrote code as I read.
+This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097-CH3-ID0) from Apple, took notes and wrote code as I read.
 
-// Soon I realised the notes could be organized in a way so that it could generate a human readable markdown, I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
+Soon I realised the notes could be organized in a way so that it could generate a human readable markdown, I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
 
-// As a result, this markdown was directly generated from the code and comments in the playground.
+As a result, this markdown was directly generated from the code and comments in the playground.
 
-// To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention is as follows:
+To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention is as follows:
 
-// > // This is a comment, will become text content of *markdown*.
-// > // Below will become a fragment of code:
-// > //
-// > // ```swift
-// > let name = "Noname"
-// > // ```
+> // This is a comment, will become text content of *markdown*.
+> // Below will become a fragment of code:
+> //
+> // ```swift
+> let name = "Noname"
+> // ```
 
-// **Simple way to generate markdown from above code:**
+**Simple way to generate markdown from above code:**
 
-// > sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftBasicNotes.md
-// (strips leading double slashes followed by a space from each line)
+> sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftBasicNotes.md
+(strips leading double slashes followed by a space from each line)
 
-// *(PS: the details of how to generate markdown from the source code is written in the markdown itself, embedded as comments in the source code, this recursion feels weird, doesn't it? It feels like a hungry snake swallows down itself from its own tail.)*
+*(PS: the details of how to generate markdown from the source code is written in the markdown itself, embedded as comments in the source code, this recursion feels weird, doesn't it? It feels like a hungry snake swallows down itself from its own tail.)*
 
-// ## "Hello, world!" Printing
+## "Hello, world!" Printing
 
-// The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method looks like, how string literal is represented.
+The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method looks like, how string literal is represented.
 
-// ```
+```
 print("Science may someday discover what faith has always known.")
-// ```
+```
 
-// ## Table of Contents
+## Table of Contents
 
-// - [Constants and Variables](#constants-and-variables)
-// - [Types and Operations](#types-and-operations)
-// - [Control Flow](#control-flow)
-// - [Functions](#functions)
-// - [Optionals](#optionals)
-// - [Collection Types](#collection-types)
-//   - [Array](#array)
-//   - [Set](#set)
-//   - [Dictionary](#dictionary)
-// - [Closures](#closures)
-// - [Strings and Characters](#strings-and-characters)
-// - [Enumerations](#enumerations)
-// - [Classes and Structures](#classes-and-structures)
-// - [Protocols](#protocols)
-// - [Generics](#generics)
-// - [Access Control](#access-control)
-// - [Advanced Operators](#advanced-operators)
-// - [Patterns](#patterns)
-// - [Error Handling](#error-handling)
-// - [Encoding and Decoding](#encoding-and-decoding)
-// - [Memory Safety](#memory-safety)
+- [Constants and Variables](#constants-and-variables)
+- [Types and Operations](#types-and-operations)
+- [Control Flow](#control-flow)
+- [Functions](#functions)
+- [Optionals](#optionals)
+- [Collection Types](#collection-types)
+  - [Array](#array)
+  - [Set](#set)
+  - [Dictionary](#dictionary)
+- [Closures](#closures)
+- [Strings and Characters](#strings-and-characters)
+- [Enumerations](#enumerations)
+- [Classes and Structures](#classes-and-structures)
+- [Protocols](#protocols)
+- [Generics](#generics)
+- [Access Control](#access-control)
+- [Advanced Operators](#advanced-operators)
+- [Patterns](#patterns)
+- [Error Handling](#error-handling)
+- [Encoding and Decoding](#encoding-and-decoding)
+- [Memory Safety](#memory-safety)
 
 
-// ## Constants and Variables
+## Constants and Variables
 
-// _constant:_
+_constant:_
 
-// > Something mysterious is formed, born in the silent void. waiting alone and unmoving, it is at once still and yet in _constant_ motion. It is the source of all programs. I do not know its name, so I will call it the Tao of Programming.
-// > - _The Tao of Programming_
+> Something mysterious is formed, born in the silent void. waiting alone and unmoving, it is at once still and yet in _constant_ motion. It is the source of all programs. I do not know its name, so I will call it the Tao of Programming.
+> - _The Tao of Programming_
 
-// _variable:_
+_variable:_
 
-// > Cloudy; _variable_ winds, with local showers; cooler; snow.
-// > - _Halcyon Jones_
+> Cloudy; _variable_ winds, with local showers; cooler; snow.
+> - _Halcyon Jones_
 
-// ```
-// let <constant name>: <type> = <expression>
-// var <variable name>: <type> = <expression>
-// ```
+```
+let <constant name>: <type> = <expression>
+var <variable name>: <type> = <expression>
+```
 
-// **Make sure** constant have a value set before the first time its value is read
+**Make sure** constant have a value set before the first time its value is read
 
-// ```swift
+```swift
 let catsMaximumNumberOfLives = 9 // constant
 var catsCurrentDeathCount = 0 // variable
 catsCurrentDeathCount = 9
-// // catsMaximumNumberOfLives = 10 would generate a compiler error
+// catsMaximumNumberOfLives = 10 would generate a compiler error
 
-// // multiple constants or variables on a single line:
+// multiple constants or variables on a single line:
 var variable1 = 0.0, variable2 = 1.2, variable3 = 5.6
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Types and Operations
+## Types and Operations
 
-// ### Type Annotations
+### Type Annotations
 
-// ```swift
+```swift
 var welcomeMessage: String
 var red, green, blue: Double
 var someNumber: Int
-// ```
+```
 
-// Semicolon (;) isn't required after each statement although you can;
-// Required for separating statements on the same line:
+Semicolon (;) isn't required after each statement although you can;
+Required for separating statements on the same line:
 
-// ```swift
+```swift
 let sameLineGuru = "Same Line"; print("This is Mr. \(sameLineGuru)")
-// ```
+```
 
-// string interpolation was used above to include the name of a constant or variable as a placeholder in a longer string, and to prompt Swift to replace it with the current value of that constant or variable.
+string interpolation was used above to include the name of a constant or variable as a placeholder in a longer string, and to prompt Swift to replace it with the current value of that constant or variable.
 
-// ### Integers
+### Integers
 
-// ```swift
+```swift
 let integer8: Int8 // signed 8-bit integer, UInt8 for unsigned
 let integer16: Int16 // signed 16-bit integer, UInt16 for unsigned
 let integer32: Int32 // signed 32-bit integer, UInt32 for unsigned
 let integer64: Int64 // signed 64-bit integer, UInt64 for unsigned
-// ```
+```
 
-// Usually `Int` is used, it's the same size as `Int32` on 32-bit platform and same size as `Int64` on 64-bit platform
+Usually `Int` is used, it's the same size as `Int32` on 32-bit platform and same size as `Int64` on 64-bit platform
 
-// #### Integer Bounds
+#### Integer Bounds
 
-// Unsigned X-bit integer range from 0 to (2^X)-1 inclusive
+Unsigned X-bit integer range from 0 to (2^X)-1 inclusive
 
-// Signed X-bit integer range from -(2^(X-1)) to (2^(X-1))-1 inclusive
+Signed X-bit integer range from -(2^(X-1)) to (2^(X-1))-1 inclusive
 
-// ```swift
+```swift
 print("maximum value of UInt16 is \(UInt16.max) which is (2^16)-1 = \(Int(pow(2.0, 16.0) - 1))")
 print("minimum value of Int8 is \(Int8.min) which is -(2^(8-1)) = \(-Int(pow(2.0, 8.0 - 1.0)))")
 print("maximum value of Int32 is \(Int32.max) which is (2^(32-1))-1 = \(Int(pow(2.0, 32.0 - 1.0)) - 1)")
-// ```
+```
 
-// ### Floating Points
+### Floating Points
 
-// - `Double`: a 64-bit floating-point number, usually preferred
-// - `Float`: a 32-bit floating-point number
+- `Double`: a 64-bit floating-point number, usually preferred
+- `Float`: a 32-bit floating-point number
 
-// ### Type Safe and Type Inferences
+### Type Safe and Type Inferences
 
-// ```swift
+```swift
 let meaningfulLife = 42
-// // inferred to be type `Int`
+// inferred to be type `Int`
 
 let pi = 3.14159
-// // inferred to be type `Double`
+// inferred to be type `Double`
 
 let anotherPi = 3 + 0.1415926
-// // Inferred to be type `Double`
+// Inferred to be type `Double`
 
-// // let lastPi = meaningfulLife + pi won't work:
-// // error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
-// ```
+// let lastPi = meaningfulLife + pi won't work:
+// error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
+```
 
-// ### Type Conversion
+### Type Conversion
 
-// ```swift
+```swift
 let lastPi = Double(meaningfulLife) + pi
 let werePi = Int(lastPi) // lost precision
-// ```
+```
 
-// ### Type Alias
+### Type Alias
 
-// ```swift
+```swift
 typealias Mood = UInt8
 print("mood: happy = \(Mood.max) sad = \(Mood.min)")
-// ```
+```
 
-// ### Booleans
+### Booleans
 
-// ```swift
+```swift
 let fake = false
 let truth = true
-// ```
+```
 
-// ### Assignment operator
+### Assignment operator
 
-// ```swift
+```swift
 var b = 10
 var a = 5
 a = b // a is now equal to 10
 let (x, y) = (1, 2)
-// ```
+```
 
-// ### Arithmetic operator
+### Arithmetic operator
 
-// ```swift
+```swift
 1 + 2       // addition (+)
 5 - 3       // subtraction (-)
 2 * 3       // multiplication (*)
@@ -193,135 +191,135 @@ let (x, y) = (1, 2)
 9 % 4       // remainder (%)
 -5          // unary minus
 +6          // unary plus
-// ```
+```
 
-// ### Compound assignemnt operators
+### Compound assignemnt operators
 
-// ```swift
+```swift
 a = 1
 a += 2
 a -= 5
 a *= 3
 a /= 2
-// ```
+```
 
-// ### Comparison Operators
+### Comparison Operators
 
-// ```swift
+```swift
 1 == 1  // equal to
 2 != 1  // not equal to
 2 > 1   // greater than
 1 < 2   // less than
 1 >= 1  // greater than or equal to
 2 <= 1  // less than or equal to
-// ```
+```
 
-// You can compare two tuples if they have the same type and the same number of values,
-// tuples are compared from left to right, and you can compare "Apple" with "Orange"
+You can compare two tuples if they have the same type and the same number of values,
+tuples are compared from left to right, and you can compare "Apple" with "Orange"
 
-// ```swift
+```swift
 (1, "zebra") < (2, "apple")
-// // 1 is less than 2 and "zebra" and "apple" are not compared
+// 1 is less than 2 and "zebra" and "apple" are not compared
 
 (3, "apple") < (3, "orange")
-// // 3 is equal to 3 and "apple" is less than "orange"
+// 3 is equal to 3 and "apple" is less than "orange"
 
 (4, "dog") == (4, "dog")
-// // all equal
-// ```
+// all equal
+```
 
-// ### Tuples
+### Tuples
 
-// ```swift
+```swift
 let someCoordinates: (Int, Int) = (3, 6)
 let someOtherCoordinates = (21, 97)
-// // type inference without type `(Int, Int)`
+// type inference without type `(Int, Int)`
 
-// // access value by index:
+// access value by index:
 print("some coordinate is (\(someCoordinates.0), \(someCoordinates.1))");
 
-// // access value by name:
+// access value by name:
 let someCoordinatesNamed = (x: 71, y: 89)
 print("some coordinate has x = \(someCoordinatesNamed.x) and y = \(someCoordinatesNamed.y)")
-// ```
+```
 
-// ### Range operators
+### Range operators
 
-// _closed range operator_:
-// `(a...b)` defines a range from `a` to `b` inclusive, `a` must not be greater than `b`.
+_closed range operator_:
+`(a...b)` defines a range from `a` to `b` inclusive, `a` must not be greater than `b`.
 
-// _half-open range operator_:
-// `(a..<b)` defines a range from `a` up to, but not include `b`.
+_half-open range operator_:
+`(a..<b)` defines a range from `a` up to, but not include `b`.
 
-// _one-sided range_:
-// a range that continue as far as possible, e.g. `array[3...]` from 3 to the end, `array[...9]` from beginning up to 9
+_one-sided range_:
+a range that continue as far as possible, e.g. `array[3...]` from 3 to the end, `array[...9]` from beginning up to 9
 
-// ### Terminology
+### Terminology
 
-// - _Unary_ operators operate on a single target
-//   - unary _prefix_ operators appear immediately before their targets (such as `!b`)
-//   - unary _postfix_ operators appear immediately after their targets (such as `c!`)
-// - _Binary_ operators operate on two targets
-//   - e.g. 2 + 3
-//   - are _infix_ because they appear between their two targets
-// - _Ternary_ operators operate on three targets
-//   - only ternary operator: `a ? b : c`
+- _Unary_ operators operate on a single target
+  - unary _prefix_ operators appear immediately before their targets (such as `!b`)
+  - unary _postfix_ operators appear immediately after their targets (such as `c!`)
+- _Binary_ operators operate on two targets
+  - e.g. 2 + 3
+  - are _infix_ because they appear between their two targets
+- _Ternary_ operators operate on three targets
+  - only ternary operator: `a ? b : c`
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Control Flow
+## Control Flow
 
-// [Comparison Operators](#comparison-operators) let you compare values and get an answer of either `true` or `false`
+[Comparison Operators](#comparison-operators) let you compare values and get an answer of either `true` or `false`
 
-// ### `if` statement
+### `if` statement
 
-// ```
-// if <condition> {
-//     <statement>
-// }
-// ```
+```
+if <condition> {
+    <statement>
+}
+```
 
-// ```
-// if <condition1> {
-//     <statement1>
-// } else if <condition2> {
-//     <statement2>
-// } else {
-//     <statement3>
-// }
-// ```
+```
+if <condition1> {
+    <statement1>
+} else if <condition2> {
+    <statement2>
+} else {
+    <statement3>
+}
+```
 
-// ```
-// if <condition> {
-//     <statement1>
-// } else {
-//     <statement2>
-// }
-// ```
+```
+if <condition> {
+    <statement1>
+} else {
+    <statement2>
+}
+```
 
-// ```swift
+```swift
 let isOnePlusOneEqualThree = (1 + 1) == 3
-// false, `==` equality comparison
+false, `==` equality comparison
 
 let isFake = isOnePlusOneEqualThree == false
 
 if isFake == true {
     print("Fake, is the new truth")
 }
-// ```
+```
 
-// ```swift
+```swift
 let nameOfAnimal = "Deer"
 if nameOfAnimal == "Horse" {
     print("Chaos.")
 } else {
     print("A place where we don't have to lie.")
 }
-// ```
+```
 
-// ### Short Circuiting
+### Short Circuiting
 
-// ```swift
+```swift
 if "country" > "people" && 1 + 1 == 2 {
     // here it won't check if 1 + 1 equals to 2
     // because the first condition is already wrong
@@ -329,10 +327,10 @@ if "country" > "people" && 1 + 1 == 2 {
 } else {
     print("Fighting for the people is fighting for the country.")
 }
-// // Result: Fighting for the people is fighting for the country.
-// ```
+// Result: Fighting for the people is fighting for the country.
+```
 
-// ```swift
+```swift
 var someoneIsDrunk = true
 var divorceAgreementReadyToSign = true
 
@@ -342,15 +340,15 @@ if someoneIsDrunk || divorceAgreementReadyToSign == false {
     // ie. first condition true
     print("Let's decide later.")
 }
-// ```
+```
 
-// ### Ternary Conditional Operator
+### Ternary Conditional Operator
 
-// ```
-// (<CONDITION>) ? <TRUE VALUE> : <FALSE VALUE>
-// ```
+```
+(<CONDITION>) ? <TRUE VALUE> : <FALSE VALUE>
+```
 
-// ```swift
+```swift
 let weightOfMountain = 9
 let weightOfFeather = 1
 let onesLife = 0
@@ -358,24 +356,24 @@ let anotherOnesLife = 10
 
 var lifeDescription = onesLife < weightOfFeather ? "lighter than a feather" : "more than a feather"
 print("Someone's life is \(lifeDescription).")
-// // Someone's life is lighter than a feather.
+// Someone's life is lighter than a feather.
 
 lifeDescription = anotherOnesLife > weightOfMountain ? "heavier than a mountain" : "less than a mountain"
 print("Someone's life is \(lifeDescription).")
-// // Someone's life is heavier than a mountain.
-// ```
+// Someone's life is heavier than a mountain.
+```
 
-// ### Loops
+### Loops
 
-// #### `while` Loop
+#### `while` Loop
 
-// ```
-// while <CONDITION> {
-//     <LOOP CODE>
-// }
-// ```
+```
+while <CONDITION> {
+    <LOOP CODE>
+}
+```
 
-// ```swift
+```swift
 let weekendStarts = 6
 var today = 1
 while today < weekendStarts {
@@ -383,15 +381,15 @@ while today < weekendStarts {
     today += 1
 }
 print("Day \(today): weekend starts")
-// ```
+```
 
-// ```
-// repeat {
-//     <LOOP CODE>
-// } while <CONDITION>
-// ```
+```
+repeat {
+    <LOOP CODE>
+} while <CONDITION>
+```
 
-// ```swift
+```swift
 let fullCupOfWater = 5
 var waterInCup = fullCupOfWater
 
@@ -401,35 +399,35 @@ repeat {
         waterInCup -= 1
     }
 } while waterInCup > 0
-// ```
+```
 
-// #### `for` Loop
+#### `for` Loop
 
-// ```
-// for <CONSTANT> in <COUNTABLE RANGE> {
-//     <LOOP CODE>
-// }
-// ```
+```
+for <CONSTANT> in <COUNTABLE RANGE> {
+    <LOOP CODE>
+}
+```
 
-// ```swift
+```swift
 let totalVersions = 5
 for currentVersion in 1...totalVersions {
     print("Current version: \(currentVersion)")
 }
-// ```
+```
 
-// **`where`**
+**`where`**
 
-// ```swift
+```swift
 let versionNumberOfBadLuck = 4
 for currentVersion in 1...totalVersions where currentVersion != versionNumberOfBadLuck {
     print("Current version: \(currentVersion)")
 }
-// ```
+```
 
-// **`continue` and Labeld Statements**
+**`continue` and Labeld Statements**
 
-// ```swift
+```swift
 for currentVersion in 1...totalVersions {
     if currentVersion == versionNumberOfBadLuck {
         print("We skip version \(currentVersion) to avoid bad luck.")
@@ -437,16 +435,16 @@ for currentVersion in 1...totalVersions {
     }
     print("Current version: \(currentVersion)")
 }
-// ```
+```
 
-// **Example**
+**Example**
 
-// Dating with different lovers:
+Dating with different lovers:
 
-// - avoid dating if wife might know
-// - we'll be in big trouble if the lover is also wife's friend and wife might know the dating
+- avoid dating if wife might know
+- we'll be in big trouble if the lover is also wife's friend and wife might know the dating
 
-// ```swift
+```swift
 let numberOfSecretLovers = 3
 let plannedDatesPerLover = 5
 let loverThatIsAlsoWifesFriend = 2
@@ -465,25 +463,25 @@ lover: for currentLover in 1...numberOfSecretLovers {
         print("Let's go dating.")
     }
 }
-// ```
+```
 
-// ### Switch
+### Switch
 
-// ```
-// switch <control expression> {
-// case <pattern 1>:
-//     <statements>
-// case <pattern 2> where <condition>:
-//     <statements>
-// case <pattern 3> where <condition>,
-//      <pattern 4> where <condition>:
-//     <statements>
-// default:
-//     <statements>
-// }
-// ```
+```
+switch <control expression> {
+case <pattern 1>:
+    <statements>
+case <pattern 2> where <condition>:
+    <statements>
+case <pattern 3> where <condition>,
+     <pattern 4> where <condition>:
+    <statements>
+default:
+    <statements>
+}
+```
 
-// ```swift
+```swift
 let occupied = true, unoccupied = false
 var gender = "boy" // try changing it to "girl"
 var toiletOccupancy = (male: occupied, female: unoccupied)
@@ -510,9 +508,9 @@ default:
     // `default case` can be used to satisfy this if it's not feasible.
     break;
 }
-// ```
+```
 
-// ```swift
+```swift
 var schoolYear = 3 // try changing it to something within 1...12
 switch schoolYear {
 case 1...3:
@@ -529,35 +527,35 @@ default:
     // `default case` can be used to satisfy this if it's not feasible.
     break
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Functions
+## Functions
 
-// ```
-// func <function name>(<parameters>) -> <return type> {
-//     statements
-// }
-// ```
+```
+func <function name>(<parameters>) -> <return type> {
+    statements
+}
+```
 
-// If the function has a return type of `Void` (ie. no return value):
+If the function has a return type of `Void` (ie. no return value):
 
-// ```
-// func <function name>(<parameters>) {
-//     statements
-// }
-// ```
+```
+func <function name>(<parameters>) {
+    statements
+}
+```
 
-// Forms of a parameter:
+Forms of a parameter:
 
-// ```
-// <parameter name>: <parameter type>
-// <argument label> <parameter name>: <parameter type>
-// _ <parameter name>: <parameter type>
-// ```
+```
+<parameter name>: <parameter type>
+<argument label> <parameter name>: <parameter type>
+_ <parameter name>: <parameter type>
+```
 
-// ```swift
+```swift
 func add(a: Int, b: Int) -> Int {
     return x + y
 }
@@ -573,13 +571,13 @@ func sayHi(_ person: String) {
 }
 
 sayHi("people")
-// ```
+```
 
-// #### Change a parameter directly
+#### Change a parameter directly
 
-// Terminology: copy-in copy-out, call by value result
+Terminology: copy-in copy-out, call by value result
 
-// ```swift
+```swift
 let vampiresAppetitePerPerson = 0.4
 func payTax(for income: inout Double) {
     income *= (1.0 - vampiresAppetitePerPerson)
@@ -589,18 +587,18 @@ var income = 100.00
 payTax(for: &income)
 
 print("After tax, income becomes \(income)")
-// // Prints "After tax, income becomes 60.0"
-// ```
+// Prints "After tax, income becomes 60.0"
+```
 
-// ### Functions as variables
+### Functions as variables
 
-// A function that takes a parameter, and returns another function that uses the parameter:
+A function that takes a parameter, and returns another function that uses the parameter:
 
-// **Example:**
+**Example:**
 
-// Define a generic function that returns a function mimicing money deduction behaviour with specified deduction rate
+Define a generic function that returns a function mimicing money deduction behaviour with specified deduction rate
 
-// ```swift
+```swift
 func createMoneyDeductor(with percentage: Double) -> (Double) -> Double {
     // define and return another function:
     func bloodSuckingVampire(bloodQuantity: Double) -> Double {
@@ -619,87 +617,87 @@ income = taxOffice(income)
 income = laywer(income)
 income = dentist(income)
 print("After tax, laywer and dentist, now it becomes \(income)")
-// ```
+```
 
-// ### Function that Never Returns
+### Function that Never Returns
 
-// ```swift
+```swift
 func oneInfiniteLoop() -> Never {
     print("DO NOT CALL THIS FUNCTION OR:")
     while true {
         print("Falling apple on your head.")
     }
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Optionals
+## Optionals
 
-// A variable holding either some value, or nothing.
+A variable holding either some value, or nothing.
 
-// ```
-// <Type>?
-// ```
+```
+<Type>?
+```
 
-// ```swift
+```swift
 var errorCode: Int?
 errorCode = 404
 errorCode = nil
-// ```
+```
 
-// **force unwrap**
+**force unwrap**
 
-// ```swift
+```swift
 errorCode = 500
 print("Error code is \(errorCode!)")
-// ```
+```
 
-// **optional binding**
+**optional binding**
 
-// ```swift
+```swift
 if let errorCode = errorCode {
     print("Error code is \(errorCode)")
 } else {
     print("No error.")
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Collection Types
+## Collection Types
 
-// ```
-// Array[Element]
-// [Element] // short form
-// ```
+```
+Array[Element]
+[Element] // short form
+```
 
-// ### Array
+### Array
 
-// ```swift
+```swift
 var someNumbers = [Int]()
 
 someNumbers.append(9)
 someNumbers = [] // type has been provided as `Int`
-// ```
+```
 
-// #### Array with default value
+#### Array with default value
 
-// ```swift
+```swift
 var fiveNumbers = Array(repeating: 1.2, count: 3)
-// ```
+```
 
-// #### Adding two array together
+#### Adding two array together
 
-// ```swift
+```swift
 let threePowers = ["Executive", "Legislative", "Judicial"]
 let twoPowers = ["Supervision Audit", "Examination"]
 let fivePowers = threePowers + twoPowers
-// ```
+```
 
-// #### Accessing and modifying array
+#### Accessing and modifying array
 
-// ```swift
+```swift
 var shoppingList = ["Wine", "Coffee", "Cigarette"]
 print("Shopping list has \(shoppingList.count) items")
 
@@ -716,15 +714,15 @@ var firstItem = shoppingList[0]
 
 shoppingList[3] = "Condom"
 shoppingList[3...4] = ["Energy Drink"]
-// shoppingList: ["Wine", "Coffee", "Cigarette", "Energy Drink", "Tea"]
+shoppingList: ["Wine", "Coffee", "Cigarette", "Energy Drink", "Tea"]
 
 shoppingList.insert("Honey", at: 0)
 let honey = shoppingList.remove(at: 0)
-// ```
+```
 
-// #### Iterating Over an Array
+#### Iterating Over an Array
 
-// ```swift
+```swift
 for item in shoppingList {
     print("Shopping list item: \(item)")
 }
@@ -732,89 +730,89 @@ for item in shoppingList {
 for (index, item) in shoppingList.enumerated() {
     print("Shopping list item \(index): \(item)")
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ### Set
+### Set
 
-// #### Hash Value for Set Types
+#### Hash Value for Set Types
 
-// `Set` can only contain _hashable_ values
-// if `a == b`, then `a.hashValue == b.hashValue`
+`Set` can only contain _hashable_ values
+if `a == b`, then `a.hashValue == b.hashValue`
 
-// #### Creating Sets
+#### Creating Sets
 
-// ```swift
+```swift
 var letters = Set<Character>()
 letters.insert("a")
 letters = []
-// ```
+```
 
-// ```swift
+```swift
 var someColors: Set<String> = ["Blue", "White", "Red"]
 var someOtherColors: Set = ["Sunset", "Autumn", "Zen"]
-// ```
+```
 
-// #### Operations
+#### Operations
 
-// **Count**
+**Count**
 
-// ```swift
+```swift
 print("Other colors have \(someOtherColors.count) colors")
-// ```
+```
 
-// **Check Empty**
+**Check Empty**
 
-// ```swift
+```swift
 if someOtherColors.isEmpty {
     print("No color, is the real color.")
 } else {
     print("There are a few colors in it.")
 }
-// ```
+```
 
-// **Insert and Remove**
+**Insert and Remove**
 
-// ```swift
+```swift
 someColors.insert("Cyan")
 if let removedColor = someColors.remove("Yellow") {
     print("\(removedColor) removed from someColors")
 } else {
     print("someColors does not have Yellow in it")
 }
-// ```
+```
 
-// **Union and Intersection**
+**Union and Intersection**
 
-// ```
+```
 let openDays: Set = [1, 2, 3, 4, 5]
 let closedDays: Set = [6, 7]
 openDays.union(closedDays)
 openDays.intersection(closedDays)
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ### Dictionary
+### Dictionary
 
-// #### Creating a Dictionary
+#### Creating a Dictionary
 
-// ```
-// // creating empty dictionary:
+```
+// creating empty dictionary:
 var meaningsOfAges = [String: String]()
 meaningsOfAges["eighteen"] = "By which the acquired collection of prejudices become common sense"
-// ```
+```
 
-// ```
-// // creating with dictionary literal:
+```
+// creating with dictionary literal:
 var meaningOfWords = ["agreement": "when people are tired of thinking"]
-// // `String` type inferred for `var meaningOfWords: [String: String]`
-// ```
+// `String` type inferred for `var meaningOfWords: [String: String]`
+```
 
-// #### Dictionary operations
+#### Dictionary operations
 
-// ```swift
+```swift
 if meaningsOfAges.isEmpty == false {
     print("At least one age has some meaning")
 }
@@ -824,29 +822,29 @@ meaningsOfAges["one"] = "One year closer to death"
 if let meaningOf18 = meaningsOfAges["eighteen"] {
     print("The meaning of age 18:\n\(meaningOf18)")
 }
-// ```
+```
 
-// #### Iterating Over a Dictionary
+#### Iterating Over a Dictionary
 
-// ```swift
+```swift
 for (age, meaning) in meaningsOfAges {
     print("Meaning of \(age): \(meaning)")
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Closures
+## Closures
 
-// Function without name:
+Function without name:
 
-// ```
-// { (<parameters>) -> <return type> in
-//     statement
-// }
-// ```
+```
+{ (<parameters>) -> <return type> in
+    statement
+}
+```
 
-// ```swift
+```swift
 let cups = ["A", "B", "C", "D", "E"]
 let biggestCup = cups.sorted { (c1: String, c2: String) -> Bool in
     c1 > c2
@@ -855,45 +853,45 @@ let smallestCup = cups.sorted { (c1: String, c2: String) -> Bool in
     c1 < c2
     }.first!
 print("Biggest cup is \(biggestCup), most environemtnal friendly cup is \(smallestCup)")
-// ```
+```
 
-// ### Inferring type from context
+### Inferring type from context
 
-// without parameter type:
+without parameter type:
 
-// ```swift
+```swift
 cups.sorted { (c1, c2) -> Bool in
     c1 > c2
 }
-// ```
+```
 
-// without return type:
+without return type:
 
-// ```swift
+```swift
 cups.sorted { (c1, c2) in c1 > c2 }
-// ```
+```
 
-// shorthand argument names:
+shorthand argument names:
 
-// ```swift
+```swift
 cups.sorted { $0 > $1 }
-// ```
+```
 
-// operator methods:
+operator methods:
 
-// ```swift
+```swift
 cups.sorted(by: >)
-// ```
+```
 
-// - A closure can _capture_ constants and variables from the surrounding context in which it is defined.
-// - Closures are reference types
+- A closure can _capture_ constants and variables from the surrounding context in which it is defined.
+- Closures are reference types
 
-// ### Escaping closures
+### Escaping closures
 
-// A closure is said to _escape_ a function when the closure is passed as an argument to the function,
-// but is called after the function returns.
+A closure is said to _escape_ a function when the closure is passed as an argument to the function,
+but is called after the function returns.
 
-// ```swift
+```swift
 var garbageCollection: [() -> Void] = []
 
 func collectGarbageWithEscapingClosure(garbageCollector: @escaping () -> Void) {
@@ -911,11 +909,11 @@ collectGarbageWithEscapingClosure {
 collectGarbageRightNow {
     print("If Java had true garbage collection, most programs would delete themselves upon execution. -- Robert Sewell") // only this is executed
 }
-// ```
+```
 
-// ### Autoclosures
+### Autoclosures
 
-// ```swift
+```swift
 var customersInLine = ["Chris", "Alex", "Ewa", "Barry"]
 print(customersInLine.count) // Prints "4"
 
@@ -923,34 +921,34 @@ let customerProvider = { customersInLine.remove(at: 0) }
 print(customersInLine.count) // Prints "4"
 
 print("Now serving \(customerProvider())!")
-// // Prints "Now serving Chris!"
+// Prints "Now serving Chris!"
 print(customersInLine.count) // Prints "3"
 
-// // parameter: () -> String
-// // argument is auto converted to a closure
+// parameter: () -> String
+// argument is auto converted to a closure
 func serve(customer customerProvider: @autoclosure () -> String) {
     print("Now serving \(customerProvider())!")
 }
 
-// // now can pass a String
+// now can pass a String
 serve(customer: "Hi")
-// // "Hi" will be converted to a closure that returns this string
-// // which is only evaluated when being called
-// ```
+// "Hi" will be converted to a closure that returns this string
+// which is only evaluated when being called
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Strings and Characters
+## Strings and Characters
 
-// - string literals can be single or multi line
-// - backslash (\) can be used to make the string easier to read but won't have line break in the final string
-// - blank line as the first and/or last line in multiline string as line feed
-// - indentation is only considered after the indentation of triple quotation marks
-// - special characters are espaced with backslash
-// - unicode can be written with \u{<CodePoint>}
-// - strings are value types
+- string literals can be single or multi line
+- backslash (\) can be used to make the string easier to read but won't have line break in the final string
+- blank line as the first and/or last line in multiline string as line feed
+- indentation is only considered after the indentation of triple quotation marks
+- special characters are espaced with backslash
+- unicode can be written with \u{<CodePoint>}
+- strings are value types
 
-// ```swift
+```swift
 let quotationSingleLine = "There be light."
 let quotationMultiLine = """
 
@@ -959,34 +957,34 @@ Let there be light:
 and there was light.
 
 """
-// ```
+```
 
-// final string:
-// And God said, Let there be light:
-// and there was light.
+final string:
+And God said, Let there be light:
+and there was light.
 
-// ### Create emtpy string
+### Create emtpy string
 
-// ```swift
+```swift
 var emptyString = ""
 var anotherEmptyString = String()
-// ```
+```
 
-// ```swift
+```swift
 if emptyString.isEmpty {
     print("Unfortunately the emptiness of a string can't be derived from its name.")
 }
-// ```
+```
 
-// You can do this:
+You can do this:
 
-// ```swift
+```swift
 emptyString += "no longer empty"
-// ```
+```
 
-// ### Strings are sequence of characters
+### Strings are sequence of characters
 
-// ```swift
+```swift
 for character in "Dog🐶Inside!" {
     print(character)
 }
@@ -994,56 +992,56 @@ for character in "Dog🐶Inside!" {
 let nethackCharacters: [Character] = ["T", "h", "e", " ", "n", "e", "w", "t", " ", "b", "i", "t", "e", "s"]
 var nethackString = String(nethackCharacters)
 print(nethackString)
-// // Prints "The newt bites"
+// Prints "The newt bites"
 
 nethackString += "!"
-// ```
+```
 
-// ### Unicode
+### Unicode
 
-// Unicode is an international standard for encoding text in different languages, it covers much more than the original ASCII character set, however the underlying representation are still integers. Integers within certain ranges (U+0000 to U+D7FF inclusive, U+E000 to U+10FFFF inclusive) are called Unicode Scalars.
+Unicode is an international standard for encoding text in different languages, it covers much more than the original ASCII character set, however the underlying representation are still integers. Integers within certain ranges (U+0000 to U+D7FF inclusive, U+E000 to U+10FFFF inclusive) are called Unicode Scalars.
 
-// ### Extended grapheme clusters
+### Extended grapheme clusters
 
-// Every instance of Swift’s Character type represents a single extended grapheme cluster. An extended grapheme cluster is a sequence of one or more Unicode scalars that (when combined) produce a single human-readable character.
+Every instance of Swift’s Character type represents a single extended grapheme cluster. An extended grapheme cluster is a sequence of one or more Unicode scalars that (when combined) produce a single human-readable character.
 
-// ```swift
+```swift
 let eAcute: Character = "\u{E9}"
-// // é
+// é
 
 let combinedEAcute: Character = "\u{65}\u{301}"
-// // e followed by  ́ (the thing above e)
-// ```
+// e followed by  ́ (the thing above e)
+```
 
-// ### Accessing and Modifying a String
+### Accessing and Modifying a String
 
-// Because a character in Unicode may consist of more than one number, anything related to indices, inculding counting the number of characters in a string, becomes tricky. A swift string can't be indexed by integer values, the type of index is `String.Index`
+Because a character in Unicode may consist of more than one number, anything related to indices, inculding counting the number of characters in a string, becomes tricky. A swift string can't be indexed by integer values, the type of index is `String.Index`
 
-// ```swift
+```swift
 var word = "cafe"
 word.count // 4
 word += "\u{301}"
 word.count // 4
-// ```
+```
 
-// ```swift
+```swift
 let science = "ABCDEFGHIJKMNPQRTVWXYZ"
 
 print(science[science.startIndex])
-// // A
+// A
 
 print(science[science.index(before: science.endIndex)])
-// // Z
+// Z
 
 print(science[science.index(after: science.startIndex)])
-// // B
+// B
 
 let index7 = science.index(science.startIndex, offsetBy: 7)
 print(science[index7])
-// // H
-// ```
+// H
+```
 
-// ```swift
+```swift
 var indexS: String.Index? = science.index(of: "S")
 var indexO: String.Index? = science.index(of: "O")
 var indexU: String.Index? = science.index(of: "U")
@@ -1052,55 +1050,55 @@ var indexL: String.Index? = science.index(of: "L")
 if (indexS == nil && indexO == nil && indexU == nil && indexL == nil) {
     print("science has no SOUL")
 }
-// ```
+```
 
-// **inserting**
+**inserting**
 
-// ```swift
+```swift
 var sentence = "you understand"
 sentence.insert(contentsOf: "could ", at: sentence.startIndex)
 sentence.insert(contentsOf: "?", at: sentence.endIndex)
 print(sentence)
-// // Print: "could you understand?"
-// ```
+// Print: "could you understand?"
+```
 
-// **replacing**
+**replacing**
 
-// ```swift
+```swift
 let range1 = sentence.range(of: "oul")!
 sentence.replaceSubrange(range1, with: "ulo")
 let range2 = sentence.range(of: "nderstan")!
 sentence.replaceSubrange(range2, with: "redntsna")
 print(sentence)
-// // Prints: "culod you uredntsnad?"
-// ```
+// Prints: "culod you uredntsnad?"
+```
 
-// **substrings**
+**substrings**
 
-// ```swift
+```swift
 let englishForDummy = "therapist"
 let indexOfR = englishForDummy.index(of: "r")!
 let firstWord = englishForDummy[..<indexOfR]
 let lastWord = englishForDummy[indexOfR...]
 print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(String(firstWord))\" and \"\(String(lastWord))\"?")
-// // Prints: "Have you ever realised the word "therapist" is made up by "the" and "rapist"?
-// ```
+// Prints: "Have you ever realised the word "therapist" is made up by "the" and "rapist"?
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Enumerations
+## Enumerations
 
-// ### Syntax
+### Syntax
 
-// ```
-// enum <enumeration name> {
-//     <enumeration definitions>
-// }
-// ```
+```
+enum <enumeration name> {
+    <enumeration definitions>
+}
+```
 
-// each case can be a single line:
+each case can be a single line:
 
-// ```swift
+```swift
 enum PlanetVertical {
     case mercury
     case venus
@@ -1111,19 +1109,19 @@ enum PlanetVertical {
     case uranus
     case neptune
 }
-// ```
+```
 
-// or multiple cases can appear on a single line:
+or multiple cases can appear on a single line:
 
-// ```swift
+```swift
 enum PlanetHorizontal {
     case mercury, venus, earth, mars, jupiter, saturn, uranus, neptune
 }
-// ```
+```
 
-// enumeration type can be inferred
+enumeration type can be inferred
 
-// ```swift
+```swift
 enum Direction {
     case north
     case west
@@ -1136,40 +1134,40 @@ var nextDirection = Direction.east
 
 lostDirection = .north
 nextDirection = .west
-// ```
+```
 
-// ### Switch matching
+### Switch matching
 
-// ```swift
+```swift
 switch lostDirection {
 case .north, .west, .south:
     print("Lost in the wild")
 case .east:
     print("You need a pilot")
 }
-// ```
+```
 
-// Remember `switch` must be exhaustive
+Remember `switch` must be exhaustive
 
-// ```swift
+```swift
 switch nextDirection {
 case .east:
     print("Be prepared.")
 default:
     print("Why not heading east?")
 }
-// ```
+```
 
-// ### Associated Values
+### Associated Values
 
-// **Example**
+**Example**
 
-// Define an enumeration for daily attendence,
-// if unattended, give and execuse as well as a real reason,
-// define three functions, evaluate the execuse and reason for unattendence,
-// from perspectives of teacher, manager and self
+Define an enumeration for daily attendence,
+if unattended, give and execuse as well as a real reason,
+define three functions, evaluate the execuse and reason for unattendence,
+from perspectives of teacher, manager and self
 
-// ```swift
+```swift
 enum DailyAttendence {
     case attended
     case unattended(execuse: String, realReason: String)
@@ -1204,25 +1202,25 @@ func selfEvaluate(_ attendence: DailyAttendence) {
 
 let jackyAttendence: DailyAttendence = DailyAttendence.unattended(execuse: "alarm clock stopped working", realReason: "late sleep watching TV")
 teacherEvaluate(jackyAttendence)
-// // I need to talk to your parents regarding late sleep watching TV
+// I need to talk to your parents regarding late sleep watching TV
 
 let goodsonAttendence: DailyAttendence = DailyAttendence.attended
 teacherEvaluate(goodsonAttendence)
-// // keep up
+// keep up
 
 let mrUnsatisiable: DailyAttendence = DailyAttendence.unattended(execuse: "sick", realReason: "job interview")
 managerEvaluate(mrUnsatisiable)
-// // I'm fine with sick
+// I'm fine with sick
 
 selfEvaluate(mrUnsatisiable)
-// // I have "sick" as execuse for the real reason of "job interview"
-// ```
+// I have "sick" as execuse for the real reason of "job interview"
+```
 
-// ### Raw Values
+### Raw Values
 
-// Implicit:
+Implicit:
 
-// ```swift
+```swift
 enum Month : Int {
     case january = 1
     case feburary // 2
@@ -1239,10 +1237,10 @@ enum Month : Int {
 }
 
 print("September has a value of \(Month.september.rawValue)")
-// // Print "September has a value of 9"
-// ```
+// Print "September has a value of 9"
+```
 
-// ```swift
+```swift
 enum SomeNames : String {
     case michael
     case tom
@@ -1250,12 +1248,12 @@ enum SomeNames : String {
 }
 
 print("case tom has raw value of \(SomeNames.tom.rawValue)")
-// // Print "case tom has raw value of tom"
-// ```
+// Print "case tom has raw value of tom"
+```
 
-// ### Initializing from raw value
+### Initializing from raw value
 
-// ```swift
+```swift
 var monthNumber = 7
 if let month = Month(rawValue: monthNumber) {
     switch month {
@@ -1267,13 +1265,13 @@ if let month = Month(rawValue: monthNumber) {
 } else {
     print("Cannot recognize month number")
 }
-// ```
+```
 
-// ### Recursive enumerations
+### Recursive enumerations
 
-// A recursive enumeration is an enumeration that has another instance of the enumeration as the associated value for one or more of the enumeration cases
+A recursive enumeration is an enumeration that has another instance of the enumeration as the associated value for one or more of the enumeration cases
 
-// ```swift
+```swift
 enum Trap {
     case rightWayOut
     indirect case wayOut(Trap)
@@ -1293,56 +1291,56 @@ func escape(from trap: Trap) {
 }
 
 escape(from: love)
-// // Fall into another trap
-// // Fall into another trap
-// // Found the right way out
-// ```
+// Fall into another trap
+// Fall into another trap
+// Found the right way out
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Classes and Structures
+## Classes and Structures
 
-// Declare a class:
+Declare a class:
 
-// ```swift
+```swift
 class Love { // class name
     // <statements>
     // }
-// ```
+```
     
     // Class statements:
     
     // class/type constant:
     
-// ```swift
+```swift
     // by default, love isn't persistent
     static let defaultPersistency = false
-// ```
+```
     
     // stored properties
     
-// ```swift
+```swift
     var name: String?
     let thorny = true // constant
     
     // inferred boolean variable
     var isPersistent = defaultPersistency
     var looksPretty: Bool // variable
-// ```
+```
     
-// **computed property**
+**computed property**
     
-// ```swift
+```swift
     var tastesGood: Bool {
         // computed property
         // must be variable
         return !looksPretty
     }
-// ```
+```
     
-// **lazy property**
+**lazy property**
 
-// ```swift
+```swift
     lazy var complexity: Int = { [unowned self] in
         if let name = self.name {
             return name.lengthOfBytes(using: .utf8)
@@ -1350,30 +1348,30 @@ class Love { // class name
             return 123
         }
     }()
-// ```
+```
     
-// **initializer**
+**initializer**
     
-// ```swift
+```swift
     // non-optional properties must be
     // initialized before use
     init(looksPretty: Bool, name: String? = nil) {
         self.looksPretty = looksPretty
         self.name = name
     }
-// ```
+```
     
-// **instance method**
+**instance method**
     
-// ```swift
+```swift
     func printDescription() {
         Love.printNotes(about: self)
     }
-// ```
+```
     
-// **class/type method**
+**class/type method**
     
-// ```swift
+```swift
     // `final` indicates cannot be overwritten
     final func displayName() -> String {
         return self.name ?? self.defaultName()
@@ -1418,36 +1416,35 @@ class Love { // class name
             print("\(displayName) \(look) but \(taste)")
         }
     }
-// ```
-} //!
+```
 
-// make some loves:
+make some loves:
 
-// ```swift
+```swift
 let someLove = Love(looksPretty: false)
 someLove.printDescription()
 let someHate = Love(looksPretty: true, name: "Hate")
 someHate.isPersistent = true
 someHate.printDescription()
-// ```
+```
 
-// `someLove` prints
+`someLove` prints
 
-// >Notes about love:
-// >love has noname
-// >love is thorny
-// >love doesn't last long by default
-// >love looks ugly but tastes good
+>Notes about love:
+>love has noname
+>love is thorny
+>love doesn't last long by default
+>love looks ugly but tastes good
 
-// `hate` prints
+`hate` prints
 
-// >Notes about Hate:
-// >love has a name of "Hate"
-// >Hate is thorny
-// >Hate can be persistent
-// >Hate looks pretty but tastes bad
+>Notes about Hate:
+>love has a name of "Hate"
+>Hate is thorny
+>Hate can be persistent
+>Hate looks pretty but tastes bad
 
-// ```swift
+```swift
 struct Address {
     
     // type constant
@@ -1464,22 +1461,22 @@ struct Address {
         return "\(streetNumber) \(streetName), \(suburb), \(state) \(postcode), \(country)"
     }
 }
-// ```
+```
 
-// ```swift
+```swift
 print("Using \(Address.format) format")
-// ```
+```
 
-// ```swift
-// // default struct-wise initializer
+```swift
+// default struct-wise initializer
 let address = Address(streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
 print(address.fullAddress)
-// ```
+```
 
-// ### Inheritance
+### Inheritance
 
-// ```swift
-// // hate is a kind of love
+```swift
+// hate is a kind of love
 class Hate: Love {
     init() {
         super.init(looksPretty: false, name: "exclusive love")
@@ -1494,71 +1491,71 @@ class Hate: Love {
 
 let moreHate = Hate()
 moreHate.printDescription()
-// ```
+```
 
-// `moreHate` prints:
+`moreHate` prints:
 
-// > Notes about hate:
-// > hate has a name of "exclusive love"
-// > exclusive love is thorny
-// > exclusive love can be persistent
-// > exclusive love looks ugly but tastes good
+> Notes about hate:
+> hate has a name of "exclusive love"
+> exclusive love is thorny
+> exclusive love can be persistent
+> exclusive love looks ugly but tastes good
 
-// ### `required` and `convenience` initializers
+### `required` and `convenience` initializers
 
-// - `required` initializer makes sure subclass still implements the initializer
-//   - `required init(name: String)`
-// - `convenience` initializer is forced to call a non-convenience initializer directly or indirectly
-//   - `convenience init()`
-// - non-convenience initializer is called *designated* initializer
-// - a designated initializer must call a designated initializer from its immediate superclass.
-// - a convenience initializer must call another initializer from the same class.
-// - a convenience initializer must ultimately call a designated initializer.
+- `required` initializer makes sure subclass still implements the initializer
+  - `required init(name: String)`
+- `convenience` initializer is forced to call a non-convenience initializer directly or indirectly
+  - `convenience init()`
+- non-convenience initializer is called *designated* initializer
+- a designated initializer must call a designated initializer from its immediate superclass.
+- a convenience initializer must call another initializer from the same class.
+- a convenience initializer must ultimately call a designated initializer.
 
-// ### Identify operators
-// Check whether two constants or variables refer to the same single instance:
-// - Identical to (===)
-// - Not identical to (!==)
+### Identify operators
+Check whether two constants or variables refer to the same single instance:
+- Identical to (===)
+- Not identical to (!==)
 
-// ```swift
+```swift
 let fakeLove = someLove
 print("someLove is fakeLove? \(someLove === fakeLove)")
-// ```
+```
 
-// ### Deinitialization
+### Deinitialization
 
-// ```swift
+```swift
 var shortTermLove: Love? = Love(looksPretty: true)
 shortTermLove = nil
-// ```
+```
 
-// Prints:
+Prints:
 
-// > love disappears in a puff of logic
+> love disappears in a puff of logic
 
-// ### class vs struct
+### class vs struct
 
-// *class*:
+*class*:
 
-// - reference type, object with identity, e.g. `Student`
-// - slower on heap
-// - updated with logic
-// - internals can remain mutable even when declared with `let`
+- reference type, object with identity, e.g. `Student`
+- slower on heap
+- updated with logic
+- internals can remain mutable even when declared with `let`
 
-// *struct*:
+*struct*:
 
-// - value type, e.g. `Address`
-// - faster on stack
-// - simple data store
-// - immutable when declared with `let`
+- value type, e.g. `Address`
+- faster on stack
+- simple data store
+- immutable when declared with `let`
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Protocols
+## Protocols
 
-// ### Define a protocol
+### Define a protocol
 
-// ```swift
+```swift
 protocol Rescuable {
     
     // method:
@@ -1571,11 +1568,11 @@ protocol Rescuable {
     // initializer
     init?(initialDistanceToGod: UInt)
 }
-// ```
+```
 
-// ### Implementing a protocol
+### Implementing a protocol
 
-// ```swift
+```swift
 class Person: Rescuable {
     
     var distanceToGod: UInt
@@ -1599,39 +1596,39 @@ class Person: Rescuable {
         return distanceToGod == 0
     }
 }
-// ```
+```
 
-// Swift doesn't care how you implement a protocol, as long as you implemnet it.
-// Choices for implementing a `get` property in protocol:
+Swift doesn't care how you implement a protocol, as long as you implemnet it.
+Choices for implementing a `get` property in protocol:
 
-// - a constant stored property
-// - a variable stored property
-// - a read-only computed property
-// - a read-write computed property
+- a constant stored property
+- a variable stored property
+- a read-only computed property
+- a read-write computed property
 
-// ### Implementing multiple protocols
+### Implementing multiple protocols
 
-// We define an `Evil` protocol:
+We define an `Evil` protocol:
 
-// ```swift
+```swift
 protocol Evil {
     func fulfilDesire()
 }
-// ```
+```
 
-// ### Adopt protocol using extension
+### Adopt protocol using extension
 
-// Make `Person` also implements `Evil`
+Make `Person` also implements `Evil`
 
-// ```swift
+```swift
 extension Person: Evil {
     func fulfilDesire() {
         self.distanceToGod += 1
     }
 }
-// ```
+```
 
-// ```swift
+```swift
 func commentary(of thing: Rescuable & Evil) {
     print("Something that is evil but rescuable")
     
@@ -1655,16 +1652,16 @@ for _ in 1...distance {
 }
 
 commentary(of: person)
-// // print: "God saved you"
-// ```
+// print: "God saved you"
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Generics
+## Generics
 
-// It's like a super-type of different types.
+It's like a super-type of different types.
 
-// ```swift
+```swift
 func swapValues<T>(_ a: inout T, _ b: inout T) {
     let temporaryA = a
     a = b
@@ -1674,20 +1671,20 @@ func swapValues<T>(_ a: inout T, _ b: inout T) {
 var firstNumber = 3
 var secondNumber = 7
 swapValues(&firstNumber, &secondNumber)
-// // `firstNumber` is now 7, `secondNumber` is now 3
+// `firstNumber` is now 7, `secondNumber` is now 3
 
 var humanWorld = ""
 var hell = "full of evil"
 swapValues(&humanWorld, &hell)
-// // `hell` is now empty, `humanWorld` is now "full of evil"
-// ```
+// `hell` is now empty, `humanWorld` is now "full of evil"
+```
 
-// ### Generic Types
+### Generic Types
 
-// *Example*
-// Implement a bag of generic typed stuff, stuff can be put in the bag and picked up randomly
+*Example*
+Implement a bag of generic typed stuff, stuff can be put in the bag and picked up randomly
 
-// ```swift
+```swift
 struct Bag<Stuff> {
     var stuff = [Stuff]()
     mutating func putin(_ stuff: Stuff) {
@@ -1703,11 +1700,11 @@ var bagOfStrings = Bag<String>();
 bagOfStrings.putin("Masquito's leg")
 bagOfStrings.putin("Grandma's beard")
 bagOfStrings.pickup()
-// ```
+```
 
-// ### Associated types
+### Associated types
 
-// ```swift
+```swift
 protocol Fate {
     associatedtype ChanceType
     associatedtype EventType
@@ -1733,20 +1730,20 @@ let ant = Life()
 print("chance \"death\" triggered event: \(ant.event(for: .death))")
 print("chance \"birth\" triggered event: \(ant.event(for: .birth))")
 
-// // prints "chance "death" triggered event: a new life was born".
-// // prints "chance "birth" triggered event: a new journey just started".
-// ```
+// prints "chance "death" triggered event: a new life was born".
+// prints "chance "birth" triggered event: a new journey just started".
+```
 
-// ### Type constraints
+### Type constraints
 
-// ```
-// func someFunctionL<T: SomeClass, U: SomeProtocol>(someT: T, someP: U)
-// ```
+```
+func someFunctionL<T: SomeClass, U: SomeProtocol>(someT: T, someP: U)
+```
 
-// Alternatively, `Fate` can be conformed this way:
+Alternatively, `Fate` can be conformed this way:
 
-// ```swift
-// // type constraint, ChanceT must conform to `Hashable`
+```swift
+// type constraint, ChanceT must conform to `Hashable`
 class Robot<ChanceT: Hashable, EventT>: Fate {
     
     private var programmedInstructions = [ChanceT: EventT]()
@@ -1768,13 +1765,13 @@ mrBetterHuman.add("sudden stop with dull and lifeless eyes", for: "poweroff")
 
 print("Robot gets chance of 'poweron': \(mrBetterHuman.event(for: "poweron"))")
 print("Robot gets chance of 'poweroff': \(mrBetterHuman.event(for: "poweroff"))")
-// ```
+```
 
-// ### Generic where clauses
+### Generic where clauses
 
-// A piece of code worths thousands of words:
+A piece of code worths thousands of words:
 
-// ```swift
+```swift
 func crossFate<F1: Fate, F2: Fate>(_ someFate: F1, _ otherFate: F2, chance: F1.ChanceType) -> String where F1.ChanceType == F2.ChanceType, F1.EventType == F2.EventType, F1.EventType: Equatable {
     let event1 = someFate.event(for: chance)
     let event2 = otherFate.event(for: chance)
@@ -1789,20 +1786,20 @@ let husband = Life()
 let wife = Life()
 let fateCrossed = crossFate(husband, wife, chance: .birth)
 print("Cross fated husband and wife: \(fateCrossed)")
-// // Prints "Cross fated husband and wife: Fate meets with common event: a new life was born"
-// ```
+// Prints "Cross fated husband and wife: Fate meets with common event: a new life was born"
+```
 
-// _PS: I have a feeling that the whole Fate/Chance/Event thing could be made super fun, but for the purpose of this study notes let's stop here_
+_PS: I have a feeling that the whole Fate/Chance/Event thing could be made super fun, but for the purpose of this study notes let's stop here_
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Access Control
+## Access Control
 
-// A module is a single unit of code distribution, can be imported by another module using `import`.
+A module is a single unit of code distribution, can be imported by another module using `import`.
 
-// ### Syntax
+### Syntax
 
-// ```swift
+```swift
 public class PublicPool {}
 internal class InternalChangeRoom {}
 fileprivate class MaleFilePrivateBath {}
@@ -1812,143 +1809,143 @@ public var publicFeedback = "Good"
 internal let internalComments = "Not great"
 fileprivate func someFilePrivateFunction() {}
 private func privateFunctionRoom() {}
-// ```
+```
 
-// ### Access control levels
+### Access control levels
 
-// - `open` and `public` entities can be used within any source file from their defining module, and also in source files from other modules that imports the defining module. Usually used for framework public interface.
-// - `internal` entities can be used within any source file from defining module but not in any file outside.
-// - `file-private` entities can only be used by its own defining source file.
-// - `private` entities can be used only by the enclosing declaration and extensions of the declaration in the same file
-// - default access level is `internal`
+- `open` and `public` entities can be used within any source file from their defining module, and also in source files from other modules that imports the defining module. Usually used for framework public interface.
+- `internal` entities can be used within any source file from defining module but not in any file outside.
+- `file-private` entities can only be used by its own defining source file.
+- `private` entities can be used only by the enclosing declaration and extensions of the declaration in the same file
+- default access level is `internal`
 
-// *`open` vs `public`*
+*`open` vs `public`*
 
-// - `public` classes and members can be subclassed / overridden only within its defining module.
-// - `open` classes and members can be subclassed / overridden within its defining module as well as importing module.
+- `public` classes and members can be subclassed / overridden only within its defining module.
+- `open` classes and members can be subclassed / overridden within its defining module as well as importing module.
 
-// No entities can be defined in terms of another entity that has more restrictive access level
+No entities can be defined in terms of another entity that has more restrictive access level
 
-// _example: an `open` property defined in a `private` class, or a `public` function with `private` type parameters is like saying you can get a gift without buying our product and details are written on a note inside our product package._
+_example: an `open` property defined in a `private` class, or a `public` function with `private` type parameters is like saying you can get a gift without buying our product and details are written on a note inside our product package._
 
-// ### Unit tests targets
+### Unit tests targets
 
-// A unit test target can access any internal entity, if you mark the import declaration for a product module with the `@testable` attribute and compile that produce module with testing enabled.
+A unit test target can access any internal entity, if you mark the import declaration for a product module with the `@testable` attribute and compile that produce module with testing enabled.
 
-// ### Custom types
+### Custom types
 
-// The access control level of a type also affects the default access level of the type's members
+The access control level of a type also affects the default access level of the type's members
 
-// - private or file private type -> private or type private members
-// - internal or public type -> internal members
-// - public type defaults to have internal members, to ensure public-facing API for a type doesn't expose internal workings by mistake
+- private or file private type -> private or type private members
+- internal or public type -> internal members
+- public type defaults to have internal members, to ensure public-facing API for a type doesn't expose internal workings by mistake
 
-// ### Other types
+### Other types
 
-// You can skip to the end of the below list for **simple way to remember**.
+You can skip to the end of the below list for **simple way to remember**.
 
-// - the access level for a **tuple type** is the most restrictive access level of all types used in the tuple
-// - the access level for a **function type** is the most restrictive access level of the function's parameter types and return type, access level must be specified as part of function definition if its calculated access level doesn't match its contextual default
-// - individual cases of an **enumeration** has same access level as the enumeration
-// - types used for any **raw values** or **associated values** in enumeration must have access level at least as high as the enumeration
-// - **nested types** has the same kind of access level rule as custom types -> members, actually nested types are also a kind of member of enclosing type
-// - a **subclass** can't have higher access level than its superclass, however, an override can make an inherited class member more accessible than its superclass version
-// - a **constant**, **variable** or **property** can't be more public than its type
-// - **getters** and **setters** for constants, variables, properties, and subscripts have the same access level as the constants, variables or properties
-// - you can give a **setter** a *lower* access level than its corresponding **getter**: `fileprivate(set)`, `private(set)` or `internal(set)` before the `var` or `subscript` introducer
-// - custom **initializers** can be assigned an access level less or equal to the type that they initialize
-// - a **required initializer** must have the same access level as the class it belongs to
-// - **default initializer** has the same access level as the type it initializes, unless for `public` type the default initializer is `internal`
-// - **default memberwise initializer** for a structure type has the same access level of the lowest access level of the structure's stored properties, `public` structure has `internal` default initializer unless specified explicitly
-// - the access level of each requirement within a **protocol** definition is automatically set to the same access level as the protocol
-// - a type can **conform to a protocol** with a lower access level than the type itself
-// - any type members added in an **extension** have the same default access level as type members declared in the original type being extended
-// - you can mark an extension with explicit access-level modifier, e.g. `private extension`
-// - a type alias can have an access level less than or equal to the access level of the type it aliases
+- the access level for a **tuple type** is the most restrictive access level of all types used in the tuple
+- the access level for a **function type** is the most restrictive access level of the function's parameter types and return type, access level must be specified as part of function definition if its calculated access level doesn't match its contextual default
+- individual cases of an **enumeration** has same access level as the enumeration
+- types used for any **raw values** or **associated values** in enumeration must have access level at least as high as the enumeration
+- **nested types** has the same kind of access level rule as custom types -> members, actually nested types are also a kind of member of enclosing type
+- a **subclass** can't have higher access level than its superclass, however, an override can make an inherited class member more accessible than its superclass version
+- a **constant**, **variable** or **property** can't be more public than its type
+- **getters** and **setters** for constants, variables, properties, and subscripts have the same access level as the constants, variables or properties
+- you can give a **setter** a *lower* access level than its corresponding **getter**: `fileprivate(set)`, `private(set)` or `internal(set)` before the `var` or `subscript` introducer
+- custom **initializers** can be assigned an access level less or equal to the type that they initialize
+- a **required initializer** must have the same access level as the class it belongs to
+- **default initializer** has the same access level as the type it initializes, unless for `public` type the default initializer is `internal`
+- **default memberwise initializer** for a structure type has the same access level of the lowest access level of the structure's stored properties, `public` structure has `internal` default initializer unless specified explicitly
+- the access level of each requirement within a **protocol** definition is automatically set to the same access level as the protocol
+- a type can **conform to a protocol** with a lower access level than the type itself
+- any type members added in an **extension** have the same default access level as type members declared in the original type being extended
+- you can mark an extension with explicit access-level modifier, e.g. `private extension`
+- a type alias can have an access level less than or equal to the access level of the type it aliases
 
-// **simple way to remember**
-// Imagine a passenger on a airplane has recently visited virus infected area and not feeling well on the plane, all passengers have to be examined.
+**simple way to remember**
+Imagine a passenger on a airplane has recently visited virus infected area and not feeling well on the plane, all passengers have to be examined.
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Advanced Operators
+## Advanced Operators
 
-// ### Bitwise operators
+### Bitwise operators
 
-// > one and zero looked just right, made for each other: 1, the definite, upright line; and 0, the diagram of nothing at all - Sadie Plant, _zeros + ones_
+> one and zero looked just right, made for each other: 1, the definite, upright line; and 0, the diagram of nothing at all - Sadie Plant, _zeros + ones_
 
-// **Bitwise NOT**
+**Bitwise NOT**
 
-// ```swift
+```swift
 let initialBits: UInt8 = 0b00001111
 let invertedBits = ~initialBits // equals 11110000
-// ```
+```
 
-// **Bitwise AND**
+**Bitwise AND**
 
-// ```swift
+```swift
 let partialTruth: UInt8 = 0b11111000
 let missingTruth: UInt8 = 0b00111001
 let theRealTruth = partialTruth & missingTruth // equals 00111000
-// ```
+```
 
-// **Bitwise OR**
+**Bitwise OR**
 
-// ```swift
+```swift
 let upperTeeth: UInt8 = 0b01010101
 let lowerTeeth: UInt8 = 0b10101010
 let bite = upperTeeth | lowerTeeth // equals 11111111
-// ```
+```
 
-// **Bitwise XOR**
+**Bitwise XOR**
 
-// ```swift
+```swift
 let boysAndGirls: UInt8 = 0b00010100
 let girlsAndBoys: UInt8 = 0b00000101
 let nextGenerationExistence = boysAndGirls ^ girlsAndBoys
  // equals 00010001
-// ```
+```
 
-// **Bitwise shift**
+**Bitwise shift**
 
-// **unsigned integers**:
+**unsigned integers**:
 
-// 1. existing bits are moved to the left or right by the requested number of places
-// 2. any bits moved beyond the bounds of integer's storage are discarded
-// 3. zeros are inserted in the spaces left behind
+1. existing bits are moved to the left or right by the requested number of places
+2. any bits moved beyond the bounds of integer's storage are discarded
+3. zeros are inserted in the spaces left behind
 
-// **signed integers**: when shifting signed integers to the right, apply the same rule as unsigned integers, but fill any empty bits on the left with the _sign bit_, rather than with a zero.
+**signed integers**: when shifting signed integers to the right, apply the same rule as unsigned integers, but fill any empty bits on the left with the _sign bit_, rather than with a zero.
 
-// **Overflow operators**
+**Overflow operators**
 
-// ```swift
+```swift
 var unsignedOverflow = UInt8.max // 255
-// // unsignedOverflow += 1 would cause an error
+// unsignedOverflow += 1 would cause an error
 unsignedOverflow = unsignedOverflow &+ 1 // 0
-// ```
+```
 
-// - overflow addition (`&+`)
-// - overflow subtraction (`&-`)
-// - overflow multiplication (`&*`)
+- overflow addition (`&+`)
+- overflow subtraction (`&-`)
+- overflow multiplication (`&*`)
 
-// ### Precedence and Associativity
+### Precedence and Associativity
 
-// ```swift
+```swift
 2 + 3 % 4 * 5 // equals 17
 2 + ((3 % 4) * 5) // equals 17
-// ```
+```
 
-// ### Operator Methods
+### Operator Methods
 
-// Classes and structures can provide their own implementation of existing operators (ie. _overloading_).
+Classes and structures can provide their own implementation of existing operators (ie. _overloading_).
 
-// *Example*
+*Example*
 
-// The universe was born with two concepts: spirit and material. `Characteristic` is a structure
-// with `spirit` and `material` as boolean properties. Use this as a start, define custom operators and
-// derive the follows: human, evil and divine.
+The universe was born with two concepts: spirit and material. `Characteristic` is a structure
+with `spirit` and `material` as boolean properties. Use this as a start, define custom operators and
+derive the follows: human, evil and divine.
 
-// ```swift
+```swift
 struct Characteristic {
     var spirit = false
     var material = false
@@ -2000,37 +1997,37 @@ let divine = spiritual |& material
 print("Human: \(...human)")
 print("Evil: \(...evil)")
 print("Divine: \(...divine)")
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Patterns
+## Patterns
 
-// A _pattern_ represents the structure of a single value or a composite value. e.g. (1, 2) is a comma-separated list of two elements, matched by the pattern (x, y).
+A _pattern_ represents the structure of a single value or a composite value. e.g. (1, 2) is a comma-separated list of two elements, matched by the pattern (x, y).
 
-// ### Wildcard Pattern
+### Wildcard Pattern
 
-// ```swift
+```swift
 let somethingImportant = "Don't struggle which side of bread you spread butter on - you eat both sides."
 for _ in 1...3 {
     // repeat three times
     print(somethingImportant)
 }
-// ```
+```
 
-// ### Identifier pattern
+### Identifier pattern
 
-// An identifier pattern is the variable or constant itself, matched by any value.
+An identifier pattern is the variable or constant itself, matched by any value.
 
-// ```swift
+```swift
 let someValue = 123
-// ```
+```
 
-// ### Value binding pattern
+### Value binding pattern
 
-// Binds matched values to variable or constant names
+Binds matched values to variable or constant names
 
-// ```swift
+```swift
 let point = (1, 9, 3)
 switch point {
 case let (x, 9, _):
@@ -2038,34 +2035,34 @@ case let (x, 9, _):
 default:
     break
 }
-// ```
+```
 
-// ### Tuple pattern
+### Tuple pattern
 
-// Comma-separated list of zero or more patterns, enclosed by parentheses.
+Comma-separated list of zero or more patterns, enclosed by parentheses.
 
-// ```swift
+```swift
 let (goodNews, badNews): (Int, Int) = (2, 3)
-// ```
+```
 
-// ```swift
+```swift
 let newsGoodBadPerDay = [(1, 0), (3, 2), (5, 7)]
 for (goodNews, _) in newsGoodBadPerDay {print("ignore bad news, number of good news on the day: \(goodNews)")}
-// ```
+```
 
-// The parentheses around a single element pattern has no effect, the followings are equivalent:
+The parentheses around a single element pattern has no effect, the followings are equivalent:
 
-// ```swift
+```swift
 let someonesAge = 1
 let (sometowsAge) = 2
 let (somethreesAge): Int = 3
-// ```
+```
 
-// ### Optional pattern
+### Optional pattern
 
-// An optional pattern matches values wrapped in a `some(Wrapped)` case of an `Optional<Wrapped>` enumeration.
+An optional pattern matches values wrapped in a `some(Wrapped)` case of an `Optional<Wrapped>` enumeration.
 
-// ```swift
+```swift
 let someOptional: Int? = 250
 if case .some(let x) = someOptional {
     print(x)
@@ -2074,20 +2071,20 @@ if case .some(let x) = someOptional {
 if case let x? = someOptional {
     print(x)
 }
-// ```
+```
 
-// ### Type-casting patterns
+### Type-casting patterns
 
-// ```
-// is <type>
-// <pattern> as <type>
-// ```
+```
+is <type>
+<pattern> as <type>
+```
 
-// ### Expression pattern
+### Expression pattern
 
-// Value of expression. Appears only in `switch` statement case label.
+Value of expression. Appears only in `switch` statement case label.
 
-// ```swift
+```swift
 let spaceDust = (102, 57, 81)
 switch spaceDust {
 case (0, 0, 0):
@@ -2097,11 +2094,11 @@ case (-10...10, -10...10, -10...10):
 default:
     print("Somewhere else")
 }
-// ```
+```
 
-// You can overload `~=` operator to provide custom expression matching behaviour
+You can overload `~=` operator to provide custom expression matching behaviour
 
-// ```swift
+```swift
 func ~=(pattern: String, value: Int) -> Bool {
     return pattern == "\(value)"
 }
@@ -2112,42 +2109,42 @@ case ("0", "0", "0"):
 default:
     print("Space dust has gone from origin")
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Error Handling
+## Error Handling
 
-// If you have Java background, error handling is the similar trick as Java's `try...catch...` and `throw`.
-// In Swift, errors are represented by values of types that conform to the empty `Error` protocol
-// which indicates that type can be used for error handling.
+If you have Java background, error handling is the similar trick as Java's `try...catch...` and `throw`.
+In Swift, errors are represented by values of types that conform to the empty `Error` protocol
+which indicates that type can be used for error handling.
 
-// Enumerations are well suited to modelling a group of related error conditions.
+Enumerations are well suited to modelling a group of related error conditions.
 
-// ```
-// func functionThatThrowsErrors() throws -> String
-// func functionThatDoesntThrowError() -> String
-// ```
+```
+func functionThatThrowsErrors() throws -> String
+func functionThatDoesntThrowError() -> String
+```
 
-// ### Handling errors using do-catch
+### Handling errors using do-catch
 
-// ```
-// do {
-//     try <expression>
-//     <statements>
-// } catch <pattern 1> {
-//     <statements>
-// } catch <pattern 2> where <condition> {
-//     <statements>
-// }
-// ```
+```
+do {
+    try <expression>
+    <statements>
+} catch <pattern 1> {
+    <statements>
+} catch <pattern 2> where <condition> {
+    <statements>
+}
+```
 
-// *Example*:
+*Example*:
 
-// In the classic of Buddhism, there are seven types of sorrows in life: birth, aging, sickness, death, separation of lovers, hatred and unsatisfiable desire.
-// Represents each type of sorrows as an `Error`, define a function that can throw these errors, and a piece of code that try the function and catch possible errors.
+In the classic of Buddhism, there are seven types of sorrows in life: birth, aging, sickness, death, separation of lovers, hatred and unsatisfiable desire.
+Represents each type of sorrows as an `Error`, define a function that can throw these errors, and a piece of code that try the function and catch possible errors.
 
-// ```swift
+```swift
 enum SorrowOfLife: Error {
     case birth(msg: String)
     case aging(msg: String)
@@ -2203,32 +2200,32 @@ do {
 } catch _ {
     print("something unexpected in life")
 }
-// ```
+```
 
-// ### Error to optional values
+### Error to optional values
 
-// ```swift
+```swift
 if let onesLife = try? rollDiceOfLife(for: .human) {
     print("One's life: \(onesLife)")
 } else {
     print("One's life thrown error.")
 }
-// ```
+```
 
-// ### Disabling error propagation
+### Disabling error propagation
 
-// sometimes you know there won't be an error thrown
+sometimes you know there won't be an error thrown
 
-// ```swift
+```swift
 let divineLife = try! rollDiceOfLife(for: .god)
 print("Divine's life: \(divineLife)")
-// ```
+```
 
-// ### Cleanup with `defer`
+### Cleanup with `defer`
 
-// excuted when current scope exists, in reverse order; I guess it is to have a logical way of cleanup from the most recent to the least recent changes; It's like when you go upstairs from level 1 to level 3, and you want to go downstairs, you have to follow the reversed way as when you went up, that is level 3, 2, 1.
+excuted when current scope exists, in reverse order; I guess it is to have a logical way of cleanup from the most recent to the least recent changes; It's like when you go upstairs from level 1 to level 3, and you want to go downstairs, you have to follow the reversed way as when you went up, that is level 3, 2, 1.
 
-// ```
+```
 func printInstructions() {
     print("Velilind's Laws of Experientation:")
     print("1. If reproducibility may be a problem, conduct the test only once.")
@@ -2243,46 +2240,46 @@ func printInstructions() {
 
 printInstructions()
 
-// // prints:
-// // Velilind's Laws of Experientation:
-// // 1. If reproducibility may be a problem, conduct the test only once.
-// // 2. If a straight line fit is required, obtain only two data points.
-// // cleanup step 2
-// // cleanup step 1
-// ```
+// prints:
+// Velilind's Laws of Experientation:
+// 1. If reproducibility may be a problem, conduct the test only once.
+// 2. If a straight line fit is required, obtain only two data points.
+// cleanup step 2
+// cleanup step 1
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Encoding and Decoding
+## Encoding and Decoding
 
-// ### Protocols
+### Protocols
 
-// *Encodable*
+*Encodable*
 
-// ```swift
-// func encode(to: Encoder) throws
-// ```
+```swift
+func encode(to: Encoder) throws
+```
 
-// *Decodable*
+*Decodable*
 
-// ```swift
-// init(from decoder: Decoder) throws
-// ```
+```swift
+init(from decoder: Decoder) throws
+```
 
-// *Codable*
+*Codable*
 
-// ```swift
-// typealias Codable = Encodable & Decodable
-// ```
+```swift
+typealias Codable = Encodable & Decodable
+```
 
-// ### Automatic coding
+### Automatic coding
 
-// Conforming to `Codable` and make sure all stored properties are also codable
+Conforming to `Codable` and make sure all stored properties are also codable
 
-// *Example*
-// a fool with a tool (is still a fool).
+*Example*
+a fool with a tool (is still a fool).
 
-// ```swift
+```swift
 struct Fool: Codable {
     var id: String
     var name: String
@@ -2299,11 +2296,11 @@ struct Fool: Codable {
 struct Tool: Codable {
     var name: String
 }
-// ```
+```
 
-// ### Coding custom yypes
+### Coding custom yypes
 
-// ```swift
+```swift
 var tool = Tool(name: "Too")
 var fool = Fool(id: "007", name: "Foo", tool: tool)
 
@@ -2314,52 +2311,52 @@ print(jsonString)
 
 let jsonDecoder = JSONDecoder()
 fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
-// ```
+```
 
-// - `CodingKeys` is a nested enumeration inside the type
-// - conforms to `CodingKey`
-// - also need `String` as raw type
-// - include all properties in the enumeration including the ones that are not renamed
-// - created by default, implemented when renaming is needed
+- `CodingKeys` is a nested enumeration inside the type
+- conforms to `CodingKey`
+- also need `String` as raw type
+- include all properties in the enumeration including the ones that are not renamed
+- created by default, implemented when renaming is needed
 
-// ### Limitation
+### Limitation
 
-// - `extension` cannot conform to `Codable`
-// - must use concrete type to encode and decode
+- `extension` cannot conform to `Codable`
+- must use concrete type to encode and decode
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
-// ## Memory Safety
+## Memory Safety
 
-// - **Weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
-// - **Unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
+- **Weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
+- **Unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
 
-// ### Capture list
+### Capture list
 
-// A **capture list** is an array of variables captured by a closure
+A **capture list** is an array of variables captured by a closure
 
-// ** Example **
-// Pokemon are fast, we want to catch Pikachu when it appears.
+** Example **
+Pokemon are fast, we want to catch Pikachu when it appears.
 
-// ```swift
+```swift
 var pokemon = "Pikachu"
 var closure = { print("Let's catch \(pokemon)") }
 pokemon = "Zoobat"
 closure()
-// print: "Let's catch Zoobat"
+print: "Let's catch Zoobat"
 
 pokemon = "Pikachu"
 closure = { [pokemon] in print("Let's catch \(pokemon)") }
 pokemon = "Zoobat"
 closure()
-// print: "Let's catch Pikachu"
-// ```
+print: "Let's catch Pikachu"
+```
 
-// With reference types, a capture list makes the closure to capture and store the current _reference_ stored inside the captured variable.
+With reference types, a capture list makes the closure to capture and store the current _reference_ stored inside the captured variable.
 
-// ### Unowned self
+### Unowned self
 
-// ```swift
+```swift
 class Book {
     
     var name = "Book"
@@ -2378,13 +2375,13 @@ class Book {
 let book = Book()
 print(book.sageRetrieveContent())
 print(book.ordinaryRetrieveContent())
-// ```
+```
 
-// ### The strong weak pattern
+### The strong weak pattern
 
-// When `self` could be `nil`
+When `self` could be `nil`
 
-// ```swift
+```swift
 extension Book {
     func checkWorm() {
         DispatchQueue.main.async {
@@ -2400,7 +2397,7 @@ extension Book {
         }
     }
 }
-// ```
+```
 
-// [ToC](#table-of-contents)
+[ToC](#table-of-contents)
 
