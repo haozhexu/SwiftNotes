@@ -61,13 +61,11 @@ print("Science may someday discover what faith has always known.")
 
 _constant:_
 
-> Something mysterious is formed, born in the silent void. waiting alone and unmoving, it is at once still and yet in _constant_ motion. It is the source of all programs. I do not know its name, so I will call it the Tao of Programming.
-> - _The Tao of Programming_
+> Something mysterious is formed, born in the silent void. waiting alone and unmoving, it is at once still and yet in _constant_ motion. It is the source of all programs. I do not know its name, so I will call it the Tao of Programming. - _The Tao of Programming_
 
 _variable:_
 
-> Cloudy; _variable_ winds, with local showers; cooler; snow.
-> - _Halcyon Jones_
+> Cloudy; _variable_ winds, with local showers; cooler; snow. - _Halcyon Jones_
 
 ```
 let <constant name>: <type> = <expression>
