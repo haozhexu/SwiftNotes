@@ -1653,7 +1653,7 @@ for _ in 1...distance {
 }
 
 commentary(of: person)
-// // print: "God saved you"
+// // Print: "God saved you"
 // ```
 
 // [ToC](#table-of-contents)
@@ -1683,6 +1683,7 @@ swapValues(&humanWorld, &hell)
 // ### Generic Types
 
 // *Example*
+
 // Implement a bag of generic typed stuff, stuff can be put in the bag and picked up randomly
 
 // ```swift
@@ -1827,7 +1828,7 @@ private func privateFunctionRoom() {}
 
 // No entities can be defined in terms of another entity that has more restrictive access level
 
-// _example: an `open` property defined in a `private` class, or a `public` function with `private` type parameters is like saying you can get a gift without buying our product and details are written on a note inside our product package._
+// _an `open` property defined in a `private` class, or a `public` function with `private` type parameters is like saying you can get a gift without buying our product and details are written on a note inside our product package._
 
 // ### Unit tests targets
 
@@ -2278,6 +2279,7 @@ printInstructions()
 // Conforming to `Codable` and make sure all stored properties are also codable
 
 // *Example*
+
 // a fool with a tool (is still a fool).
 
 // ```swift
@@ -2337,20 +2339,21 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 // A **capture list** is an array of variables captured by a closure
 
 // ** Example **
-// Pokemon are fast, we want to catch Pikachu when it appears.
+
+// Pokemon runs fast, we want to catch Pikachu when it appears.
 
 // ```swift
 var pokemon = "Pikachu"
 var closure = { print("Let's catch \(pokemon)") }
 pokemon = "Zoobat"
 closure()
-// print: "Let's catch Zoobat"
+// // Print: "Let's catch Zoobat"
 
 pokemon = "Pikachu"
 closure = { [pokemon] in print("Let's catch \(pokemon)") }
 pokemon = "Zoobat"
 closure()
-// print: "Let's catch Pikachu"
+// // Print: "Let's catch Pikachu"
 // ```
 
 // With reference types, a capture list makes the closure to capture and store the current _reference_ stored inside the captured variable.
