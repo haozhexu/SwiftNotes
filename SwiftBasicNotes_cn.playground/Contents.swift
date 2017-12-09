@@ -7,18 +7,21 @@ import UIKit //!
 // 这是我在学习Swift时用的Playground，主要参考苹果的[The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html)，读的过程中记下这些笔记。
 // 逐渐我发现笔记可以整理成一个易于阅读的Markdown文档，甚至可以用[Hugo](https://gohugo.io/)来生成一个静态的网页。于是，这个文档本身就是从Playground代码的注释直接生成的。为了生成Markdown格式的文档，注释遵循了一定的格式：
 
-// > // 这是一段注视，会成为*Markdown*的内容
-// > // 下面则会成为Markdown里的一段源代码:
-// > //
-// > // ```swift
-// > let 名 = "无名"
-// > // ```
+// ```
+// // 这是一段注视，会成为*Markdown*的内容
+// // 下面则会成为Markdown里的一段源代码:
+// // ```swift
+// // let 名 = "无名"
+// // ```
+// ```
 
 // **然后只需要一个命令来删除注视开始的// （两个斜线及一个空格）**
 
+// ```
 // > sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftBasicNotes.md
+// ```
 
-// *(PS: 如何把带有注释的源代码转换成Markdown文档的步骤就写在源代码里，这种递归关系是否很奇特？就好像一只饥饿的蛇从尾巴开始把自己给吞掉一样)*
+// *(PS: 把带有注释的源代码转换成Markdown文档的步骤就写在源代码的注释里，这种递归关系是否很奇特？就好像一只饥饿的蛇从尾巴开始把自己给吞掉一样)*
 
 // ## "Hello, world!" 输出
 
@@ -34,7 +37,7 @@ print("科学的探索也许某天会验证信仰中一直知道的事实。")
 // - [类型与操作](#类型与操作)
 // - [流程控制](#流程控制)
 // - [函数](#函数)
-// - [Optional 可有可无](#optional-可有可无)
+// - [Optional-或有或无](#optional-或有或无)
 // - [合集类型](#合集类型)
 //   - [数组](#数组)
 //   - [集合](#集合)
@@ -525,28 +528,28 @@ default:
 
 // [回到目录](#目录)
 
-// ## Functions
+// ## 函数
 
 // ```
-// func <function name>(<parameters>) -> <return type> {
-//     statements
+// func <函数名>(<参数表>) -> <返回类型> {
+//     陈述
 // }
 // ```
 
-// If the function has a return type of `Void` (ie. no return value):
+// 如果没有返回值，`Void` 可以忽略不写：
 
 // ```
-// func <function name>(<parameters>) {
-//     statements
+// func <函数名>(<参数表>) {
+//     陈述
 // }
 // ```
 
-// Forms of a parameter:
+// 参数格式:
 
 // ```
-// <parameter name>: <parameter type>
-// <argument label> <parameter name>: <parameter type>
-// _ <parameter name>: <parameter type>
+// <参数名>: <参数类型>
+// <参数标签> <参数名>: <参数类型>
+// _ <参数名>: <参数类型>
 // ```
 
 // ```swift
@@ -558,437 +561,458 @@ func sayHi(to person: String) {
     print("Hi, \(person)!")
 }
 
-sayHi(to: "future")
+sayHi(to: "未来")
 
 func sayHi(_ person: String) {
     print("Hi, \(person)!")
 }
 
-sayHi("people")
+sayHi("人们")
 // ```
 
-// #### Change a parameter directly
+// #### 直接改变参数的值
 
-// Terminology: copy-in copy-out, call by value result
+// 术语: copy-in copy-out, call by value result
 
 // ```swift
-let vampiresAppetitePerPerson = 0.4
-func payTax(for income: inout Double) {
-    income *= (1.0 - vampiresAppetitePerPerson)
+let 吸血鬼的胃口 = 0.4
+func 缴税(针对 收入: inout Double) {
+    收入 *= (1.0 - 吸血鬼的胃口)
 }
 
-var income = 100.00
-payTax(for: &income)
+var 收入 = 100.00
+缴税(针对: &收入)
 
-print("After tax, income becomes \(income)")
-// // Prints "After tax, income becomes 60.0"
+print("税后收入变成了： \(收入)")
+// // 输出 "税后收入变成了： 60.0"
 // ```
 
-// ### Functions as variables
+// ### 函数类型的变量
 
-// A function that takes a parameter, and returns another function that uses the parameter:
+// 一个函数有一个参数，返回另外一个使用该参数的函数：
 
-// **Example:**
+// **例子**
 
-// Define a generic function that returns a function mimicing money deduction behaviour with specified deduction rate
+// 定义一个计算扣款的函数，接受一个扣款比例，并返回另一个函数，接受款额，返回扣款后余额
 
 // ```swift
-func createMoneyDeductor(with percentage: Double) -> (Double) -> Double {
-    // define and return another function:
-    func bloodSuckingVampire(bloodQuantity: Double) -> Double {
-        return bloodQuantity * (1 - percentage)
+func 创建扣款器(扣款比例: Double) -> (Double) -> Double {
+    // 定义病返回另一个函数
+    func 吸血鬼(血量: Double) -> Double {
+        return 血量 * (1 - 扣款比例)
     }
-    return bloodSuckingVampire
+    return 吸血鬼
 }
 
-let taxOffice = createMoneyDeductor(with: 0.3)
-let laywer = createMoneyDeductor(with: 0.1)
-let dentist = createMoneyDeductor(with: 0.1)
+let 税务局 = 创建扣款器(扣款比例: 0.3)
+let 律师 = 创建扣款器(扣款比例: 0.1)
+let 牙医 = 创建扣款器(扣款比例: 0.1)
 
-income = 10_000.00
-print("Start with income \(income)")
-income = taxOffice(income)
-income = laywer(income)
-income = dentist(income)
-print("After tax, laywer and dentist, now it becomes \(income)")
+收入 = 10_000.00
+print("起始收入： \(收入)")
+收入 = 税务局(收入)
+收入 = 律师(收入)
+收入 = 牙医(收入)
+print("经过税务局、律师以及牙医，收入还剩下： \(收入)")
 // ```
 
-// ### Function that Never Returns
+// ### 永不返回的函数
 
 // ```swift
-func oneInfiniteLoop() -> Never {
-    print("DO NOT CALL THIS FUNCTION OR:")
+func 一去不回() -> Never {
+    print("千万别调用这个函数，否则：")
     while true {
-        print("Falling apple on your head.")
+        print("逝去的青春。。。")
     }
 }
 // ```
 
 // [回到目录](#目录)
 
-// ## Optionals
+// ## Optional-或有或无
 
-// A variable holding either some value, or nothing.
+// 一个可能有值也可能没有任何东西的变量，定义时在类型后加个问号
 
 // ```
-// <Type>?
+// <类型>?
 // ```
 
 // ```swift
-var errorCode: Int?
-errorCode = 404
-errorCode = nil
+var 错误代码: Int?
+错误代码 = 404
+错误代码 = nil
 // ```
 
-// **force unwrap**
+// **强行开包**
 
 // ```swift
-errorCode = 500
-print("Error code is \(errorCode!)")
+错误代码 = 500
+print("错误代码是 \(错误代码!)")
 // ```
 
-// **optional binding**
+// **或有或无绑定**
 
 // ```swift
-if let errorCode = errorCode {
-    print("Error code is \(errorCode)")
+if let 错误代码 = 错误代码 {
+    print("错误代码是 \(错误代码)")
 } else {
-    print("No error.")
+    print("没毛病")
 }
 // ```
 
 // [回到目录](#目录)
 
-// ## Collection Types
+// ## 合集类型
 
 // ```
-// Array[Element]
-// [Element] // short form
+// Array[元素]
+// [元素] // 简短写法
 // ```
 
-// ### Array
+// ### 数组
 
 // ```swift
-var someNumbers = [Int]()
+var 有些数 = [Int]()
 
-someNumbers.append(9)
-someNumbers = [] // type has been provided as `Int`
+有些数.append(9)
+有些数 = [] // 空的 `Int` 型数组
 // ```
 
-// #### Array with default value
+// #### 有默认值的数组
 
 // ```swift
-var fiveNumbers = Array(repeating: 1.2, count: 3)
+var 三个数 = Array(repeating: 1.2, count: 3)
 // ```
 
-// #### Adding two array together
+// #### 把两个数组加到一起
 
 // ```swift
-let threePowers = ["Executive", "Legislative", "Judicial"]
-let twoPowers = ["Supervision Audit", "Examination"]
-let fivePowers = threePowers + twoPowers
+let 三权分立 = ["行政", "立法", "司法"]
+let 两权 = ["检查", "考试"]
+let 五权分立 = 三权分立 + 两权
 // ```
 
-// #### Accessing and modifying array
+// #### 访问与修改数组
 
 // ```swift
-var shoppingList = ["Wine", "Coffee", "Cigarette"]
-print("Shopping list has \(shoppingList.count) items")
+var 购物单 = ["美酒", "咖啡", "香烟"]
+print("购物单有 \(购物单.count) 个东西")
 
-if shoppingList.isEmpty {
-    print("Shopping list is empty")
+if 购物单.isEmpty {
+    print("购物单里空空如也")
 } else {
-    print("Shopping list isn't empty")
+    print("购物单并不空")
 }
 
-shoppingList.append("Panado")
-shoppingList += ["Meat", "Tea"]
+购物单.append("止疼片")
+购物单 += ["肉", "茶叶"]
 
-var firstItem = shoppingList[0]
+var 第一个东西 = 购物单[0]
 
-shoppingList[3] = "Condom"
-shoppingList[3...4] = ["Energy Drink"]
-// shoppingList: ["Wine", "Coffee", "Cigarette", "Energy Drink", "Tea"]
+购物单[3] = "避孕套"
+购物单[3...4] = ["功能饮料"]
+// 购物单内容: ["美酒", "咖啡", "香烟", "功能饮料", "茶叶茶"]
 
-shoppingList.insert("Honey", at: 0)
-let honey = shoppingList.remove(at: 0)
+购物单.insert("蜂蜜", at: 0)
+let 蜂蜜 = 购物单.remove(at: 0)
 // ```
 
-// #### Iterating Over an Array
+// #### 遍历一个数组
 
 // ```swift
-for item in shoppingList {
-    print("Shopping list item: \(item)")
+for 物品 in 购物单 {
+    print("购物单里有：\(物品)")
 }
 
-for (index, item) in shoppingList.enumerated() {
-    print("Shopping list item \(index): \(item)")
+for (索引, 物品) in 购物单.enumerated() {
+    print("购物单物品 \(索引): \(物品)")
 }
 // ```
 
 // [回到目录](#目录)
 
-// ### Set
+// ### 集合
 
-// #### Hash Value for Set Types
+// #### 集合类型的哈希值
 
-// `Set` can only contain _hashable_ values
+// 集合只能包含有哈希值的数值
 // if `a == b`, then `a.hashValue == b.hashValue`
 
-// #### Creating Sets
+// #### 建立集合
 
 // ```swift
-var letters = Set<Character>()
-letters.insert("a")
-letters = []
+var 字母 = Set<Character>()
+字母.insert("a")
+字母 = []
 // ```
 
 // ```swift
-var someColors: Set<String> = ["Blue", "White", "Red"]
-var someOtherColors: Set = ["Sunset", "Autumn", "Zen"]
+var 有的色彩: Set<String> = ["红", "黄", "蓝"]
+var 其他色彩: Set = ["日落", "暮秋", "严冬"]
 // ```
 
-// #### Operations
+// #### 操作
 
-// **Count**
+// **数量**
 
 // ```swift
-print("Other colors have \(someOtherColors.count) colors")
+print("其他有 \(其他色彩.count) 种色彩")
 // ```
 
-// **Check Empty**
+// **检查是否为空**
 
 // ```swift
-if someOtherColors.isEmpty {
-    print("No color, is the real color.")
+if 其他色彩.isEmpty {
+    print("没有颜色，才是真正的色彩。")
 } else {
-    print("There are a few colors in it.")
+    print("还是有几种颜色的。")
 }
 // ```
 
-// **Insert and Remove**
+// **插入和删除**
 
 // ```swift
-someColors.insert("Cyan")
-if let removedColor = someColors.remove("Yellow") {
-    print("\(removedColor) removed from someColors")
+有的色彩.insert("绿")
+if let 删除的色彩 = 有的色彩.remove("红") {
+    print("\(删除的色彩) 已被删除")
 } else {
-    print("someColors does not have Yellow in it")
+    print("有的色彩里找不到 红色")
 }
 // ```
 
-// **Union and Intersection**
+// **并集与交集**
 
 // ```
-let openDays: Set = [1, 2, 3, 4, 5]
-let closedDays: Set = [6, 7]
-openDays.union(closedDays)
-openDays.intersection(closedDays)
+let 工作日: Set = [1, 2, 3, 4, 5]
+let 休息日: Set = [6, 7]
+工作日.union(休息日)
+工作日.intersection(休息日)
 // ```
 
 // [回到目录](#目录)
 
-// ### Dictionary
+// ### 字典
 
-// #### Creating a Dictionary
-
-// ```
-// // creating empty dictionary:
-var meaningsOfAges = [String: String]()
-meaningsOfAges["eighteen"] = "By which the acquired collection of prejudices become common sense"
-// ```
+// #### 创建一个字典
 
 // ```
-// // creating with dictionary literal:
-var meaningOfWords = ["agreement": "when people are tired of thinking"]
-// // `String` type inferred for `var meaningOfWords: [String: String]`
+// // 创建空字典：
+var 年纪的意义 = [String: String]()
+年纪的意义["十八"] = "到了这个岁数，之前积累的各种成见就成了常识。"
 // ```
 
-// #### Dictionary operations
+// ```
+// // 以直接元素来创建字典
+var 单词的含义 = ["共识": "当人们懒得继续思考时"]
+// // 根据直接元素类型来推断出字典类型为：[String: String]`
+// ```
+
+// #### 字典操作
 
 // ```swift
-if meaningsOfAges.isEmpty == false {
-    print("At least one age has some meaning")
+if 年纪的意义.isEmpty == false {
+    print("至少有的年纪有些意义")
 }
 
-meaningsOfAges["one"] = "One year closer to death"
+年纪的意义["一"] = "距离死亡更近了一年"
 
-if let meaningOf18 = meaningsOfAges["eighteen"] {
-    print("The meaning of age 18:\n\(meaningOf18)")
+if let 十八岁的意义 = 年纪的意义["十八"] {
+    print("十八岁的意义：\n\(十八岁的意义)")
 }
 // ```
 
-// #### Iterating Over a Dictionary
+// #### 遍历一个字典
 
 // ```swift
-for (age, meaning) in meaningsOfAges {
-    print("Meaning of \(age): \(meaning)")
+for (年纪, 意义) in 年纪的意义 {
+    print("年纪 \(年纪) 的意义：\(意义)")
 }
 // ```
 
 // [回到目录](#目录)
 
-// ## Closures
+// ## 闭包
 
-// Function without name:
+// 无名函数：
 
 // ```
-// { (<parameters>) -> <return type> in
-//     statement
+// { (<参数表>) -> <返回值> in
+//     参数
 // }
 // ```
 
 // ```swift
-let cups = ["A", "B", "C", "D", "E"]
-let biggestCup = cups.sorted { (c1: String, c2: String) -> Bool in
+let 罩杯 = ["A", "B", "C", "D", "E"]
+let 最大罩杯 = 罩杯.sorted { (c1: String, c2: String) -> Bool in
     c1 > c2
     }.first!
-let smallestCup = cups.sorted { (c1: String, c2: String) -> Bool in
+let 最小罩杯 = 罩杯.sorted { (c1: String, c2: String) -> Bool in
     c1 < c2
     }.first!
-print("Biggest cup is \(biggestCup), most environemtnal friendly cup is \(smallestCup)")
+print("最大罩杯是 \(最大罩杯), 最环保罩杯为 \(最小罩杯)")
 // ```
 
-// ### Inferring type from context
+// ### 从上下文推断参数类型
 
-// without parameter type:
+// 不声明参数类型
 
 // ```swift
-cups.sorted { (c1, c2) -> Bool in
+罩杯.sorted { (c1, c2) -> Bool in
     c1 > c2
 }
 // ```
 
-// without return type:
+// 不声明返回类型
 
 // ```swift
-cups.sorted { (c1, c2) in c1 > c2 }
+罩杯.sorted { (c1, c2) in c1 > c2 }
 // ```
 
-// shorthand argument names:
+// 简短参数名
 
 // ```swift
-cups.sorted { $0 > $1 }
+罩杯.sorted { $0 > $1 }
 // ```
 
-// operator methods:
+// 操作符方法
 
 // ```swift
-cups.sorted(by: >)
+罩杯.sorted(by: >)
 // ```
 
-// - A closure can _capture_ constants and variables from the surrounding context in which it is defined.
-// - Closures are reference types
+// - 闭包会_捕获_闭包定义处上下文中的常量和变量
+// - 闭包是引用类型
 
-// ### Escaping closures
+// ### 逃逸闭包
 
-// A closure is said to _escape_ a function when the closure is passed as an argument to the function,
-// but is called after the function returns.
+// 当一个闭包作为参数传入一个函数中，却在函数返回之后才被执行，该闭包便从函数中逃逸。
+// 定义时要在参数名之前标注 `@escaping`
 
 // ```swift
-var garbageCollection: [() -> Void] = []
+var 刑场: [() -> Void] = []
 
-func collectGarbageWithEscapingClosure(garbageCollector: @escaping () -> Void) {
-    garbageCollection.append(garbageCollector)
+func 死刑缓期执行(囚犯闭包: @escaping () -> Void) {
+    刑场.append(囚犯闭包)
 }
 
-func collectGarbageRightNow(garbageCollector: () -> Void) {
-    garbageCollector() // execute immediately
+func 死刑立刻执行(囚犯闭包: () -> Void) {
+    囚犯闭包() // 立刻执行
 }
 
-collectGarbageWithEscapingClosure {
-    print("Collecting garbage")
+死刑缓期执行 {
+    print("夏天来了，秋天还会远吗？")
 }
 
-collectGarbageRightNow {
-    print("If Java had true garbage collection, most programs would delete themselves upon execution. -- Robert Sewell") // only this is executed
+死刑立刻执行 {
+    print("醉卧沙场君莫笑，古来征战几人回？")
+}
+
+// // 输出：
+// // "醉卧沙场君莫笑，古来征战几人回？"
+// ```
+
+// ### 自动闭包
+
+// ```swift
+var 鱼肉 = ["鸡", "鸭", "鹅", "鱼"]
+print(鱼肉.count) // 输出 "4"
+
+let 刀俎 = { 鱼肉.remove(at: 0) }
+print(鱼肉.count) // 输出 "4"
+
+print("现在烹饪 \(刀俎())！")
+// // Prints "现在烹饪 鸡！"
+print(鱼肉.count) // 输出 "3"
+
+// // 参数: () -> String
+// // 参数自动转换为闭包
+func 享用(刀俎鱼肉: @autoclosure () -> String) {
+    print("现在烹饪 \(刀俎鱼肉())!")
+}
+
+// // 可以直接传入字符串
+享用(刀俎鱼肉: "我")
+// // "我" 被转换为一个闭包，闭包返回"我"这个字符串
+// // 且只在用到时返回
+// ```
+
+// [回到目录](#目录)
+
+// ## 字符串与字符
+
+// - 字符串可以写成单行或多行
+// - 反斜线 (\) 可以用来把字符串断成多行以便于阅读，但最终的字符串值并不会包含断行
+// - 多行字符串第一行和最后一行可以用来做换行
+// - 对应三个单引号之后的格式缩进才有作用
+// - 特殊字符可以用反斜线来编码
+// - Unicode可以这么写：\u{<CodePoint>}
+// - 字符串是值类型（Value Type）
+
+// ```swift
+let 单行引用 = "There be light."
+let 多行引用 = """
+
+  绮萼随梦虹影畔，\
+    紫薇弥香，\
+    溪梅樱桃涧。\
+  淑景乱花迷归雁，\
+    足踏裙边春风面，\
+    轻醉微雨红深浅。\
+  薄暮疏钟，\
+    共酌寒莫怨；\
+  浮云西去愁肠断，\
+    残阳北望长安远。
+
+  """
+// ```
+
+// 输出：
+
+// ```
+// 绮萼随梦虹影畔，
+//   紫薇弥香，
+//   溪梅樱桃涧。
+// 淑景乱花迷归雁，
+//   足踏裙边春风面，
+//   轻醉微雨红深浅。
+// 薄暮疏钟，
+//   共酌寒莫怨；
+// 浮云西去愁肠断，
+//   残阳北望长安远。
+// ```
+
+// ### 建立空字符串
+
+// ```swift
+var 空字符串 = ""
+var 另一个空字符串 = String()
+// ```
+
+// ```swift
+if 空字符串.isEmpty {
+    print("很不幸必须用 isEmpty 来判断是否空字符串，而不能只看变量名字是\"空字符串\"。")
 }
 // ```
 
-// ### Autoclosures
+// 还可以这样：
 
 // ```swift
-var customersInLine = ["Chris", "Alex", "Ewa", "Barry"]
-print(customersInLine.count) // Prints "4"
+// 空字符串 += "不再空虚"
+// ```
 
-let customerProvider = { customersInLine.remove(at: 0) }
-print(customersInLine.count) // Prints "4"
+// ### 字符串是字符的序列
 
-print("Now serving \(customerProvider())!")
-// // Prints "Now serving Chris!"
-print(customersInLine.count) // Prints "3"
-
-// // parameter: () -> String
-// // argument is auto converted to a closure
-func serve(customer customerProvider: @autoclosure () -> String) {
-    print("Now serving \(customerProvider())!")
+// ```swift
+for 字符 in "内有恶🐶" {
+    print(字符)
 }
 
-// // now can pass a String
-serve(customer: "Hi")
-// // "Hi" will be converted to a closure that returns this string
-// // which is only evaluated when being called
-// ```
+let 八家姓: [Character] = ["赵", "钱", "孙", "李", "周", "吴", "郑", "王"]
+var 八家姓字符串 = String(八家姓)
+print(八家姓字符串)
+// // Prints "赵钱孙李周吴郑王"
 
-// [ToC](#table-of-contents)
-
-// ## Strings and Characters
-
-// - string literals can be single or multi line
-// - backslash (\) can be used to make the string easier to read but won't have line break in the final string
-// - blank line as the first and/or last line in multiline string as line feed
-// - indentation is only considered after the indentation of triple quotation marks
-// - special characters are espaced with backslash
-// - unicode can be written with \u{<CodePoint>}
-// - strings are value types
-
-// ```swift
-let quotationSingleLine = "There be light."
-let quotationMultiLine = """
-
-And God said, \
-Let there be light:
-and there was light.
-
-"""
-// ```
-
-// final string:
-// And God said, Let there be light:
-// and there was light.
-
-// ### Create emtpy string
-
-// ```swift
-var emptyString = ""
-var anotherEmptyString = String()
-// ```
-
-// ```swift
-if emptyString.isEmpty {
-    print("Unfortunately the emptiness of a string can't be derived from its name.")
-}
-// ```
-
-// You can do this:
-
-// ```swift
-emptyString += "no longer empty"
-// ```
-
-// ### Strings are sequence of characters
-
-// ```swift
-for character in "Dog🐶Inside!" {
-    print(character)
-}
-
-let nethackCharacters: [Character] = ["T", "h", "e", " ", "n", "e", "w", "t", " ", "b", "i", "t", "e", "s"]
-var nethackString = String(nethackCharacters)
-print(nethackString)
-// // Prints "The newt bites"
-
-nethackString += "!"
+八家姓字符串 += "。"
 // ```
 
 // ### Unicode
@@ -2135,113 +2159,114 @@ default:
 // }
 // ```
 
-// *Example*:
+// **例子**
 
-// In the classic of Buddhism, there are seven types of sorrows in life: birth, aging, sickness, death, separation of lovers, hatred and unsatisfiable desire.
-// Represents each type of sorrows as an `Error`, define a function that can throw these errors, and a piece of code that try the function and catch possible errors.
+// 佛家认为人有七苦：生、老、病、死、爱别离、怨憎会、求不得，
+// 把每种苦表现为`Error`，定义一个可以抛出这些错误的函数，再写一段代码调用此函数并捕获错误。
 
 // ```swift
-enum SorrowOfLife: Error {
-    case birth(msg: String)
-    case aging(msg: String)
-    case sickness(msg: String)
-    case death(msg: String)
-    case separationOfLovers(msg: String)
-    case hatred(msg: String)
-    case unsatisfiableDesire(msg: String)
+enum 人生之苦: Error {
+    case 生(描述: String)
+    case 老(描述: String)
+    case 病(描述: String)
+    case 死(描述: String)
+    case 爱别离(描述: String)
+    case 怨憎会(描述: String)
+    case 求不得(描述: String)
 }
 
-enum LifeTarget {
-    case human, god
+enum 生命 {
+    case 人, 神
 }
 
-func rollDiceOfLife(for target: LifeTarget) throws -> String {
-    guard target == .human else {
-        return "silent, calm and harmony"
+func 生命的骰子(for life: 生命) throws -> String {
+    guard life != .神 else {
+        return "人心无存"
     }
     
-    let sorrows: [SorrowOfLife] = [.birth(msg: "sin entered the world through one's birth"),
-                                   .aging(msg: "there was a face in the mirror like a face out of time"),
-                                   .sickness(msg: "if we got sick, at least we didn't die"),
-                                   .death(msg: "death through sin, so death came to all people, because all sinned"),
-                                   .separationOfLovers(msg: "over the sea grows the moon bright; We gaze on it far, far apart. Lovers complain of long, long night."),
-                                   .hatred(msg: "why then when people part, is the moon full and bright?"),
-                                   .unsatisfiableDesire(msg: "happiness lies in contentment")]
+    let sorrows: [人生之苦] = [.生(描述: "人生而有罪。"),
+                                   .老(描述: "廉颇老矣，尚能饭否？"),
+                                   .病(描述: "君有疾在凑理，不治将恐深。"),
+                                   .死(描述: "人生自古谁无死，留取丹心照汗青。"),
+                                   .爱别离(描述: "人有悲欢离合，月有阴晴圆缺，此事古难全。"),
+                                   .怨憎会(描述: "若离于爱恨，则无忧亦无惧。无人相，无我相，无寿者相，无众生相。"),
+                                   .求不得(描述: "怜我世人，忧患实多。")]
     
     let number = arc4random_uniform(UInt32(sorrows.count + 1))
     if number < sorrows.count {
         throw sorrows[Int(number)]
     }
     
-    return "there is still hope"
+    return "最后还有一样留在了潘多拉的盒子里的叫做希望。"
 }
 
 do {
-    let diceResult = try rollDiceOfLife(for: .human)
-    print("dice result: \(diceResult)")
-} catch SorrowOfLife.birth(let msg) {
-    print("sorrow of life: \(msg)")
-} catch SorrowOfLife.aging(let msg) {
-    print("sorrow of life: \(msg)")
-} catch SorrowOfLife.sickness(let msg) {
-    print("sorrow of life: \(msg)")
-} catch SorrowOfLife.death(let msg) {
-    print("sorrow of life: \(msg)")
-} catch SorrowOfLife.separationOfLovers(let msg) {
-    print("sorrow of life: \(msg)")
-} catch SorrowOfLife.hatred(let msg) {
-    print("sorrow of life: \(msg)")
-} catch SorrowOfLife.unsatisfiableDesire(let msg) {
-    print("sorrow of life: \(msg)")
+    let diceResult = try 生命的骰子(for: .人)
+    print("骰子的结果：\(diceResult)")
+} catch 人生之苦.生(let msg) {
+    print("生之苦：\(msg)")
+} catch 人生之苦.老(let msg) {
+    print("老之苦：\(msg)")
+} catch 人生之苦.病(let msg) {
+    print("病之苦：\(msg)")
+} catch 人生之苦.死(let msg) {
+    print("死之苦：\(msg)")
+} catch 人生之苦.爱别离(let msg) {
+    print("爱别离苦：\(msg)")
+} catch 人生之苦.怨憎会(let msg) {
+    print("怨憎会苦：\(msg)")
+} catch 人生之苦.求不得(let msg) {
+    print("求不得苦：\(msg)")
 } catch _ {
-    print("something unexpected in life")
+    print("人生时有意外。")
 }
 // ```
 
-// ### Error to optional values
+// ### 把错误转换为或有或无（Optional）的值
 
 // ```swift
-if let onesLife = try? rollDiceOfLife(for: .human) {
-    print("One's life: \(onesLife)")
+if let 某人生 = try? 生命的骰子(for: .人) {
+    print("某人的一生：\(某人生)")
 } else {
-    print("One's life thrown error.")
+    print("某人的一生出了错。")
 }
 // ```
 
-// ### Disabling error propagation
+// ### 防止错误扩散
 
-// sometimes you know there won't be an error thrown
+// 有时候你知道你做的事情没毛病
 
 // ```swift
-let divineLife = try! rollDiceOfLife(for: .god)
-print("Divine's life: \(divineLife)")
+let 神圣的生命 = try! 生命的骰子(for: .神)
+print("何为神？\(神圣的生命)")
 // ```
 
-// ### Cleanup with `defer`
+// ### 用`defer`来收拾残局
 
-// excuted when current scope exists, in reverse order; I guess it is to have a logical way of cleanup from the most recent to the least recent changes; It's like when you go upstairs from level 1 to level 3, and you want to go downstairs, you have to follow the reversed way as when you went up, that is level 3, 2, 1.
+// `defer`的代码会在当前的执行范围结束后执行，以相反与 `defer` 定义的顺序；我猜这是遵循了清理应该从最近到最远的顺序，就好像打扫卫生一般先清理高处
+// 再清理低处；又好像从一楼上到三楼，如果要后退的话你必须先从三楼下到二楼，再从二楼下到一楼。
 
 // ```
-func printInstructions() {
-    print("Velilind's Laws of Experientation:")
-    print("1. If reproducibility may be a problem, conduct the test only once.")
+func 打印实验手册() {
+    print("Velilind的实验法则：")
+    print("第一步：如果测试结果难以重现，只做一次测试。")
     defer {
-        print("cleanup step 1")
+        print("清理第一步")
     }
-    print("2. If a straight line fit is required, obtain only two data points.")
+    print("第二步：如果测试结果数据需要一个直线连接关系，那么就只取样两次。")
     defer {
-        print("cleanup step 2")
+        print("清理第二步")
     }
 }
 
-printInstructions()
+打印实验手册()
 
-// // prints:
-// // Velilind's Laws of Experientation:
-// // 1. If reproducibility may be a problem, conduct the test only once.
-// // 2. If a straight line fit is required, obtain only two data points.
-// // cleanup step 2
-// // cleanup step 1
+// // 输出:
+// // Velilind的实验法则：
+// // 第一步：如果测试结果难以重现，只做一次测试。
+// // 第二步：如果测试结果数据需要一个直线连接关系，那么就只取样两次。
+// // 清理第二步
+// // 清理第一步
 // ```
 
 // [ToC](#table-of-contents)
@@ -2316,81 +2341,81 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 // - include all properties in the enumeration including the ones that are not renamed
 // - created by default, implemented when renaming is needed
 
-// ### Limitation
+// ### 限制
 
-// - `extension` cannot conform to `Codable`
-// - must use concrete type to encode and decode
+// - `扩展（extension）`无法实现`Codable`
+// - 必须用具体类来编码和解码
 
-// [ToC](#table-of-contents)
+// [回到目录](#目录)
 
-// ## Memory Safety
+// ## 内存安全
 
-// - **Weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
-// - **Unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
+// - **弱引用**不会改变对象的**引用计数**，定义为或有或无（Optional），在对象的引用计数为0的时候变成`nil`。
+// - **非拥有引用（unowned reference**跟弱引用`weak`类似，他们假定引用总是有一个值，因此不能定义为或有或无（Optional）。
 
-// ### Capture list
+// ### 捕获列表 Capture list
 
-// A **capture list** is an array of variables captured by a closure
+// **捕获列表（Capture List）** 是一个包含被闭包捕获的变量的数组
 
-// ** Example **
+// **例子**
 
-// Pokemon runs fast, we want to catch Pikachu when it appears.
+// 口袋妖怪来如风去入云，在那一瞬间我们要抓住皮卡丘
 
 // ```swift
-var pokemon = "Pikachu"
-var closure = { print("Let's catch \(pokemon)") }
-pokemon = "Zoobat"
-closure()
-// // Print: "Let's catch Zoobat"
+var 精灵 = "皮卡丘"
+var 闭包 = { print("捉住 \(精灵)") }
+精灵 = "超音蝠"
+闭包()
+// // 输出："捉住 超音蝠"
 
-pokemon = "Pikachu"
-closure = { [pokemon] in print("Let's catch \(pokemon)") }
-pokemon = "Zoobat"
-closure()
-// // Print: "Let's catch Pikachu"
+精灵 = "皮卡丘"
+闭包 = { [精灵] in print("捉住 \(精灵)") }
+精灵 = "超音蝠"
+闭包()
+// // 输出："捉住 皮卡丘"
 // ```
 
-// With reference types, a capture list makes the closure to capture and store the current _reference_ stored inside the captured variable.
+// 对于引用类型，捕获列表里捕获的是对当前对象的引用
 
-// ### unowned self
+// ### unowned self 无法拥有的自我
 
 // ```swift
-class Book {
+class 书籍 {
     
-    var name = "Book"
+    var 名称 = "某书"
     
-    lazy var sageRetrieveContent: () -> String = {
+    lazy var 圣贤读书: () -> String = {
         [unowned self] in
-        return "\(self.name): reading helps us learn so much about beauty and truth that we can live a better life in our own ways."
+        return "\(self.名称)：阅读让我们学到美和真理，使我们的生活更美好。"
     }
     
-    lazy var ordinaryRetrieveContent: () -> String = {
+    lazy var 凡人读书: () -> String = {
         [unowned self] in
-        return "\(self.name): as long as one studies hard, wealth and beautiful women will all come his way."
+        return "\(self.名称)：书中自有颜如玉，书中自有黄金屋。"
     }
 }
 
-let book = Book()
-print(book.sageRetrieveContent())
-print(book.ordinaryRetrieveContent())
+let 一本书 = 书籍()
+print(一本书.圣贤读书())
+print(一本书.凡人读书())
 // ```
 
-// ### The strong weak pattern
+// ### strong weak 模式
 
-// When `self` could be `nil`
+// 当 `self` 可能成为 `nil` 的时候
 
 // ```swift
-extension Book {
-    func checkWorm() {
+extension 书籍 {
+    func 检查书虫() {
         DispatchQueue.main.async {
             [weak self] in
             guard let strongSelf = self else {
-                print("The book no longer exists.")
+                print("这本书已然不在。")
                 return
             }
-            let hasWorm = strongSelf.name.contains("worm")
-            if hasWorm {
-                print("The book has worm.")
+            let 有虫 = strongSelf.名称.contains("书虫")
+            if 有虫 {
+                print("这本书已生虫。")
             }
         }
     }
