@@ -10,17 +10,21 @@ As a result, this markdown was directly generated from the code and comments in 
 
 To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention is as follows:
 
-> // This is a comment, will become text content of *markdown*.
-> // Below will become a fragment of code:
-> //
-> // ```swift
-> let name = "Noname"
-> // ```
+```
+// This is a comment, will become text content of **markdown**.
+// Below will become a fragment of code:
+
+// ```swift
+// let name = "Noname"
+// ```
+```
 
 **Simple way to generate markdown from above code:**
 
-> sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftBasicNotes.md
+```
+sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftBasicNotes.md
 (strips leading double slashes followed by a space from each line)
+```
 
 *(PS: the details of how to generate markdown from the source code is written in the markdown itself, embedded as comments in the source code, this recursion feels weird, doesn't it? It feels like a hungry snake swallows down itself from its own tail.)*
 
@@ -56,7 +60,6 @@ print("Science may someday discover what faith has always known.")
 - [Encoding and Decoding](#encoding-and-decoding)
 - [Memory Safety](#memory-safety)
 
-
 ## Constants and Variables
 
 _constant:_
@@ -72,7 +75,7 @@ let <constant name>: <type> = <expression>
 var <variable name>: <type> = <expression>
 ```
 
-**Make sure** constant have a value set before the first time its value is read
+**Make sure** constant or variable has value set before the first time its value is read
 
 ```swift
 let catsMaximumNumberOfLives = 9 // constant
@@ -592,7 +595,7 @@ print("After tax, income becomes \(income)")
 
 A function that takes a parameter, and returns another function that uses the parameter:
 
-**Example:**
+**Example**
 
 Define a generic function that returns a function mimicing money deduction behaviour with specified deduction rate
 
@@ -890,46 +893,47 @@ A closure is said to _escape_ a function when the closure is passed as an argume
 but is called after the function returns.
 
 ```swift
-var garbageCollection: [() -> Void] = []
+var executionGround: [() -> Void] = []
 
-func collectGarbageWithEscapingClosure(garbageCollector: @escaping () -> Void) {
-    garbageCollection.append(garbageCollector)
+func executionSuspended(prisonerExecution: @escaping () -> Void) {
+    executionGround.append(prisonerExecution)
 }
 
-func collectGarbageRightNow(garbageCollector: () -> Void) {
-    garbageCollector() // execute immediately
+func executionImmediate(prisonerExecution: () -> Void) {
+    prisonerExecution() // execute immediately
 }
 
-collectGarbageWithEscapingClosure {
-    print("Collecting garbage")
+executionSuspended {
+    print("Summer is here, will autumn be far away?")
 }
 
-collectGarbageRightNow {
-    print("If Java had true garbage collection, most programs would delete themselves upon execution. -- Robert Sewell") // only this is executed
+executionImmediate {
+    print("Don't laugh if I lay drunken on the battleground, how many warriors ever came back safe and sound?")
+    // only this is executed
 }
 ```
 
 ### Autoclosures
 
 ```swift
-var customersInLine = ["Chris", "Alex", "Ewa", "Barry"]
-print(customersInLine.count) // Prints "4"
+var toBeInDinnerPlate = ["Chicken", "Duck", "Fish", "Pork"]
+print(toBeInDinnerPlate.count) // Prints "4"
 
-let customerProvider = { customersInLine.remove(at: 0) }
-print(customersInLine.count) // Prints "4"
+let dinnerProvider = { toBeInDinnerPlate.remove(at: 0) }
+print(toBeInDinnerPlate.count) // Prints "4"
 
-print("Now serving \(customerProvider())!")
-// Prints "Now serving Chris!"
-print(customersInLine.count) // Prints "3"
+print("Now serving \(dinnerProvider())!")
+// Prints "Now serving Chicken!"
+print(toBeInDinnerPlate.count) // Prints "3"
 
 // parameter: () -> String
 // argument is auto converted to a closure
-func serve(customer customerProvider: @autoclosure () -> String) {
-    print("Now serving \(customerProvider())!")
+func serve(dinner provider: @autoclosure () -> String) {
+    print("Now serving \(provider())!")
 }
 
 // now can pass a String
-serve(customer: "Hi")
+serve(dinner: "Vegetable")
 // "Hi" will be converted to a closure that returns this string
 // which is only evaluated when being called
 ```
@@ -958,8 +962,11 @@ and there was light.
 ```
 
 final string:
+
+```
 And God said, Let there be light:
 and there was light.
+```
 
 ### Create emtpy string
 
@@ -1305,115 +1312,116 @@ class Love { // class name
     // <statements>
     // }
 ```
-    
-    // Class statements:
-    
-    // class/type constant:
-    
+
+Class/Type constant:
+
 ```swift
     // by default, love isn't persistent
     static let defaultPersistency = false
 ```
-    
-    // stored properties
-    
-```swift
-    var name: String?
-    let thorny = true // constant
-    
-    // inferred boolean variable
-    var isPersistent = defaultPersistency
-    var looksPretty: Bool // variable
-```
-    
-**computed property**
-    
-```swift
-    var tastesGood: Bool {
-        // computed property
-        // must be variable
-        return !looksPretty
-    }
-```
-    
-**lazy property**
+
+Stored properties
 
 ```swift
-    lazy var complexity: Int = { [unowned self] in
-        if let name = self.name {
-            return name.lengthOfBytes(using: .utf8)
-        } else {
-            return 123
-        }
-    }()
+var name: String?
+let thorny = true // constant
+    
+// inferred boolean variable
+var isPersistent = defaultPersistency
+var looksPretty: Bool // variable
+```
+
+Computed property
+
+```swift
+var tastesGood: Bool {
+// computed property
+// must be variable
+    return !looksPretty
+}
+```
+
+Lazy property
+
+```swift
+lazy var complexity: Int = { [unowned self] in
+    if let name = self.name {
+        return name.lengthOfBytes(using: .utf8)
+    } else {
+        return 123
+    }
+}()
 ```
     
-**initializer**
-    
+Initializer
+
 ```swift
-    // non-optional properties must be
-    // initialized before use
-    init(looksPretty: Bool, name: String? = nil) {
-        self.looksPretty = looksPretty
-        self.name = name
-    }
+// non-optional properties must be
+// initialized before use
+init(looksPretty: Bool, name: String? = nil) {
+    self.looksPretty = looksPretty
+    self.name = name
+}
 ```
     
-**instance method**
-    
+Instance method
+
 ```swift
-    func printDescription() {
-        Love.printNotes(about: self)
-    }
+func printDescription() {
+    Love.printNotes(about: self)
+}
 ```
     
-**class/type method**
-    
+Class/Type method
+
 ```swift
-    // `final` indicates cannot be overwritten
-    final func displayName() -> String {
-        return self.name ?? self.defaultName()
+// `final` indicates cannot be overwritten
+final func displayName() -> String {
+    return self.name ?? self.defaultName()
+}
+
+func defaultName() -> String {
+    return "love"
+}
+```
+
+```swift
+
+// called when no reference to the instance
+// ie. reference counter reaches 0
+deinit {
+    print("\(self.displayName()) disappeared in a puff of logic")
+}
+
+static func printNotes(about love: Love) {
+    let displayName = love.displayName()
+    print("Notes about \(love.defaultName()):")
+
+    if let name = love.name {
+        print("\(love.defaultName()) has a name of \"\(name)\"")
+    } else {
+        print("\(love.defaultName()) has noname")
     }
-    
-    func defaultName() -> String {
-        return "love"
+
+    if love.thorny {
+        print("\(displayName) is thorny")
     }
-    
-    // called when no reference to the instance
-    // ie. reference counter reaches 0
-    deinit {
-        print("\(self.displayName()) disappeared in a puff of logic")
+
+    if love.isPersistent {
+        print("\(displayName) can be persistent")
+    } else {
+        print("\(displayName) \(Love.defaultPersistency ? "lasts forever" : "doesn't last long") by default")
     }
-    
-    static func printNotes(about love: Love) {
-        let displayName = love.displayName()
-        print("Notes about \(love.defaultName()):")
-        
-        if let name = love.name {
-            print("\(love.defaultName()) has a name of \"\(name)\"")
-        } else {
-            print("\(love.defaultName()) has noname")
-        }
-        
-        if love.thorny {
-            print("\(displayName) is thorny")
-        }
-        
-        if love.isPersistent {
-            print("\(displayName) can be persistent")
-        } else {
-            print("\(displayName) \(Love.defaultPersistency ? "lasts forever" : "doesn't last long") by default")
-        }
-        
-        let look = love.looksPretty ? "looks pretty" : "looks ugly"
-        let taste = love.tastesGood ? "tastes good" : "tastes bad"
-        
-        if love.looksPretty == love.tastesGood {
-            print("\(displayName) \(look) and \(taste)")
-        } else {
-            print("\(displayName) \(look) but \(taste)")
-        }
+
+    let look = love.looksPretty ? "looks pretty" : "looks ugly"
+    let taste = love.tastesGood ? "tastes good" : "tastes bad"
+
+    if love.looksPretty == love.tastesGood {
+        print("\(displayName) \(look) and \(taste)")
+    } else {
+        print("\(displayName) \(look) but \(taste)")
     }
+}
 ```
 
 make some loves:
@@ -1428,19 +1436,23 @@ someHate.printDescription()
 
 `someLove` prints
 
->Notes about love:
->love has noname
->love is thorny
->love doesn't last long by default
->love looks ugly but tastes good
+```
+Notes about love:
+love has noname
+love is thorny
+love doesn't last long by default
+love looks ugly but tastes good
+```
 
 `hate` prints
 
->Notes about Hate:
->love has a name of "Hate"
->Hate is thorny
->Hate can be persistent
->Hate looks pretty but tastes bad
+```
+Notes about Hate:
+love has a name of "Hate"
+Hate is thorny
+Hate can be persistent
+Hate looks pretty but tastes bad
+```
 
 ```swift
 struct Address {
@@ -1493,11 +1505,13 @@ moreHate.printDescription()
 
 `moreHate` prints:
 
-> Notes about hate:
-> hate has a name of "exclusive love"
-> exclusive love is thorny
-> exclusive love can be persistent
-> exclusive love looks ugly but tastes good
+```
+Notes about hate:
+hate has a name of "exclusive love"
+exclusive love is thorny
+exclusive love can be persistent
+exclusive love looks ugly but tastes good
+```
 
 ### `required` and `convenience` initializers
 
@@ -1529,7 +1543,7 @@ shortTermLove = nil
 
 Prints:
 
-> love disappears in a puff of logic
+love disappears in a puff of logic
 
 ### class vs struct
 
@@ -1679,7 +1693,7 @@ swapValues(&humanWorld, &hell)
 
 ### Generic Types
 
-*Example*
+**Example**
 
 Implement a bag of generic typed stuff, stuff can be put in the bag and picked up randomly
 
@@ -1938,7 +1952,7 @@ unsignedOverflow = unsignedOverflow &+ 1 // 0
 
 Classes and structures can provide their own implementation of existing operators (ie. _overloading_).
 
-*Example*
+**Example**
 
 The universe was born with two concepts: spirit and material. `Characteristic` is a structure
 with `spirit` and `material` as boolean properties. Use this as a start, define custom operators and
@@ -2138,7 +2152,7 @@ do {
 }
 ```
 
-*Example*:
+**Example**
 
 In the classic of Buddhism, there are seven types of sorrows in life: birth, aging, sickness, death, separation of lovers, hatred and unsatisfiable desire.
 Represents each type of sorrows as an `Error`, define a function that can throw these errors, and a piece of code that try the function and catch possible errors.
@@ -2275,7 +2289,7 @@ typealias Codable = Encodable & Decodable
 
 Conforming to `Codable` and make sure all stored properties are also codable
 
-*Example*
+**Example**
 
 a fool with a tool (is still a fool).
 
@@ -2335,7 +2349,7 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 
 A **capture list** is an array of variables captured by a closure
 
-** Example **
+**Example**
 
 Pokemon runs fast, we want to catch Pikachu when it appears.
 
