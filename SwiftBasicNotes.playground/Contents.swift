@@ -62,7 +62,6 @@ print("Science may someday discover what faith has always known.")
 // - [Encoding and Decoding](#encoding-and-decoding)
 // - [Memory Safety](#memory-safety)
 
-
 // ## Constants and Variables
 
 // _constant:_
@@ -78,7 +77,7 @@ print("Science may someday discover what faith has always known.")
 // var <variable name>: <type> = <expression>
 // ```
 
-// **Make sure** constant have a value set before the first time its value is read
+// **Make sure** constant or variable has value set before the first time its value is read
 
 // ```swift
 let catsMaximumNumberOfLives = 9 // constant
@@ -896,46 +895,47 @@ cups.sorted(by: >)
 // but is called after the function returns.
 
 // ```swift
-var garbageCollection: [() -> Void] = []
+var executionGround: [() -> Void] = []
 
-func collectGarbageWithEscapingClosure(garbageCollector: @escaping () -> Void) {
-    garbageCollection.append(garbageCollector)
+func executionSuspended(prisonerExecution: @escaping () -> Void) {
+    executionGround.append(prisonerExecution)
 }
 
-func collectGarbageRightNow(garbageCollector: () -> Void) {
-    garbageCollector() // execute immediately
+func executionImmediate(prisonerExecution: () -> Void) {
+    prisonerExecution() // execute immediately
 }
 
-collectGarbageWithEscapingClosure {
-    print("Collecting garbage")
+executionSuspended {
+    print("Summer is here, will autumn be far away?")
 }
 
-collectGarbageRightNow {
-    print("If Java had true garbage collection, most programs would delete themselves upon execution. -- Robert Sewell") // only this is executed
+executionImmediate {
+    print("Don't laugh if I lay drunken on the battleground, how many warriors ever came back safe and sound?")
+    // only this is executed
 }
 // ```
 
 // ### Autoclosures
 
 // ```swift
-var customersInLine = ["Chris", "Alex", "Ewa", "Barry"]
-print(customersInLine.count) // Prints "4"
+var toBeInDinnerPlate = ["Chicken", "Duck", "Fish", "Pork"]
+print(toBeInDinnerPlate.count) // Prints "4"
 
-let customerProvider = { customersInLine.remove(at: 0) }
-print(customersInLine.count) // Prints "4"
+let dinnerProvider = { toBeInDinnerPlate.remove(at: 0) }
+print(toBeInDinnerPlate.count) // Prints "4"
 
-print("Now serving \(customerProvider())!")
-// // Prints "Now serving Chris!"
-print(customersInLine.count) // Prints "3"
+print("Now serving \(dinnerProvider())!")
+// // Prints "Now serving Chicken!"
+print(toBeInDinnerPlate.count) // Prints "3"
 
 // // parameter: () -> String
 // // argument is auto converted to a closure
-func serve(customer customerProvider: @autoclosure () -> String) {
-    print("Now serving \(customerProvider())!")
+func serve(dinner provider: @autoclosure () -> String) {
+    print("Now serving \(provider())!")
 }
 
 // // now can pass a String
-serve(customer: "Hi")
+serve(dinner: "Vegetable")
 // // "Hi" will be converted to a closure that returns this string
 // // which is only evaluated when being called
 // ```
@@ -964,8 +964,11 @@ and there was light.
 // ```
 
 // final string:
+
+// ```
 // And God said, Let there be light:
 // and there was light.
+// ```
 
 // ### Create emtpy string
 
@@ -1436,19 +1439,23 @@ someHate.printDescription()
 
 // `someLove` prints
 
-// >Notes about love:
-// >love has noname
-// >love is thorny
-// >love doesn't last long by default
-// >love looks ugly but tastes good
+// ```
+// Notes about love:
+// love has noname
+// love is thorny
+// love doesn't last long by default
+// love looks ugly but tastes good
+// ```
 
 // `hate` prints
 
-// >Notes about Hate:
-// >love has a name of "Hate"
-// >Hate is thorny
-// >Hate can be persistent
-// >Hate looks pretty but tastes bad
+// ```
+// Notes about Hate:
+// love has a name of "Hate"
+// Hate is thorny
+// Hate can be persistent
+// Hate looks pretty but tastes bad
+// ```
 
 // ```swift
 struct Address {
@@ -1501,15 +1508,13 @@ moreHate.printDescription()
 
 // `moreHate` prints:
 
-// > Notes about hate:
-
-// > hate has a name of "exclusive love"
-
-// > exclusive love is thorny
-
-// > exclusive love can be persistent
-
-// > exclusive love looks ugly but tastes good
+// ```
+// Notes about hate:
+// hate has a name of "exclusive love"
+// exclusive love is thorny
+// exclusive love can be persistent
+// exclusive love looks ugly but tastes good
+// ```
 
 // ### `required` and `convenience` initializers
 
@@ -1541,7 +1546,7 @@ shortTermLove = nil
 
 // Prints:
 
-// > love disappears in a puff of logic
+// love disappears in a puff of logic
 
 // ### class vs struct
 
