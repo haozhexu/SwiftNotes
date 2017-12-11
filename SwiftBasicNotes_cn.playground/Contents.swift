@@ -18,7 +18,7 @@ import UIKit //!
 // **然后只需要一个命令来删除注视开始的// （两个斜线及一个空格）**
 
 // ```
-// > sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftBasicNotes.md
+// sed 's/^\/\/ //g' SwiftBasicNotes_cn.playground/Contents.swift | sed '/\/\/!$/d' > README_cn.md
 // ```
 
 // *(PS: 把带有注释的源代码转换成Markdown文档的步骤就写在源代码的注释里，这种递归关系是否很奇特？就好像一只饥饿的蛇从尾巴开始把自己给吞掉一样)*
@@ -597,7 +597,7 @@ print("税后收入变成了： \(收入)")
 
 // ```swift
 func 创建扣款器(扣款比例: Double) -> (Double) -> Double {
-    // 定义病返回另一个函数
+    // 定义并返回另一个函数
     func 吸血鬼(血量: Double) -> Double {
         return 血量 * (1 - 扣款比例)
     }
@@ -1105,142 +1105,143 @@ print("你可曾注意到临床医学家的英文单词 \"\(临床医学家)\" �
 
 // [回到目录](#目录)
 
-// ## Enumerations
-
-// ### Syntax
+// ## 枚举
 
 // ```
-// enum <enumeration name> {
-//     <enumeration definitions>
+// enum <枚举名> {
+//     <定义>
 // }
 // ```
 
-// each case can be a single line:
+// 每个case可以是单独一行
 
 // ```swift
-enum PlanetVertical {
-    case mercury
-    case venus
-    case earth
-    case mars
-    case jupiter
-    case saturn
-    case uranus
-    case neptune
+enum 竖排星球 {
+    case 水星
+    case 金星
+    case 地球
+    case 火星
+    case 木星
+    case 土星
+    case 天王星
+    case 海王星
 }
 // ```
 
-// or multiple cases can appear on a single line:
+// 多个case也可以写在同一行
 
 // ```swift
-enum PlanetHorizontal {
-    case mercury, venus, earth, mars, jupiter, saturn, uranus, neptune
+enum 横排星球 {
+    case 水星, 金星, 地球, 火星, 木星, 土星, 天王星, 海王星
 }
 // ```
 
-// enumeration type can be inferred
+// 枚举类型可以被推断
 
 // ```swift
-enum Direction {
-    case north
-    case west
-    case south
-    case east
+enum 轮回 {
+    case 天
+    case 人
+    case 阿修罗
+    case 饿鬼
+    case 地狱
+    case 畜生
 }
 
-var lostDirection: Direction
-var nextDirection = Direction.east
+var 此生: 轮回
+var 来世 = 轮回.人
 
-lostDirection = .north
-nextDirection = .west
+此生 = .人
+来世 = .天
 // ```
 
-// ### Switch matching
+// ### 开关匹配
 
 // ```swift
-switch lostDirection {
-case .north, .west, .south:
-    print("Lost in the wild")
-case .east:
-    print("You need a pilot")
+switch 此生 {
+case .阿修罗, .饿鬼, .地狱, .畜生:
+    print("人身难得，东土难生，佛法难求，有此三者，善莫大焉。")
+case .人:
+    print("人心生一念，天地尽皆知。")
+case .天:
+    print("若离于爱恨，则无忧亦无惧，无人相，无我相，无寿者相，无众生相。")
 }
 // ```
 
-// Remember `switch` must be exhaustive
+// 记得 `switch` 必须覆盖所有可能的 `case`
 
 // ```swift
-switch nextDirection {
-case .east:
-    print("Be prepared.")
+switch 来世 {
+case .天:
+    print("三十三层离恨天")
 default:
-    print("Why not heading east?")
+    print("难难难，道最玄。")
 }
 // ```
 
-// ### Associated Values
+// ### 相关值
 
-// **Example**
+// **例子**
 
-// Define an enumeration for daily attendence,
-// if unattended, give and execuse as well as a real reason,
-// define three functions, evaluate the execuse and reason for unattendence,
-// from perspectives of teacher, manager and self
+// 定义一个出勤的枚举，
+// 如果缺席，给出一个借口和真实的理由
+// 定义三个分别从老师、经理以及自我的角度评价出勤的函数
 
 // ```swift
-enum DailyAttendence {
-    case attended
-    case unattended(execuse: String, realReason: String)
+enum 每日出勤 {
+    case 出席
+    case 缺席(借口: String, 真实原因: String)
 }
 
-func teacherEvaluate(_ attendence: DailyAttendence) {
+func 老师评价(_ attendence: 每日出勤) {
     switch attendence {
-    case .attended:
-        print("Keep up")
-    case .unattended(_, let realReason):
-        print("I need to talk to your parents regarding \(realReason)")
+    case .出席:
+        print("继续努力学习，今天不流汗，明天就流泪。")
+    case .缺席(_, let 真实原因):
+        print("下午放学不要走，等家长来接，顺便谈谈 \(真实原因)")
     }
 }
 
-func managerEvaluate(_ attendence: DailyAttendence) {
+func 经理评价(_ attendence: 每日出勤) {
     switch attendence {
-    case .attended:
-        print("Keep up")
-    case .unattended(let execuse, _):
-        print("I'm fine with \(execuse)")
+    case .出席:
+        print("继续努力，今天工作不努力，明天努力找工作。")
+    case .缺席(let 借口, _):
+        print("\(借口) 似乎是个好理由")
     }
 }
 
-func selfEvaluate(_ attendence: DailyAttendence) {
+func 自我评价(_ attendence: 每日出勤) {
     switch attendence {
-    case .attended:
-        print("A boring day")
-    case let .unattended(execuse, realReason):
-        print("I have \"\(execuse)\" as execuse for the real reason of \"\(realReason)\"")
+    case .出席:
+        print("又是无聊的一天")
+    case let .缺席(借口, 真实原因):
+        print("我的借口是 \"\(借口)\" 其实谁都不知道实际上的原因是 \"\(真实原因)\"")
     }
 }
 
-let jackyAttendence: DailyAttendence = DailyAttendence.unattended(execuse: "alarm clock stopped working", realReason: "late sleep watching TV")
-teacherEvaluate(jackyAttendence)
+let 杰克出勤表现: 每日出勤 = 每日出勤.缺席(借口: "闹钟坏了", 真实原因: "昨晚偶像剧看太晚了")
+老师评价(杰克出勤表现)
 // // I need to talk to your parents regarding late sleep watching TV
 
-let goodsonAttendence: DailyAttendence = DailyAttendence.attended
-teacherEvaluate(goodsonAttendence)
+let 好学生出勤表现: 每日出勤 = 每日出勤.出席
+老师评价(好学生出勤表现)
 // // keep up
 
-let mrUnsatisiable: DailyAttendence = DailyAttendence.unattended(execuse: "sick", realReason: "job interview")
-managerEvaluate(mrUnsatisiable)
+let 不满于现状的职员: 每日出勤 = 每日出勤.缺席(借口: "生病了", 真实原因: "去面试")
+经理评价(不满于现状的职员)
 // // I'm fine with sick
 
-selfEvaluate(mrUnsatisiable)
+自我评价(不满于现状的职员)
 // // I have "sick" as execuse for the real reason of "job interview"
 // ```
 
-// ### Raw Values
+// ### 原始值
 
-// Implicit:
+// 隐性:
 
 // ```swift
-enum Month : Int {
+enum Month: Int {
     case january = 1
     case feburary // 2
     case march // 3
@@ -1255,271 +1256,278 @@ enum Month : Int {
     case december // 12
 }
 
-print("September has a value of \(Month.september.rawValue)")
-// // Print "September has a value of 9"
+print("九月的值是：\(Month.september.rawValue)")
+// // Print "九月的值是：9"
 // ```
 
 // ```swift
-enum SomeNames : String {
+enum 一些名字 : String {
     case michael
     case tom
     case jack
 }
 
-print("case tom has raw value of \(SomeNames.tom.rawValue)")
-// // Print "case tom has raw value of tom"
+print("case tom 的字符串值是：\(一些名字.tom.rawValue)")
+// // Print "case tom 的字符串值是：tom"
 // ```
 
-// ### Initializing from raw value
+// ### 用原始值来初始化枚举的case
 
 // ```swift
-var monthNumber = 7
-if let month = Month(rawValue: monthNumber) {
+var 月份 = 7
+if let month = Month(rawValue: 月份) {
     switch month {
     case .july:
-        print("Month of examination, graduation and boy/girl-friend breaking up.")
+        print("毕业季到了，分手季还会远吗？")
     default:
-        print("Some other month")
+        print("一年的其他几个月。")
     }
 } else {
-    print("Cannot recognize month number")
+    print("无法识别的月份。")
 }
 // ```
 
-// ### Recursive enumerations
+// ### 枚举递归
 
-// A recursive enumeration is an enumeration that has another instance of the enumeration as the associated value for one or more of the enumeration cases
+// 枚举的case关联值可以是自己本身的类型
 
 // ```swift
-enum Trap {
-    case rightWayOut
-    indirect case wayOut(Trap)
+enum 陷阱 {
+    case 正确的出路
+    indirect case 某条出路(陷阱)
 }
 
-let eternity = Trap.wayOut(Trap.rightWayOut)
-let love = Trap.wayOut(eternity)
+let 永恒 = 陷阱.某条出路(陷阱.正确的出路)
+let 爱情陷阱 = 陷阱.某条出路(永恒)
 
-func escape(from trap: Trap) {
-    switch trap {
-    case .rightWayOut:
-        print("Found the right way out")
-    case .wayOut(let anotherTrap):
-        print("Fall into another trap")
-        escape(from: anotherTrap)
+func 逃离(from 一个陷阱: 陷阱) {
+    switch 一个陷阱 {
+    case .正确的出路:
+        print("找到了正确的出路。")
+    case .某条出路(let 另一个陷阱):
+        print("进入另一个陷阱。")
+        逃离(from: 另一个陷阱)
     }
 }
 
-escape(from: love)
-// // Fall into another trap
-// // Fall into another trap
-// // Found the right way out
+逃离(from: 爱情陷阱)
+// // 输出：
+// // 进入另一个陷阱。
+// // 进入另一个陷阱。
+// // 找到了正确的出路。
 // ```
 
 // [回到目录](#目录)
 
-// ## Classes and Structures
+// ## 类与结构
 
-// Declare a class:
-
-// ```swift
-class Love { // class name
-    // <statements>
-    // }
-// ```
-    
-    // Class statements:
-    
-    // class/type constant:
-    
-// ```swift
-    // by default, love isn't persistent
-    static let defaultPersistency = false
-// ```
-    
-    // stored properties
-    
-// ```swift
-    var name: String?
-    let thorny = true // constant
-    
-    // inferred boolean variable
-    var isPersistent = defaultPersistency
-    var looksPretty: Bool // variable
-// ```
-    
-// **computed property**
-    
-// ```swift
-    var tastesGood: Bool {
-        // computed property
-        // must be variable
-        return !looksPretty
-    }
-// ```
-    
-// **lazy property**
+// 定义一个类：
 
 // ```swift
-    lazy var complexity: Int = { [unowned self] in
-        if let name = self.name {
-            return name.lengthOfBytes(using: .utf8)
-        } else {
-            return 123
-        }
-    }()
+class 情花 { // 类名
+// <陈述>
+// }
 // ```
-    
-// **initializer**
-    
+
+// 类 常量:
+
 // ```swift
-    // non-optional properties must be
-    // initialized before use
-    init(looksPretty: Bool, name: String? = nil) {
-        self.looksPretty = looksPretty
-        self.name = name
-    }
+// 情花一般开不长久
+static let 一般是否长久 = false
 // ```
-    
-// **instance method**
-    
+
+// 存储属性
+
 // ```swift
-    func printDescription() {
-        Love.printNotes(about: self)
-    }
+var 花名: String?
+let 有刺 = true // 常量：情花总是有刺
+
+// // 推断类型的属性
+var 能否持久 = 一般是否长久
+var 看起来美: Bool // 变量
 // ```
-    
-// **class/type method**
-    
+
+// 计算属性
+
 // ```swift
-    // `final` indicates cannot be overwritten
-    final func displayName() -> String {
-        return self.name ?? self.defaultName()
+var 味道好: Bool {
+// // 计算属性必须是变量
+    return 看起来美 == false
+// // 味道好与看起来美相反
+}
+// ```
+
+// 懒惰属性
+
+// ```swift
+// 懒惰属性只在用到时才计算，虽然最后()表示执行
+lazy var 剪不断理还乱: Int = { [unowned self] in
+    if let 花名 = self.花名 {
+        return 花名.lengthOfBytes(using: .utf8)
+    } else {
+        return 123
     }
-    
-    func defaultName() -> String {
-        return "love"
+}()
+// ```
+
+// 初始化器
+
+// ```swift
+// // 非或有或无的属性用之前必须初始化
+init(看起来美: Bool, 花名: String? = nil) {
+    self.看起来美 = 看起来美
+    self.花名 = 花名
+}
+// ```
+
+// 实例函数
+
+// ```swift
+func 打印描述() {
+    情花.打印花语(关于: self)
+}
+// ```
+
+// 类函数
+
+// ```swift
+// // `final` 表示无法被子类重写
+final func 显示名字() -> String {
+    return self.花名 ?? self.默认名字()
+}
+
+func 默认名字() -> String {
+    return "情"
+}
+// ```
+
+// ```swift
+
+// // 实例没有被引用时会调用
+deinit {
+    print("\(self.显示名字()) 来如黄鹤去如晨风。")
+}
+
+static func 打印花语(关于 花: 情花) {
+    let 显示名字 = 花.显示名字()
+    print("花名 \(花.默认名字()) 花语：")
+
+    if let 花名 = 花.花名 {
+        print("\(花.默认名字()) 的名字叫 \"\(花名)\"")
+    } else {
+        print("\(花.默认名字()) 无名")
     }
-    
-    // called when no reference to the instance
-    // ie. reference counter reaches 0
-    deinit {
-        print("\(self.displayName()) disappeared in a puff of logic")
+
+    if 花.有刺 {
+        print("\(显示名字) 长满了刺")
     }
-    
-    static func printNotes(about love: Love) {
-        let displayName = love.displayName()
-        print("Notes about \(love.defaultName()):")
-        
-        if let name = love.name {
-            print("\(love.defaultName()) has a name of \"\(name)\"")
-        } else {
-            print("\(love.defaultName()) has noname")
-        }
-        
-        if love.thorny {
-            print("\(displayName) is thorny")
-        }
-        
-        if love.isPersistent {
-            print("\(displayName) can be persistent")
-        } else {
-            print("\(displayName) \(Love.defaultPersistency ? "lasts forever" : "doesn't last long") by default")
-        }
-        
-        let look = love.looksPretty ? "looks pretty" : "looks ugly"
-        let taste = love.tastesGood ? "tastes good" : "tastes bad"
-        
-        if love.looksPretty == love.tastesGood {
-            print("\(displayName) \(look) and \(taste)")
-        } else {
-            print("\(displayName) \(look) but \(taste)")
-        }
+
+    if 花.能否持久 {
+        print("\(显示名字) 可以持久")
+    } else {
+        print("\(显示名字) \(情花.一般是否长久 ? "永远持续" : "不会持续太久")")
     }
+
+    let look = 花.看起来美 ? "看起来美" : "看起来丑陋无比"
+    let taste = 花.味道好 ? "吃起来好" : "吃起来很糟糕"
+
+    if 花.看起来美 == 花.味道好 {
+        print("\(显示名字) \(look) 并且 \(taste)")
+    } else {
+        print("\(显示名字) \(look) 但是 \(taste)")
+    }
+}
 // ```
 } //!
 
-// make some loves:
+// 创建一些实例：
 
 // ```swift
-let someLove = Love(looksPretty: false)
-someLove.printDescription()
-let someHate = Love(looksPretty: true, name: "Hate")
-someHate.isPersistent = true
-someHate.printDescription()
+let 有些花 = 情花(看起来美: false)
+有些花.打印描述()
+let 有些恨 = 情花(看起来美: true, 花名: "恨")
+有些恨.能否持久 = true
+有些恨.打印描述()
 // ```
 
-// `someLove` prints
+// `有些花` 输出：
 
-// >Notes about love:
-// >love has noname
-// >love is thorny
-// >love doesn't last long by default
-// >love looks ugly but tastes good
+// ```
+// 花名 情 花语：
+// 情 无名
+// 情 长满了刺
+// 情 不会持续太久
+// 情 看起来丑陋无比 但是 吃起来好
+// ```
 
-// `hate` prints
+// `有些恨` 输出：
 
-// >Notes about Hate:
-// >love has a name of "Hate"
-// >Hate is thorny
-// >Hate can be persistent
-// >Hate looks pretty but tastes bad
+// ```
+// 花名 情 花语：
+// 情 的名字叫 "恨"
+// 恨 长满了刺
+// 恨 可以持久
+// 恨 看起来美 但是 吃起来很糟糕
+// ```
+
+// **结构**
 
 // ```swift
-struct Address {
+struct 地址 {
     
-    // type constant
-    static let format = "British"
+    // 结构常量
+    static let 格式 = "中国"
     
-    var streetNumber: String
-    var streetName: String
-    var suburb: String
-    var state: String
-    var postcode: String
-    var country: String
+    var 门牌号: String
+    var 街道名: String
+    var 区名: String
+    var 市名: String
+    var 邮编: String
+    var 国家: String
     
-    var fullAddress: String {
-        return "\(streetNumber) \(streetName), \(suburb), \(state) \(postcode), \(country)"
+    var 完整地址: String {
+        return "\(门牌号) \(街道名)，\(区名)，\(市名) \(邮编)，\(国家)"
     }
 }
 // ```
 
 // ```swift
-print("Using \(Address.format) format")
+print("地址遵循 \(地址.格式) 格式")
 // ```
 
 // ```swift
-// // default struct-wise initializer
-let address = Address(streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
-print(address.fullAddress)
+// // 缺省的所有属性构建器
+let 某个地址 = 地址(门牌号: "369", 街道名: "青龙门大街", 区名: "东城区", 市名: "甘肃", 邮编: "2207", 国家: "明朝")
+print(某个地址.完整地址)
 // ```
 
-// ### Inheritance
+// ### 继承
 
 // ```swift
-// // hate is a kind of love
-class Hate: Love {
+// // 恨是情花的一种
+class 恨: 情花 {
     init() {
-        super.init(looksPretty: false, name: "exclusive love")
-        self.isPersistent = true
+        super.init(看起来美: false, 花名: "恨意")
+        self.能否持久 = true
     }
     
-    // `override` keyword used here
-    override func defaultName() -> String {
-        return "hate"
+    // 重载用 `override` 关键字
+    override func 默认名字() -> String {
+        return "恨"
     }
 }
 
-let moreHate = Hate()
-moreHate.printDescription()
+let 更多的恨 = 恨()
+更多的恨.打印描述()
 // ```
 
-// `moreHate` prints:
+// `更多的恨` 输出：
 
-// > Notes about hate:
-// > hate has a name of "exclusive love"
-// > exclusive love is thorny
-// > exclusive love can be persistent
-// > exclusive love looks ugly but tastes good
+// 花名 恨 花语：
+// 恨 的名字叫 "恨意"
+// 恨意 长满了刺
+// 恨意 可以持久
+// 恨意 看起来丑陋无比 但是 吃起来好
 
 // ### `required` and `convenience` initializers
 
@@ -1538,20 +1546,22 @@ moreHate.printDescription()
 // - Not identical to (!==)
 
 // ```swift
-let fakeLove = someLove
-print("someLove is fakeLove? \(someLove === fakeLove)")
+let 假花 = 有些花
+print("有些花 是 假花？\(有些花 === 假花)")
 // ```
 
-// ### Deinitialization
+// ### 清理 Deinitialization
 
 // ```swift
-var shortTermLove: Love? = Love(looksPretty: true)
-shortTermLove = nil
+var 一瞬即逝的花: 情花? = 情花(看起来美: true)
+一瞬即逝的花 = nil
 // ```
 
-// Prints:
+// 输出：
 
-// > love disappears in a puff of logic
+// ```
+// 情 来如黄鹤去如晨风。
+// ```
 
 // ### class vs struct
 
@@ -2134,29 +2144,29 @@ default:
 
 // [回到目录](#目录)
 
-// ## Error Handling
+// ## 错误处理
 
-// If you have Java background, error handling is the similar trick as Java's `try...catch...` and `throw`.
-// In Swift, errors are represented by values of types that conform to the empty `Error` protocol
-// which indicates that type can be used for error handling.
+// 如果你了解Java，Swift里的错误处理就是Java里的 `try...catch...` 和 `throw` 那套异常处理机制。
+// Swift里的错误是遵循了 `Error` 协议的类型的实例，
+// 遵循 `Error` 协议表示这个类型的实例可以用作错误处理。
 
-// Enumerations are well suited to modelling a group of related error conditions.
+// 一般用枚举来表示一系列有关系的错误。
 
 // ```
-// func functionThatThrowsErrors() throws -> String
-// func functionThatDoesntThrowError() -> String
+// func 抛出错误的函数() throws -> String
+// func 不抛出错误的函数() -> String
 // ```
 
-// ### Handling errors using do-catch
+// ### do-catch 处理错误
 
 // ```
 // do {
-//     try <expression>
-//     <statements>
-// } catch <pattern 1> {
-//     <statements>
-// } catch <pattern 2> where <condition> {
-//     <statements>
+//     try <表达式>
+//     <陈述>
+// } catch <模式1> {
+//     <陈述>
+// } catch <模式2> where <条件> {
+//     <陈述>
 // }
 // ```
 
