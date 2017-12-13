@@ -1529,21 +1529,21 @@ let 更多的恨 = 恨()
 // 恨意 可以持久
 // 恨意 看起来丑陋无比 但是 吃起来好
 
-// ### `required` and `convenience` initializers
+// ### `required` 和 `convenience` 初始化方法
 
-// - `required` initializer makes sure subclass still implements the initializer
+// - `required` 确保子类依然实现这个初始化方法
 //   - `required init(name: String)`
-// - `convenience` initializer is forced to call a non-convenience initializer directly or indirectly
+// - `convenience` 初始化方法必须直接或间接的调用非 `convenient` 的初始化方法
 //   - `convenience init()`
-// - non-convenience initializer is called *designated* initializer
-// - a designated initializer must call a designated initializer from its immediate superclass.
-// - a convenience initializer must call another initializer from the same class.
-// - a convenience initializer must ultimately call a designated initializer.
+// - 非`convenience`初始化方法被称为 *指定的* (designated)初始化方法
+// - 指定的初始化方法必须调用直接父类的指定初始化方法
+// - `convenience`初始化方法必须调用同一个类里的初始化方法
+// - `convenience`初始化方法必须最终调用到一个指定的初始化方法
 
-// ### Identify operators
-// Check whether two constants or variables refer to the same single instance:
-// - Identical to (===)
-// - Not identical to (!==)
+// ### 识别操作符
+// 检查两个常量或变量是否引用同一个对象实例
+// - 同样 (===)
+// - 不同样 (!==)
 
 // ```swift
 let 假花 = 有些花
@@ -1563,126 +1563,126 @@ var 一瞬即逝的花: 情花? = 情花(看起来美: true)
 // 情 来如黄鹤去如晨风。
 // ```
 
-// ### class vs struct
+// ### 类与结构
 
-// *class*:
+// *类*:
 
-// - reference type, object with identity, e.g. `Student`
-// - slower on heap
-// - updated with logic
-// - internals can remain mutable even when declared with `let`
+// - 引用类型(reference type)，一般用来表示有身份特征的对象，如“学生”
+// - 存在“堆”内存，速度较慢
+// - 一般存在改变内部状态的逻辑
+// - 即使定义为`let`常量，内部状态依然可变
 
-// *struct*:
+// *结构*:
 
-// - value type, e.g. `Address`
-// - faster on stack
-// - simple data store
-// - immutable when declared with `let`
+// - 值类型(value type)，例如“地址”
+// - 存在“栈”内存，速度较快
+// - 简单的数据存储（不牵涉复杂逻辑）
+// - 定义为`let`常量时不可改变
 
 // [回到目录](#目录)
 
-// ## Protocols
+// ## 协议
 
-// ### Define a protocol
+// ### 定义
 
 // ```swift
-protocol Rescuable {
+protocol 可以被救赎的 {
     
-    // method:
-    func rescue()
+    // 方法:
+    func 救赎()
     
-    // property:
-    var distanceToGod: UInt { get set }
-    var hasBeenSaved: Bool { get }
+    // 属性:
+    var 与神的距离: UInt { get set }
+    var 已被救赎: Bool { get }
     
-    // initializer
-    init?(initialDistanceToGod: UInt)
+    // 初始化方法
+    init?(一开始与神的距离: UInt)
 }
 // ```
 
-// ### Implementing a protocol
+// ### 实现协议
 
 // ```swift
-class Person: Rescuable {
+class 世人: 可以被救赎的 {
     
-    var distanceToGod: UInt
+    var 与神的距离: UInt
     
-    // satisfied by a `required` initializer in non-final class
-    required init?(initialDistanceToGod: UInt) {
-        if initialDistanceToGod == 0 {
-            print("Already rescued, not a human anymore")
+    // 非`final`类可以被继承重写抹掉，用`required`关键字确保实现协议里的初始化方法
+    required init?(一开始与神的距离: UInt) {
+        if 一开始与神的距离 == 0 {
+            print("已被救赎，人心无存。")
             return nil
         }
-        self.distanceToGod = initialDistanceToGod
+        self.与神的距离 = 一开始与神的距离
     }
     
-    func rescue() {
-        if distanceToGod > 0 {
-            distanceToGod -= 1
+    func 救赎() {
+        if 与神的距离 > 0 {
+            与神的距离 -= 1
         }
     }
     
-    var hasBeenSaved: Bool {
-        return distanceToGod == 0
+    var 已被救赎: Bool {
+        return 与神的距离 == 0
     }
 }
 // ```
 
-// Swift doesn't care how you implement a protocol, as long as you implemnet it.
-// Choices for implementing a `get` property in protocol:
+// Swift不在乎你怎么实现协议，只要你实现了就行
+// 实现协议里的`get`属性有几种方法：
 
-// - a constant stored property
-// - a variable stored property
-// - a read-only computed property
-// - a read-write computed property
+// - 一个存储属性常量
+// - 一个存储属性变量
+// - 一个只读计算属性
+// - 一个读写计算属性
 
-// ### Implementing multiple protocols
+// ### 实现多个协议
 
-// We define an `Evil` protocol:
+// 首先定义`恶念`协议：
 
 // ```swift
-protocol Evil {
-    func fulfilDesire()
+protocol 恶念 {
+    func 满足欲望()
 }
 // ```
 
-// ### Adopt protocol using extension
+// ### 用扩展来实现协议
 
-// Make `Person` also implements `Evil`
+// 让`世人`同时实现`恶念`
 
 // ```swift
-extension Person: Evil {
-    func fulfilDesire() {
-        self.distanceToGod += 1
+extension 世人: 恶念 {
+    func 满足欲望() {
+        self.与神的距离 += 1
     }
 }
 // ```
 
 // ```swift
-func commentary(of thing: Rescuable & Evil) {
-    print("Something that is evil but rescuable")
+func 注解(of thing: 可以被救赎的 & 恶念) {
+    print("有恶念却可以被救赎的事物")
     
-    if thing.hasBeenSaved {
-        print("God saved you")
+    if thing.已被救赎 {
+        print("神救赎了你")
     } else {
-        print("distance to God: \(thing.distanceToGod)")
-        thing.fulfilDesire()
-        print("desire makes the distance to God becomes \(thing.distanceToGod)")
-        thing.rescue()
-        print("after rescue, distance to God becomes \(thing.distanceToGod)")
+        print("与神的距离：\(thing.与神的距离)")
+        thing.满足欲望()
+        print("欲望满足后，与神的距离变成：\(thing.与神的距离)")
+        thing.救赎()
+        print("经过救赎，与神的距离变成：\(thing.与神的距离)")
     }
 }
 
-let person = Person(initialDistanceToGod: 20)!
-commentary(of: person)
+let 人们 = 世人(一开始与神的距离: 20)!
+注解(of: 人们)
 
-let distance = person.distanceToGod
+let distance = 人们.与神的距离
 for _ in 1...distance {
-    person.rescue()
+    人们.救赎()
 }
 
-commentary(of: person)
-// // Print: "God saved you"
+注解(of: 人们)
+// // Print: "神救赎了你"
 // ```
 
 // [回到目录](#目录)
@@ -2032,7 +2032,7 @@ print("Divine: \(...divine)")
 
 // [回到目录](#目录)
 
-// ## Patterns
+// ## 模式
 
 // A _pattern_ represents the structure of a single value or a composite value. e.g. (1, 2) is a comma-separated list of two elements, matched by the pattern (x, y).
 
