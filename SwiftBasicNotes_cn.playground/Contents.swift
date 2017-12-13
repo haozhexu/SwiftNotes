@@ -1687,12 +1687,12 @@ for _ in 1...distance {
 
 // [回到目录](#目录)
 
-// ## Generics
+// ## 范型
 
-// It's like a super-type of different types.
+// 就如同所有类型的父类型一般
 
 // ```swift
-func swapValues<T>(_ a: inout T, _ b: inout T) {
+func 互相交换值<T>(_ a: inout T, _ b: inout T) {
     let temporaryA = a
     a = b
     b = temporaryA
@@ -1700,127 +1700,131 @@ func swapValues<T>(_ a: inout T, _ b: inout T) {
 
 var firstNumber = 3
 var secondNumber = 7
-swapValues(&firstNumber, &secondNumber)
-// // `firstNumber` is now 7, `secondNumber` is now 3
+互相交换值(&firstNumber, &secondNumber)
+// // `firstNumber` 现在等于 7, `secondNumber` 现在等于 3
 
-var humanWorld = ""
-var hell = "full of evil"
-swapValues(&humanWorld, &hell)
-// // `hell` is now empty, `humanWorld` is now "full of evil"
+var 人间 = ""
+var 地狱 = "充满恶魔"
+互相交换值(&人间, &地狱)
+// // `地狱` 空了，而 `人间` 现在 "充满恶魔"
 // ```
 
-// ### Generic Types
+// ### 范型类型
 
-// *Example*
+// *例子*
 
-// Implement a bag of generic typed stuff, stuff can be put in the bag and picked up randomly
+// 用来表示“东西”的范型，“东西”可以放在袋子里并取出
 
 // ```swift
-struct Bag<Stuff> {
-    var stuff = [Stuff]()
-    mutating func putin(_ stuff: Stuff) {
-        self.stuff.append(stuff)
+struct 口袋<东西> {
+    var 口袋里的东西 = [东西]()
+    mutating func 放进去(_ 一个东西: 东西) {
+        self.口袋里的东西.append(一个东西)
     }
-    mutating func pickup() -> Stuff {
-        let index: Int = Int(arc4random_uniform(UInt32(self.stuff.count)))
-        return self.stuff.remove(at: index)
+    mutating func 拿出来() -> 东西 {
+        let index: Int = Int(arc4random_uniform(UInt32(self.口袋里的东西.count)))
+        return self.口袋里的东西.remove(at: index)
     }
 }
 
-var bagOfStrings = Bag<String>();
-bagOfStrings.putin("Masquito's leg")
-bagOfStrings.putin("Grandma's beard")
-bagOfStrings.pickup()
+var 中山装的口袋 = 口袋<String>();
+中山装的口袋.放进去("立法权")
+中山装的口袋.放进去("行政权")
+中山装的口袋.放进去("司法权")
+中山装的口袋.放进去("考试权")
+中山装的口袋.放进去("弹劾权")
+中山装的口袋.拿出来()
 // ```
 
-// ### Associated types
+// ### 关联类型
 
 // ```swift
-protocol Fate {
-    associatedtype ChanceType
-    associatedtype EventType
+protocol 命运 {
+    associatedtype 机会类型
+    associatedtype 事件类型
     
-    func event(for chance: ChanceType) -> EventType
+    func 触发事件(针对 机会: 机会类型) -> 事件类型
 }
 
-enum Chance: String {
-    case birth = "a new life was born"
-    case death = "a new journey just started"
+enum 机会: String {
+    case 出生 = "一个新的生命诞生"
+    case 死亡 = "开始一段新的旅程"
 }
 
-class Life: Fate {
-    typealias ChanceType = Chance
-    typealias EventType = String
+class 人生: 命运 {
+    typealias 机会类型 = 机会
+    typealias 事件类型 = String
     
-    func event(for chance: Chance) -> String {
-        return chance.rawValue
+    func 触发事件(针对 一个机会: 机会) -> String {
+        return 一个机会.rawValue
     }
 }
 
-let ant = Life()
-print("chance \"death\" triggered event: \(ant.event(for: .death))")
-print("chance \"birth\" triggered event: \(ant.event(for: .birth))")
+let 蝼蚁 = 人生()
+print("一个机遇 \"死亡\" 触发的事件：\(蝼蚁.触发事件(针对: .死亡))")
+print("机遇 \"出生\" 触发的事件：\(蝼蚁.触发事件(针对: .出生))")
 
-// // prints "chance "death" triggered event: a new life was born".
-// // prints "chance "birth" triggered event: a new journey just started".
+// // 输出： "chance "death" triggered event: a new life was born".
+// // 输出： "chance "birth" triggered event: a new journey just started".
 // ```
 
-// ### Type constraints
+// ### 类型约束
 
 // ```
-// func someFunctionL<T: SomeClass, U: SomeProtocol>(someT: T, someP: U)
+// func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someP: U)
 // ```
 
-// Alternatively, `Fate` can be conformed this way:
+// `命运` 还可以这样被实现：
 
 // ```swift
-// // type constraint, ChanceT must conform to `Hashable`
-class Robot<ChanceT: Hashable, EventT>: Fate {
+// // 类型约束：ChanceT 必须遵循 Hashable
+class 机器人<ChanceT: Hashable, EventT>: 命运 {
     
-    private var programmedInstructions = [ChanceT: EventT]()
+    private var 编程指令 = [ChanceT: EventT]()
     
-    func add(_ event: EventT, for chance: ChanceT) {
-        programmedInstructions[chance] = event
+    func 增加指令(_ 动作: EventT, 针对 事件: ChanceT) {
+        编程指令[事件] = 动作
     }
     
-    // no need to have `typealias` here
-    // since types can be inferred
-    func event(for chance: ChanceT) -> EventT {
-        return programmedInstructions[chance]!
+    // 这里不需要`typealias`
+    // 因为类型可以被推断出来
+    func 触发事件(针对 一个机会: ChanceT) -> EventT {
+        return 编程指令[一个机会]!
     }
 }
 
-let mrBetterHuman = Robot<String, String>()
-mrBetterHuman.add("lights blinking and arms waving", for: "poweron")
-mrBetterHuman.add("sudden stop with dull and lifeless eyes", for: "poweroff")
+let 新新人类 = 机器人<String, String>()
+新新人类.增加指令("灯光闪烁，手臂随机摆动", 针对: "通电")
+新新人类.增加指令("忽然停止，面无表情且眼中无神", 针对: "断电")
 
-print("Robot gets chance of 'poweron': \(mrBetterHuman.event(for: "poweron"))")
-print("Robot gets chance of 'poweroff': \(mrBetterHuman.event(for: "poweroff"))")
+print("机器人事件 '通电' 触发：\(新新人类.触发事件(针对: "通电"))")
+print("机器人事件 '断电' 触发：\(新新人类.触发事件(针对: "断电"))")
+
+// // 输出："机器人事件 '通电' 触发：灯光闪烁，手臂随机摆动"
+// // 输出："机器人事件 '断电' 触发：忽然停止，面无表情且眼中无神"
 // ```
 
-// ### Generic where clauses
-
-// A piece of code worths thousands of words:
+// ### 范型里的`where`
 
 // ```swift
-func crossFate<F1: Fate, F2: Fate>(_ someFate: F1, _ otherFate: F2, chance: F1.ChanceType) -> String where F1.ChanceType == F2.ChanceType, F1.EventType == F2.EventType, F1.EventType: Equatable {
-    let event1 = someFate.event(for: chance)
-    let event2 = otherFate.event(for: chance)
-    if (event1 == event2) {
-        return "Fate meets with common event: \(event1)"
+func 命运的接触<一种命运: 命运, 另一种命运: 命运>(_ 一个人: 一种命运, _ 另一个人: 另一种命运, 机遇: 一种命运.机会类型) -> String where 一种命运.机会类型 == 另一种命运.机会类型, 一种命运.事件类型 == 另一种命运.事件类型, 一种命运.事件类型: Equatable {
+    let 事件1 = 一个人.触发事件(针对: 机遇)
+    let 事件2 = 另一个人.触发事件(针对: 机遇)
+    if (事件1 == 事件2) {
+        return "命运的接触：\(事件1)"
     } else {
-        return "Fate crossed but missed!"
+        return "擦肩而过的命运"
     }
 }
 
-let husband = Life()
-let wife = Life()
-let fateCrossed = crossFate(husband, wife, chance: .birth)
-print("Cross fated husband and wife: \(fateCrossed)")
-// // Prints "Cross fated husband and wife: Fate meets with common event: a new life was born"
+let 丈夫 = 人生()
+let 妻子 = 人生()
+let 命运的交集 = 命运的接触(丈夫, 妻子, 机遇: .出生)
+print("夫妻本是同林鸟，林子大了什么鸟都有：\(命运的交集)")
+// // 输出： "夫妻本是同林鸟，林子大了什么鸟都有：命运的接触：一个新的生命诞生"
 // ```
 
-// _PS: I have a feeling that the whole Fate/Chance/Event thing could be made super fun, but for the purpose of this study notes let's stop here_
+// _PS: 我感觉 命运／机遇／事件 这三者的逻辑套路可以演变成很有趣的游戏，然而由于这份文档的初衷，我们先在这里打住。_
 
 // [回到目录](#目录)
 
@@ -2034,111 +2038,119 @@ print("Divine: \(...divine)")
 
 // ## 模式
 
-// A _pattern_ represents the structure of a single value or a composite value. e.g. (1, 2) is a comma-separated list of two elements, matched by the pattern (x, y).
+// _模式_ 对应单独值或联合值的结构，例如(1, 2)是一个由逗号分开的两个元素，可以被(x, y)模式匹配
 
-// ### Wildcard Pattern
+// ### 通配模式
 
 // ```swift
-let somethingImportant = "Don't struggle which side of bread you spread butter on - you eat both sides."
+let 重要的事情 = "不要为黄油应该抹在面包的哪一面而纠结 - 两面会被你同时吃掉。"
 for _ in 1...3 {
-    // repeat three times
-    print(somethingImportant)
+    // 重要的事情说三遍
+    print(重要的事情)
 }
 // ```
 
-// ### Identifier pattern
+// ### 标识符模式
 
-// An identifier pattern is the variable or constant itself, matched by any value.
+// 标识符模式是变量或常量本身，跟任何允许的值匹配
 
 // ```swift
-let someValue = 123
+let 有的人 = 250
 // ```
 
-// ### Value binding pattern
+// ### 值绑定模式
 
-// Binds matched values to variable or constant names
+// 将匹配的值绑定给变量或常量
 
 // ```swift
-let point = (1, 9, 3)
-switch point {
-case let (x, 9, _):
-    print("At y-coordinate 9, x-coordinates of \(x), there's something on the z-plane.")
+let 三戒 = ("不听", "不看", "不说")
+switch 三戒 {
+case let (一戒, "不看", _):
+    // 匹配第二个元素为"不看"，第三个元素无所谓，第一个元素赋值给"一戒"
+    print("第一戒是 \(一戒)")
 default:
     break
 }
 // ```
 
-// ### Tuple pattern
+// ### 元组模式
 
-// Comma-separated list of zero or more patterns, enclosed by parentheses.
+// 逗号分隔的一个或多个模式
 
 // ```swift
-let (goodNews, badNews): (Int, Int) = (2, 3)
+let (好消息, 坏消息): (Int, Int) = (2, 3)
 // ```
 
 // ```swift
-let newsGoodBadPerDay = [(1, 0), (3, 2), (5, 7)]
-for (goodNews, _) in newsGoodBadPerDay {print("ignore bad news, number of good news on the day: \(goodNews)")}
-// ```
-
-// The parentheses around a single element pattern has no effect, the followings are equivalent:
-
-// ```swift
-let someonesAge = 1
-let (sometowsAge) = 2
-let (somethreesAge): Int = 3
-// ```
-
-// ### Optional pattern
-
-// An optional pattern matches values wrapped in a `some(Wrapped)` case of an `Optional<Wrapped>` enumeration.
-
-// ```swift
-let someOptional: Int? = 250
-if case .some(let x) = someOptional {
-    print(x)
-}
-
-if case let x? = someOptional {
-    print(x)
+let 每天的好坏消息 = [(1, 0), (3, 2), (5, 7)]
+for (好消息, _) in 每天的好坏消息 {
+    print("这天的好消息是：\(好消息)")
 }
 // ```
 
-// ### Type-casting patterns
-
-// ```
-// is <type>
-// <pattern> as <type>
-// ```
-
-// ### Expression pattern
-
-// Value of expression. Appears only in `switch` statement case label.
+// 只有一个元素的元组有没有括号都可以
 
 // ```swift
-let spaceDust = (102, 57, 81)
-switch spaceDust {
+let 某人年龄 = 30
+let (某人的智商) = -1
+let (某人的情商): Int = -3
+// ```
+
+// ### 或有或无（Optional）模式
+
+// 或有或无模式匹配的值包裹在`some(Wrapped)`里
+// 是`Optional<Wrapped>`枚举的一个case
+
+// ```swift
+let 皇帝身上的衣服: Int? = nil
+if case .some(let 衣服) = 皇帝身上的衣服 {
+    print(衣服)
+} else {
+    print("小孩：皇帝没有穿衣服！")
+}
+
+if case let 衣服? = 皇帝身上的衣服 {
+    print(衣服)
+} else {
+    print("小孩：皇帝没有穿衣服！")
+}
+// ```
+
+// ### 类型转换模式
+
+// ```
+// is <类型>
+// <模式> as <类型>
+// ```
+
+// ### 表达式模式
+
+// 表达式的值，只在 `switch` 开关的 `case` 标签里出现
+
+// ```swift
+let 星际尘埃 = (102, 57, 81)
+switch 星际尘埃 {
 case (0, 0, 0):
-    print("Origin")
+    print("尘埃就在原点")
 case (-10...10, -10...10, -10...10):
-    print("Around origin")
+    print("尘埃在原点附近")
 default:
-    print("Somewhere else")
+    print("尘埃跟原点有一定距离")
 }
 // ```
 
-// You can overload `~=` operator to provide custom expression matching behaviour
+// 可以重载操作符 `~=` 来提供定制的表达式匹配行为
 
 // ```swift
-func ~=(pattern: String, value: Int) -> Bool {
-    return pattern == "\(value)"
+func ~=(模式: String, 值: Int) -> Bool {
+    return 模式 == "\(值)"
 }
 
-switch spaceDust {
+switch 星际尘埃 {
 case ("0", "0", "0"):
-    print("Space dust starts from origin")
+    print("星际尘埃在原点处")
 default:
-    print("Space dust has gone from origin")
+    print("星际尘埃已离开原点")
 }
 // ```
 
@@ -2254,8 +2266,10 @@ print("何为神？\(神圣的生命)")
 
 // ### 用`defer`来收拾残局
 
-// `defer`的代码会在当前的执行范围结束后执行，以相反与 `defer` 定义的顺序；我猜这是遵循了清理应该从最近到最远的顺序，就好像打扫卫生一般先清理高处
-// 再清理低处；又好像从一楼上到三楼，如果要后退的话你必须先从三楼下到二楼，再从二楼下到一楼。
+// `defer`的代码会在当前的执行范围结束后执行，以相反与 `defer` 定义的顺序；
+// 我猜这是遵循了清理应该从最近到最远的顺序，
+// 就好像打扫卫生一般先清理高处再清理低处；
+// 又好像从一楼上到三楼，如果要后退的话你必须先从三楼下到二楼，再从二楼下到一楼。
 
 // ```
 func 打印实验手册() {
@@ -2282,9 +2296,9 @@ func 打印实验手册() {
 
 // [回到目录](#目录)
 
-// ## Encoding and Decoding
+// ## 编码与解码
 
-// ### Protocols
+// ### 协议
 
 // *Encodable*
 
@@ -2304,38 +2318,38 @@ func 打印实验手册() {
 // typealias Codable = Encodable & Decodable
 // ```
 
-// ### Automatic coding
+// ### 自动编码
 
-// Conforming to `Codable` and make sure all stored properties are also codable
+// 遵循`Codable`并确保所有存储属性也都`Codable`
 
-// *Example*
+// *例子*
 
-// a fool with a tool (is still a fool).
+// a fool with a tool (is still a fool). 一个有工具的傻子依然是一个傻子。
 
 // ```swift
-struct Fool: Codable {
-    var id: String
-    var name: String
-    var tool: Tool
+struct 傻子: Codable {
+    var 号码: String
+    var 姓名: String
+    var 工具: 工具
     
-    // renaming properties
+    // 可以给参与编码的属性重命名
     enum CodingKeys: String, CodingKey {
-        case id = "identifier"
-        case name
-        case tool
+        case 号码 = "identifier"
+        case 姓名
+        case 工具
     }
 }
 
-struct Tool: Codable {
-    var name: String
+struct 工具: Codable {
+    var 名称: String
 }
 // ```
 
-// ### Coding custom yypes
+// ### 自定义类型编码
 
 // ```swift
-var tool = Tool(name: "Too")
-var fool = Fool(id: "007", name: "Foo", tool: tool)
+var tool = 工具(名称: "经济改良")
+var fool = 傻子(号码: "001", 姓名: "晚清", 工具: tool)
 
 let jsonEncoder = JSONEncoder()
 let jsonData = try! jsonEncoder.encode(fool)
@@ -2343,14 +2357,14 @@ let jsonString = String(data: jsonData, encoding: .utf8)!
 print(jsonString)
 
 let jsonDecoder = JSONDecoder()
-fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
+fool = try! jsonDecoder.decode(傻子.self, from: jsonData)
 // ```
 
-// - `CodingKeys` is a nested enumeration inside the type
-// - conforms to `CodingKey`
-// - also need `String` as raw type
-// - include all properties in the enumeration including the ones that are not renamed
-// - created by default, implemented when renaming is needed
+// - `CodingKeys` 是内嵌在类型里的枚举
+// - 遵循 `CodingKey` 协议
+// - 需要用 `String` 作为原始值
+// - 包含所有属性，包括不需要重命名的
+// - 自动被创建，需要重命名属性时才需要写出
 
 // ### 限制
 
