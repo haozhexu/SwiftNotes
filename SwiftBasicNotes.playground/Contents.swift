@@ -4,6 +4,8 @@ import UIKit //!
 
 // # Hao's Swift Study Notes
 
+// (中文版请看[README.cn.md](./README.cn.md))
+
 // This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097-CH3-ID0) from Apple, took notes and wrote code as I read.
 
 // Soon I realised the notes could be organized in a way so that it could generate a human readable markdown, I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.

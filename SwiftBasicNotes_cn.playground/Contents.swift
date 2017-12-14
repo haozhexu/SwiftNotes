@@ -1222,18 +1222,18 @@ func 自我评价(_ attendence: 每日出勤) {
 
 let 杰克出勤表现: 每日出勤 = 每日出勤.缺席(借口: "闹钟坏了", 真实原因: "昨晚偶像剧看太晚了")
 老师评价(杰克出勤表现)
-// // I need to talk to your parents regarding late sleep watching TV
+// // 输出：下午放学不要走，等家长来接，顺便谈谈 昨晚偶像剧看太晚了
 
 let 好学生出勤表现: 每日出勤 = 每日出勤.出席
 老师评价(好学生出勤表现)
-// // keep up
+// // 输出：继续努力学习，今天不流汗，明天就流泪。
 
 let 不满于现状的职员: 每日出勤 = 每日出勤.缺席(借口: "生病了", 真实原因: "去面试")
 经理评价(不满于现状的职员)
-// // I'm fine with sick
+// // 输出：生病了 似乎是个好理由
 
 自我评价(不满于现状的职员)
-// // I have "sick" as execuse for the real reason of "job interview"
+// // 输出：我的借口是 "生病了" 其实谁都不知道实际上的原因是 "去面试"
 // ```
 
 // ### 原始值
@@ -1257,7 +1257,7 @@ enum Month: Int {
 }
 
 print("九月的值是：\(Month.september.rawValue)")
-// // Print "九月的值是：9"
+// // 输出："九月的值是：9"
 // ```
 
 // ```swift
@@ -1268,7 +1268,7 @@ enum 一些名字 : String {
 }
 
 print("case tom 的字符串值是：\(一些名字.tom.rawValue)")
-// // Print "case tom 的字符串值是：tom"
+// // 输出："case tom 的字符串值是：tom"
 // ```
 
 // ### 用原始值来初始化枚举的case
@@ -1523,11 +1523,13 @@ let 更多的恨 = 恨()
 
 // `更多的恨` 输出：
 
+// ```
 // 花名 恨 花语：
 // 恨 的名字叫 "恨意"
 // 恨意 长满了刺
 // 恨意 可以持久
 // 恨意 看起来丑陋无比 但是 吃起来好
+// ```
 
 // ### `required` 和 `convenience` 初始化方法
 
