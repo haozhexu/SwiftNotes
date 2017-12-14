@@ -1360,7 +1360,7 @@ var 味道好: Bool {
 // 懒惰属性
 
 // ```swift
-// 懒惰属性只在用到时才计算，虽然最后()表示执行
+// // 懒惰属性只在用到时才计算，虽然最后()表示执行
 lazy var 剪不断理还乱: Int = { [unowned self] in
     if let 花名 = self.花名 {
         return 花名.lengthOfBytes(using: .utf8)
@@ -1828,210 +1828,212 @@ print("夫妻本是同林鸟，林子大了什么鸟都有：\(命运的交集)"
 
 // [回到目录](#目录)
 
-// ## Access Control
+// ## 访问控制
 
-// A module is a single unit of code distribution, can be imported by another module using `import`.
+// 一个模块（module）是一个独立的代码单元，可以被其他模块用`import`来导入
 
-// ### Syntax
+// ### 语法
 
 // ```swift
-public class PublicPool {}
-internal class InternalChangeRoom {}
-fileprivate class MaleFilePrivateBath {}
-private class PrivateLocker {}
+public class 公共澡堂 {}
+internal class 内部更衣室 {}
+fileprivate class 男淋浴房 {}
+private class 私人衣物箱 {}
 
-public var publicFeedback = "Good"
-internal let internalComments = "Not great"
-fileprivate func someFilePrivateFunction() {}
-private func privateFunctionRoom() {}
+public var 公众评价 = "极差"
+internal let 内部评价 = "很好"
+fileprivate func 文件私有函数() {}
+private func 私有功能室() {}
 // ```
 
-// ### Access control levels
+// ### 访问控制等级
 
-// - `open` and `public` entities can be used within any source file from their defining module, and also in source files from other modules that imports the defining module. Usually used for framework public interface.
-// - `internal` entities can be used within any source file from defining module but not in any file outside.
-// - `file-private` entities can only be used by its own defining source file.
-// - `private` entities can be used only by the enclosing declaration and extensions of the declaration in the same file
-// - default access level is `internal`
+// - 定义为 `open` 和 `public` 的实体可以被定义它们的模块里的任何代码使用，其他引用定义模块的模块代码也可以使用。一般用作框架(framework)的公共接口。
+// - `internal` 实体只能在被定义的模块里使用
+// - `file-private` 实体只能在定义它的源文件里使用。
+// - `private` 实体只能在定义它的类、结构内部，以及同一源文件里的扩展里使用
+// - 默认的访问控制等级是 `internal`
 
-// *`open` vs `public`*
+// *`open` 对比 `public`*
 
-// - `public` classes and members can be subclassed / overridden only within its defining module.
-// - `open` classes and members can be subclassed / overridden within its defining module as well as importing module.
+// - `public` 类和成员只能在定义它们的模块里被继承或重写
+// - `open` 类和成员也可以在其他引用它们的模块里被继承和重写
 
-// No entities can be defined in terms of another entity that has more restrictive access level
+// 实体不能以比自己访问控制更严的实体来定义
 
-// _an `open` property defined in a `private` class, or a `public` function with `private` type parameters is like saying you can get a gift without buying our product and details are written on a note inside our product package._
+// 例如：一个 `open` 的属性定义在一个 `private` 类里，或者一个 `public` 函数的参数是个 `private` 的类型，这就仿佛说你不需要购买本产品就能获得大奖，详情请见产品包装袋里。
 
-// ### Unit tests targets
+// ### 单元测试目标
 
-// A unit test target can access any internal entity, if you mark the import declaration for a product module with the `@testable` attribute and compile that produce module with testing enabled.
+// 单元测试可以访问任何内部的实体，只需要在`import`实体的模块时加上`@testable`的前缀，并且编译那个模块时把testing打开。
 
-// ### Custom types
+// ### 自定义类型
 
-// The access control level of a type also affects the default access level of the type's members
+// 一个类型的访问控制等级会影响它成员的默认访问控制等级
 
-// - private or file private type -> private or type private members
-// - internal or public type -> internal members
-// - public type defaults to have internal members, to ensure public-facing API for a type doesn't expose internal workings by mistake
+// - `private` 或 `fileprivate` 类型 -> `private` 或 `fileprivate` 成员
+// - `internal` 或 `public` 类型 -> `internal` 成员
+// - `public` 类型默认 `internal` 成员，以保证公开的API类型不会失误暴露出内部的细节
 
-// ### Other types
+// ### 其他类型
 
-// You can skip to the end of the below list for **simple way to remember**.
+// 下面这段文字看起来挺恐怖的，如果你很懒并且觉得自己理解能力很强的话可以跳过这个列表而看其后的 **简单逻辑**
 
-// - the access level for a **tuple type** is the most restrictive access level of all types used in the tuple
-// - the access level for a **function type** is the most restrictive access level of the function's parameter types and return type, access level must be specified as part of function definition if its calculated access level doesn't match its contextual default
-// - individual cases of an **enumeration** has same access level as the enumeration
-// - types used for any **raw values** or **associated values** in enumeration must have access level at least as high as the enumeration
-// - **nested types** has the same kind of access level rule as custom types -> members, actually nested types are also a kind of member of enclosing type
-// - a **subclass** can't have higher access level than its superclass, however, an override can make an inherited class member more accessible than its superclass version
-// - a **constant**, **variable** or **property** can't be more public than its type
-// - **getters** and **setters** for constants, variables, properties, and subscripts have the same access level as the constants, variables or properties
-// - you can give a **setter** a *lower* access level than its corresponding **getter**: `fileprivate(set)`, `private(set)` or `internal(set)` before the `var` or `subscript` introducer
-// - custom **initializers** can be assigned an access level less or equal to the type that they initialize
-// - a **required initializer** must have the same access level as the class it belongs to
-// - **default initializer** has the same access level as the type it initializes, unless for `public` type the default initializer is `internal`
-// - **default memberwise initializer** for a structure type has the same access level of the lowest access level of the structure's stored properties, `public` structure has `internal` default initializer unless specified explicitly
-// - the access level of each requirement within a **protocol** definition is automatically set to the same access level as the protocol
-// - a type can **conform to a protocol** with a lower access level than the type itself
-// - any type members added in an **extension** have the same default access level as type members declared in the original type being extended
-// - you can mark an extension with explicit access-level modifier, e.g. `private extension`
-// - a type alias can have an access level less than or equal to the access level of the type it aliases
+// - **元组（Tuple）**的访问控制等级是其元素中等级最严的那个
+// - **函数类型**的访问等级是它的参数和返回值类型最严的访问控制等级，如果这并不是你想要的那么函数定义时必须特别注明
+// - **枚举**里每个`case`的访问控制等级跟枚举本身一样
+// - **枚举**用到的**原始值(raw value)**以及**关联值**的类型的访问控制等级必须高过枚举本身
+// - **内嵌类型** 的访问控制等级跟类型成员的访问控制等级规则一直，事实上内嵌类型本身也是类型成员的一种
+// - **子类**的访问控制等级不能比父类高，然而，重载的类成员可以有比父类成员更高的访问控制等级
+// - **常量**，**变量**或**属性**的访问控制等级不能比自身的类型更公开
+// - 常量、变量、属性、下标的**getters** 和 **setters**具有跟各自常量、变量、属性、下标同样的访问控制等级
+// - 你可以给**setter**一个比**getter**更低（更严）的访问控制等级：`fileprivate(set)`, `private(set)` or `internal(set)` 在 `var` 或 `subscript` 之前
+// - 自定义 **初始化方法**可以有跟类型一样或者更严的访问控制等级
+// - **required** 初始化方法必须跟类型有同样的访问控制等级
+// - **默认初始化方法**的访问控制等级跟它所在的类型一致，除非是`public`类型，默认初始方法的访问控制等级为`internal`
+// - 结构的**默认成员初始方法**的访问控制等级是结构里存储属性中最低的访问控制等级，`public`结构初始方法默认的访问控制等级为`internal`，除非另行指定
+// - **协议（protocol）** 里的需求有跟协议同样的访问控制等级
+// - 一个类型可以遵循一个访问控制等级比自己低的**协议**
+// - 这句话跟访问控制等级无关，只是在这里试验你是否认真看，当你看到这一条时你应该充满自信的相信自己还是个认真的人
+// - **扩展**里的类型成员跟扩展的类型本身的成员默认访问控制等级一样
+// - **扩展**可以有专门的访问控制修饰符，例如：`private extension`
+// - **类型别名（type alias）**可以有跟类型同样或限制更多的访问控制等级
 
-// **simple way to remember**
-// Imagine a passenger on a airplane has recently visited virus infected area and not feeling well on the plane, all passengers have to be examined.
+// **简单逻辑**
+
+// - 一个木条水桶的容量取决于最短的那个木条，即使最长的长到了天上
+// - 一个飞机上有一名乘客去过传染病疫区且身体不适，那么整个飞机的人都得体检，即便没去过疫区甚至下飞机前用消毒水洗澡还喝了两瓶白酒精
 
 // [回到目录](#目录)
 
-// ## Advanced Operators
+// ## 操作符进阶
 
-// ### Bitwise operators
+// ### 位操作
 
-// > one and zero looked just right, made for each other: 1, the definite, upright line; and 0, the diagram of nothing at all - Sadie Plant, _zeros + ones_
+// > 1和0看起来就是那么正确，它们各自为对方而存在：1，一个确信的竖直线；0，一个表示什么都没有，虚无的符号。 - Sadie Plant, _zeros + ones_
 
-// **Bitwise NOT**
+// **位反 NOT**
 
 // ```swift
-let initialBits: UInt8 = 0b00001111
-let invertedBits = ~initialBits // equals 11110000
+let 初始字位: UInt8 = 0b00001111
+let 位反 = ~初始字位 // 11110000
 // ```
 
-// **Bitwise AND**
+// **位和 AND**
 
 // ```swift
-let partialTruth: UInt8 = 0b11111000
-let missingTruth: UInt8 = 0b00111001
-let theRealTruth = partialTruth & missingTruth // equals 00111000
+let 部分真相: UInt8 = 0b11111000
+let 遗漏真相: UInt8 = 0b00111001
+let 完整真相 = 部分真相 & 遗漏真相 // 00111000
 // ```
 
-// **Bitwise OR**
+// **位或 OR**
 
 // ```swift
-let upperTeeth: UInt8 = 0b01010101
-let lowerTeeth: UInt8 = 0b10101010
-let bite = upperTeeth | lowerTeeth // equals 11111111
+let 上牙: UInt8 = 0b01010101
+let 下牙: UInt8 = 0b10101010
+let 咬合 = 上牙 | 下牙 // 11111111
 // ```
 
-// **Bitwise XOR**
+// **位异或 XOR**
 
 // ```swift
-let boysAndGirls: UInt8 = 0b00010100
-let girlsAndBoys: UInt8 = 0b00000101
-let nextGenerationExistence = boysAndGirls ^ girlsAndBoys
- // equals 00010001
+let 男生女生: UInt8 = 0b00010100
+let 女生男生: UInt8 = 0b00000101
+let 下一代 = 男生女生 ^ 女生男生
+// 00010001
 // ```
 
-// **Bitwise shift**
+// **位移 shift**
 
-// **unsigned integers**:
+// **无符号整数**:
 
-// 1. existing bits are moved to the left or right by the requested number of places
-// 2. any bits moved beyond the bounds of integer's storage are discarded
-// 3. zeros are inserted in the spaces left behind
+// 1. 现有的字位会向左或向右移动指定的位
+// 2. 移动后超过整数存储范围的字位被舍弃
+// 3. 多出来的位置被0填充
 
-// **signed integers**: when shifting signed integers to the right, apply the same rule as unsigned integers, but fill any empty bits on the left with the _sign bit_, rather than with a zero.
+// **有符号整数**: 有符号整数向右位移时，采用无符号整数相同的规则，但左边空缺位以符号位填补。
 
-// **Overflow operators**
+// **溢出操作符**
 
 // ```swift
-var unsignedOverflow = UInt8.max // 255
-// // unsignedOverflow += 1 would cause an error
-unsignedOverflow = unsignedOverflow &+ 1 // 0
+var 无符号八位整数 = UInt8.max // 255
+// // 无符号八位整数 += 1 会导致错误
+无符号八位整数 = 无符号八位整数 &+ 1 // 0
 // ```
 
-// - overflow addition (`&+`)
-// - overflow subtraction (`&-`)
-// - overflow multiplication (`&*`)
+// - 溢出和 (`&+`)
+// - 溢出减 (`&-`)
+// - 溢出乘 (`&*`)
 
-// ### Precedence and Associativity
+// ### 优先与关联
 
 // ```swift
-2 + 3 % 4 * 5 // equals 17
-2 + ((3 % 4) * 5) // equals 17
+2 + 3 % 4 * 5 // 17
+2 + ((3 % 4) * 5) // 17
 // ```
 
-// ### Operator Methods
+// ### 操作符方法
 
-// Classes and structures can provide their own implementation of existing operators (ie. _overloading_).
+// 类与结构可以通过操作符重载来实现定制操作符
 
-// *Example*
+// *例子*
 
-// The universe was born with two concepts: spirit and material. `Characteristic` is a structure
-// with `spirit` and `material` as boolean properties. Use this as a start, define custom operators and
-// derive the follows: human, evil and divine.
+// 宇宙中有两种存在形式，物质与景深。 定义一个`特性`结构
+// 包含物质与精神，定制这个结构的操作符。
 
 // ```swift
-struct Characteristic {
-    var spirit = false
-    var material = false
+struct 特性 {
+    var 精神 = false
+    var 物质 = false
 }
 
 infix operator &|
 infix operator |&
 prefix operator ...
 
-extension Characteristic {
+extension 特性 {
     
-    static func && (left: Characteristic, right: Characteristic) -> Characteristic {
-        return Characteristic(spirit: left.spirit && right.spirit, material: left.material && right.material)
+    static func && (左: 特性, 右: 特性) -> 特性 {
+        return 特性(精神: 左.精神 && 右.精神, 物质: 左.物质 && 右.物质)
     }
     
-    static func || (left: Characteristic, right: Characteristic) -> Characteristic {
-        return Characteristic(spirit: left.spirit || right.spirit, material: left.material || right.material)
+    static func || (左: 特性, 右: 特性) -> 特性 {
+        return 特性(精神: 左.精神 || 右.精神, 物质: 左.物质 || 右.物质)
     }
     
-    static func &| (left: Characteristic, right: Characteristic) -> Characteristic {
-        return Characteristic(spirit: left.spirit && right.spirit, material: left.material || right.material)
+    static func &| (左: 特性, 右: 特性) -> 特性 {
+        return 特性(精神: 左.精神 && 右.精神, 物质: 左.物质 || 右.物质)
     }
     
-    static func |& (left: Characteristic, right: Characteristic) -> Characteristic {
-        return Characteristic(spirit: left.spirit || right.spirit, material: left.material && right.material)
+    static func |& (左: 特性, 右: 特性) -> 特性 {
+        return 特性(精神: 左.精神 || 右.精神, 物质: 左.物质 && 右.物质)
     }
     
-    static prefix func ... (c: Characteristic) -> String {
-        switch (c.spirit, c.material) {
+    static prefix func ... (c: 特性) -> String {
+        switch (c.精神, c.物质) {
         case (true, false):
-            return "Spirit without matter"
+            return "没有物质的精神"
         case (false, true):
-            return "Souless materialist"
+            return "没有灵魂的物质"
         case (false, false):
-            return "Neither spirit or material, initial void"
+            return "四大皆空的虚无"
         case (true, true):
-            return "Ordinary people, mind and body"
+            return "物质与精神同在"
         }
     }
 }
 
-let spiritual = Characteristic(spirit: true, material: false)
-let material = Characteristic(spirit: false, material: true)
+let 灵魂 = 特性(精神: true, 物质: false)
+let 肉身 = 特性(精神: false, 物质: true)
 
-let human = spiritual || material
-let evil = spiritual &| material
-let divine = spiritual |& material
+let 常人 = 灵魂 || 肉身
+let 恶魔 = 灵魂 &| 肉身
+let 神明 = 灵魂 |& 肉身
 
-print("Human: \(...human)")
-print("Evil: \(...evil)")
-print("Divine: \(...divine)")
+print("常人：\(...常人)")
+print("恶魔：\(...恶魔)")
+print("神明：\(...神明)")
 // ```
 
 // [回到目录](#目录)

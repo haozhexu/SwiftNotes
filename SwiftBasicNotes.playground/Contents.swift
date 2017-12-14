@@ -1875,12 +1875,14 @@ private func privateFunctionRoom() {}
 // - **default memberwise initializer** for a structure type has the same access level of the lowest access level of the structure's stored properties, `public` structure has `internal` default initializer unless specified explicitly
 // - the access level of each requirement within a **protocol** definition is automatically set to the same access level as the protocol
 // - a type can **conform to a protocol** with a lower access level than the type itself
+// - this is not about Access Control, just here to test if you read carefully; So, if you see this, you can be confident that you are a careful person
 // - any type members added in an **extension** have the same default access level as type members declared in the original type being extended
 // - you can mark an extension with explicit access-level modifier, e.g. `private extension`
 // - a type alias can have an access level less than or equal to the access level of the type it aliases
 
 // **simple way to remember**
-// Imagine a passenger on a airplane has recently visited virus infected area and not feeling well on the plane, all passengers have to be examined.
+// - the volume of a timber bucket depends on the shorted piece of timber
+// - imagine a passenger on a airplane has recently visited virus infected area and not feeling well on the plane, all passengers have to be examined.
 
 // [ToC](#table-of-contents)
 
@@ -2079,13 +2081,17 @@ let (somethreesAge): Int = 3
 // An optional pattern matches values wrapped in a `some(Wrapped)` case of an `Optional<Wrapped>` enumeration.
 
 // ```swift
-let someOptional: Int? = 250
-if case .some(let x) = someOptional {
+let kingsClothes: Int? = nil
+if case .some(let x) = kingsClothes {
     print(x)
+} else {
+    print("Kid: the King has no clothes!")
 }
 
-if case let x? = someOptional {
+if case let x? = kingsClothes {
     print(x)
+} else {
+    print("Kid: the King has no clothes!")
 }
 // ```
 
@@ -2315,7 +2321,7 @@ struct Tool: Codable {
 }
 // ```
 
-// ### Coding custom yypes
+// ### Coding custom types
 
 // ```swift
 var tool = Tool(name: "Too")
