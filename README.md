@@ -1,3 +1,10 @@
+# Note!
+
+Swift Notes has been merged as part of iOSDevMatters, this repository will no longer receive updates!
+
+iOSDevMatters:
+
+[https://github.com/haozhexu/iOSDevMatters](https://github.com/haozhexu/iOSDevMatters)
 
 
 # Hao's Swift Study Notes
