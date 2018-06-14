@@ -1,10 +1,3 @@
-# Note!
-
-Swift Notes has been merged as part of iOSDevMatters, this repository will no longer receive updates!
-
-iOSDevMatters:
-
-[https://github.com/haozhexu/iOSDevMatters](https://github.com/haozhexu/iOSDevMatters)
 
 
 # Hao's Swift Study Notes
@@ -1102,6 +1095,13 @@ print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(
 
 ## Enumerations
 
+> the average pencil is seven inches long, with just a half-inch eraser-in **case** you thought optimism was dead. -- Robert Brault
+
+Some history regarding switch-case - in case you need to show off your knowledge to friends:
+//
+In his 1952 text Introduction to Metamathematics, Stephen Kleene formally proved that the CASE function (the IF-THEN-ELSE function being its simplest form) is a primitive recursive function.
+//
+
 ### Syntax
 
 ```
@@ -1308,6 +1308,192 @@ escape(from: love)
 // Fall into another trap
 // Fall into another trap
 // Found the right way out
+```
+
+### Different Uses of Enum
+
+- enum can have methods inside it, the methods are for each case (so if a method performs case-dependent action, it need to consider all cases)
+- enum can be a good way of representing hierarchy, structure and even certain kinds of flow
+
+**Example**
+
+An `enum` representing seasons with method that evolves to next season
+
+```swift
+enum Season: String, CustomStringConvertible {
+
+    case spring
+    case summer
+    case autumn
+    case winter
+
+    mutating func next() {
+        switch self {
+        case .spring:
+            self = .summer
+        case .summer:
+            self = .autumn
+        case .autumn:
+            self = .winter
+        case .winter:
+            self = .spring
+        }
+    }
+    
+    var description: String {
+        return "It's \(self.rawValue) now."
+    }
+}
+
+var currentSeason = Season.spring
+print(currentSeason)
+currentSeason.next()
+print(currentSeason)
+```
+
+Prints:
+It's spring now.
+It's autumn now.
+
+**Example**
+
+An 'enum' representing stages of love and with ability to evolve
+
+```swift
+enum StageOfLove: String {
+    case acquaint
+    case inLove
+    case marriage
+    case accustomed
+    case bored
+    case stranger
+    case separate
+    case lost
+}
+
+extension StageOfLove {
+    func nextStageWithTime() -> StageOfLove {
+        guard self != .lost else {
+            preconditionFailure("No time left")
+        }
+        
+        switch self {
+        case .acquaint:
+            return .inLove
+        case .inLove:
+            return .marriage
+        case .marriage:
+            return .accustomed
+        case .accustomed:
+            return .bored
+        case .bored:
+            return .stranger
+        case .stranger:
+            return .separate
+        case .separate:
+            return .lost
+        default:
+            preconditionFailure()
+        }
+    }
+    
+    func memoryRecall() -> StageOfLove {
+        guard self == .separate else {
+            preconditionFailure("You never know how deep you are involved unless you lost it.")
+        }
+        return .lost
+    }
+}
+
+extension StageOfLove: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .acquaint, .inLove, .marriage, .accustomed:
+            return "You are the one"
+        case .bored, .stranger, .separate:
+            return "Memory fades as time goes by, we got seperated as we were pacing."
+        case .lost:
+            return "The moment I turned round, I found that you were not there. Suddenly, I was flustered."
+        }
+    }
+}
+
+var currentStage = StageOfLove.acquaint
+var nextStage = currentStage.nextStageWithTime()
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print(currentStage)
+print(nextStage)
+
+```
+
+prints:
+//
+acquaint becomes inLove
+inLove becomes marriage
+marriage becomes accustomed
+accustomed becomes bored
+bored becomes stranger
+stranger becomes separate
+
+Memory fades as time goes by, we got seperated as we were pacing.
+The moment I turned round, I found that you were not there. Suddenly, I was flustered.
+
+### Enum with Generic parameters
+
+Enum can be defined with generic parameters for associated values
+
+**Example**
+Define an `enum` representing success and error response with generic response and error type
+
+```swift
+enum Response<SuccessType, ErrorType> {
+    case success(SuccessType)
+    case failure(ErrorType)
+}
+
+let response1 = Response<String, Int>.success("valid response")
+let response2 = Response<String, Int>.failure(404)
+
+func print(response: Response<String, Int>) {
+    switch response {
+    case .success(let message):
+        print("success message: \(message)")
+    case .failure(let errorCode):
+        print("error code: \(errorCode)")
+    }
+}
+
+print(response1)
+print(response2)
 ```
 
 [ToC](#table-of-contents)

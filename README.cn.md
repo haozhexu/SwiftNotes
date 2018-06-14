@@ -1,10 +1,4 @@
-# 注意！
 
-Swift学习笔记于戊戌年丁巳月一号凌晨被我合并到了iOSDevMatters里，此存储库将不再更新！
-
-新库地址：
-
-[https://github.com/haozhexu/iOSDevMatters](https://github.com/haozhexu/iOSDevMatters)
 
 # Swift学习笔记
 
