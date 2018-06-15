@@ -6,11 +6,11 @@
 
 This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097-CH3-ID0) from Apple, took notes and wrote code as I read.
 
-Soon I realised the notes could be organized in a way so that it could generate a human readable markdown, I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
+Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with a little tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
 
 As a result, this markdown was directly generated from the code and comments in the playground.
 
-To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention is as follows:
+To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention looks like:
 
 ```
 // This is a comment, will become text content of **markdown**.
@@ -32,7 +32,7 @@ sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftB
 
 ## "Hello, world!" Printing
 
-The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method looks like, how string literal is represented.
+The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method call looks like, how string literal is represented.
 
 ```
 print("Science may someday discover what faith has always known.")
@@ -77,7 +77,8 @@ let <constant name>: <type> = <expression>
 var <variable name>: <type> = <expression>
 ```
 
-**Make sure** constant or variable has value set before the first time its value is read
+- **Make sure** constant or variable has value set before the first time its value is read
+- if the value of a variable isn't modified throughout its lifecycle, or not intended to be modified, define it as a constant instead, this makes sure any unexpected modification could be captured by compiler
 
 ```swift
 let catsMaximumNumberOfLives = 9 // constant
@@ -141,24 +142,26 @@ print("maximum value of Int32 is \(Int32.max) which is (2^(32-1))-1 = \(Int(pow(
 ### Type Safe and Type Inferences
 
 ```swift
-let meaningfulLife = 42
+let youth = 3
 // inferred to be type `Int`
 
-let pi = 3.14159
+let experienceOfYouth = 0.14
 // inferred to be type `Double`
 
-let anotherPi = 3 + 0.1415926
+let pi = 3 + 0.1415926
 // Inferred to be type `Double`
 
-// let lastPi = meaningfulLife + pi won't work:
+// you can't get pi by adding:
+// let youthAndExperienceOfYouth = youth + experienceOfYouth
 // error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
+// (you can't have youth and experience of youth at the same time)
 ```
 
 ### Type Conversion
 
 ```swift
-let lastPi = Double(meaningfulLife) + pi
-let werePi = Int(lastPi) // lost precision
+let alsoPi = Double(youth) + experienceOfYouth
+let werePi = Int(alsoPi) // lost precision
 ```
 
 ### Type Alias
@@ -181,7 +184,7 @@ let truth = true
 var b = 10
 var a = 5
 a = b // a is now equal to 10
-let (x, y) = (1, 2)
+let (x, y) = (1, 2) // x is 1 and y is 2
 ```
 
 ### Arithmetic operator
@@ -256,6 +259,12 @@ _half-open range operator_:
 
 _one-sided range_:
 a range that continue as far as possible, e.g. `array[3...]` from 3 to the end, `array[...9]` from beginning up to 9
+
+```swift
+let someArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(someArray[5...])
+print(someArray[...3])
+```
 
 ### Terminology
 
