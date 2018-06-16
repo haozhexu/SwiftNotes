@@ -132,25 +132,27 @@ print("Int32 的最大值是 \(Int32.max) which is (2^(32-1))-1 = \(Int(pow(2.0,
 ### 类型安全与类型推断
 
 ```swift
-let 有意义的生命 = 42
+let 青春 = 3
 // 推断为 `Int` 整数型
 
-let 派 = 3.14159
+let 对青春的感悟 = 0.14
 // 推断为 `Double`
 
-let 另一个派 = 3 + 0.1415926
+let 派 = 3 + 0.1415926
 // 推断为 `Double`
 
-// let 最后的派 = 有意义的生命 + 派 不能通过编译：
+下面的操作无法编译：
+let 青春以及对青春的感悟 = 青春 + 对青春的感悟
 // error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
 // （错误：二元操作符不能用来操作 'Int' 和 'Double'）
+// （你无法同时拥有青春以及对青春的感悟）
 ```
 
 ### 类型转换
 
 ```swift
-let 最后的派 = Double(有意义的生命) + 派
-let 曾经的派 = Int(最后的派) // 浮点数转换成整数丢失了精度
+let 同样的派 = Double(青春) + 对青春的感悟
+let 曾经的派 = Int(同样的派) // 浮点数转换成整数丢失了精度
 ```
 
 ### 类型别名 Type alias
@@ -173,7 +175,7 @@ let 真 = true
 var b = 10
 var a = 5
 a = b // a现在的值是10
-let (x, y) = (1, 2)
+let (x, y) = (1, 2) // x is 1 and y is 2
 ```
 
 ### 代数操作
@@ -248,6 +250,12 @@ _半开范围_:
 
 _单边范围_:
 定义从一个边界到尽可能多的另一个边界的范围, 例如 `array[3...]` 范围从索引3开始到数组的最后元素, `array[...9]` 范围从数组开始到索引9
+
+```swift
+let someArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(someArray[5...])
+print(someArray[...3])
+```
 
 ### 专业术语
 
