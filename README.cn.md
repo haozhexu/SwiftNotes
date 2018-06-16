@@ -1,10 +1,4 @@
-# 注意！
 
-Swift学习笔记于戊戌年丁巳月一号凌晨被我合并到了iOSDevMatters里，此存储库将不再更新！
-
-新库地址：
-
-[https://github.com/haozhexu/iOSDevMatters](https://github.com/haozhexu/iOSDevMatters)
 
 # Swift学习笔记
 
@@ -138,25 +132,27 @@ print("Int32 的最大值是 \(Int32.max) which is (2^(32-1))-1 = \(Int(pow(2.0,
 ### 类型安全与类型推断
 
 ```swift
-let 有意义的生命 = 42
+let 青春 = 3
 // 推断为 `Int` 整数型
 
-let 派 = 3.14159
+let 对青春的感悟 = 0.14
 // 推断为 `Double`
 
-let 另一个派 = 3 + 0.1415926
+let 派 = 3 + 0.1415926
 // 推断为 `Double`
 
-// let 最后的派 = 有意义的生命 + 派 不能通过编译：
+下面的操作无法编译：
+let 青春以及对青春的感悟 = 青春 + 对青春的感悟
 // error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
 // （错误：二元操作符不能用来操作 'Int' 和 'Double'）
+// （你无法同时拥有青春以及对青春的感悟）
 ```
 
 ### 类型转换
 
 ```swift
-let 最后的派 = Double(有意义的生命) + 派
-let 曾经的派 = Int(最后的派) // 浮点数转换成整数丢失了精度
+let 同样的派 = Double(青春) + 对青春的感悟
+let 曾经的派 = Int(同样的派) // 浮点数转换成整数丢失了精度
 ```
 
 ### 类型别名 Type alias
@@ -179,7 +175,7 @@ let 真 = true
 var b = 10
 var a = 5
 a = b // a现在的值是10
-let (x, y) = (1, 2)
+let (x, y) = (1, 2) // x is 1 and y is 2
 ```
 
 ### 代数操作
@@ -254,6 +250,12 @@ _半开范围_:
 
 _单边范围_:
 定义从一个边界到尽可能多的另一个边界的范围, 例如 `array[3...]` 范围从索引3开始到数组的最后元素, `array[...9]` 范围从数组开始到索引9
+
+```swift
+let someArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(someArray[5...])
+print(someArray[...3])
+```
 
 ### 专业术语
 
@@ -1110,6 +1112,8 @@ print("你可曾注意到临床医学家的英文单词 \"\(临床医学家)\" �
 [回到目录](#目录)
 
 ## 枚举
+> the average pencil is seven inches long, with just a half-inch eraser, in **case** you thought optimism was dead. -- Robert Brault
+> （一根铅笔平均的长度为七英寸，末端的橡皮却只有半英寸，以防万一你认为乐观已经死亡。）
 
 ```
 enum <枚举名> {
@@ -1319,6 +1323,191 @@ func 逃离(from 一个陷阱: 陷阱) {
 // 进入另一个陷阱。
 // 进入另一个陷阱。
 // 找到了正确的出路。
+```
+
+### Enum的一些用途
+
+- enum里可以有方法（method），方法为每个case而存在，如果方法里需要根据`case`来进行一些操作，则必须考虑所有的`case`
+- enum可以很好的表达一些等级、结构甚至流程
+
+**一个藏袍**
+
+表示不同季节的enum，并且可以将一个季节演变到下一个季节
+
+```swift
+enum 季节: String, CustomStringConvertible {
+
+    case 春
+    case 夏
+    case 秋
+    case 冬
+    
+    mutating func 下一个季节() {
+        switch self {
+        case .春:
+            self = .夏
+        case .夏:
+            self = .秋
+        case .秋:
+            self = .冬
+        case .冬:
+            self = .春
+        }
+    }
+    
+    var description: String {
+        return "现在是\(self.rawValue)"
+    }
+}
+
+var 现在的季节 = 季节.春
+print(现在的季节)
+现在的季节.下一个季节()
+print(现在的季节)
+```
+
+输出：
+现在是春
+现在是夏
+
+**一个藏袍**
+
+表示爱情的不同阶段和过度
+
+```swift
+enum 爱的阶段: String {
+    case 相遇
+    case 相恋
+    case 婚姻
+    case 习以为常
+    case 厌倦
+    case 陌路
+    case 分离
+    case 失落
+}
+
+extension 爱的阶段 {
+    var 下一个阶段: 爱的阶段 {
+        guard self != .失落 else {
+            preconditionFailure("失落是最后阶段")
+        }
+        
+        switch self {
+        case .相遇:
+            return .相恋
+        case .相恋:
+            return .婚姻
+        case .婚姻:
+            return .习以为常
+        case .习以为常:
+            return .厌倦
+        case .厌倦:
+            return .陌路
+        case .陌路:
+            return .分离
+        case .分离:
+            return .失落
+        default:
+            preconditionFailure()
+        }
+    }
+    
+    func 回忆() -> 爱的阶段 {
+        guard self == .分离 else {
+            preconditionFailure("爱过才知情重。")
+        }
+        return .失落
+    }
+}
+
+extension 爱的阶段: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .相遇, .相恋, .婚姻, .习以为常:
+            return "You are the one"
+        case .厌倦, .陌路, .分离:
+            return "走着走着就散了，回忆都淡了。"
+        case .失落:
+            return "回头发现你不见了，突然我乱了。"
+        }
+    }
+}
+
+var 此阶段 = 爱的阶段.相遇
+var 下阶段 = 此阶段.下一个阶段
+print("\(此阶段.rawValue) 成了 \(下阶段.rawValue)")
+
+此阶段 = 下阶段
+下阶段 = 此阶段.下一个阶段
+
+print("\(此阶段.rawValue) 成了 \(下阶段.rawValue)")
+
+此阶段 = 下阶段
+下阶段 = 此阶段.下一个阶段
+
+print("\(此阶段.rawValue) 成了 \(下阶段.rawValue)")
+
+此阶段 = 下阶段
+下阶段 = 此阶段.下一个阶段
+
+print("\(此阶段.rawValue) 成了 \(下阶段.rawValue)")
+
+此阶段 = 下阶段
+下阶段 = 此阶段.下一个阶段
+
+print("\(此阶段.rawValue) 成了 \(下阶段.rawValue)")
+
+此阶段 = 下阶段
+下阶段 = 此阶段.下一个阶段
+
+print("\(此阶段.rawValue) 成了 \(下阶段.rawValue)")
+
+此阶段 = 下阶段
+下阶段 = 此阶段.回忆()
+
+print(此阶段)
+print(下阶段)
+
+```
+
+输出：
+//
+相遇 成了 相恋
+相恋 成了 婚姻
+婚姻 成了 习以为常
+习以为常 成了 厌倦
+厌倦 成了 陌路
+陌路 成了 分离
+走着走着就散了，回忆都淡了。
+回头发现你不见了，突然我乱了。
+
+### 泛型参数枚举
+
+枚举的关联值可以有泛型参数
+
+**一个藏袍**
+定义网络请求的返回数据
+
+```swift
+enum 响应<成功类型, 错误类型> {
+    case 成功(成功类型)
+    case 失败(错误类型)
+}
+
+let 响应1 = 响应<String, Int>.成功("valid response")
+let 响应2 = 响应<String, Int>.失败(404)
+
+func 打印(一个响应: 响应<String, Int>) {
+    switch 一个响应 {
+    case .成功(let 信息):
+        print("成功响应得到信息：\(信息)")
+    case .失败(let 错误代码):
+        print("请求失败错误代码：\(错误代码)")
+    }
+}
+
+打印(一个响应: 响应1)
+打印(一个响应: 响应2)
 ```
 
 [回到目录](#目录)

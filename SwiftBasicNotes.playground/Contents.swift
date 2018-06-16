@@ -8,11 +8,11 @@ import UIKit //!
 
 // This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097-CH3-ID0) from Apple, took notes and wrote code as I read.
 
-// Soon I realised the notes could be organized in a way so that it could generate a human readable markdown, I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
+// Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with a little tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
 
 // As a result, this markdown was directly generated from the code and comments in the playground.
 
-// To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention is as follows:
+// To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention looks like:
 
 // ```
 // // This is a comment, will become text content of **markdown**.
@@ -34,7 +34,7 @@ import UIKit //!
 
 // ## "Hello, world!" Printing
 
-// The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method looks like, how string literal is represented.
+// The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method call looks like, how string literal is represented.
 
 // ```
 print("Science may someday discover what faith has always known.")
@@ -79,7 +79,8 @@ print("Science may someday discover what faith has always known.")
 // var <variable name>: <type> = <expression>
 // ```
 
-// **Make sure** constant or variable has value set before the first time its value is read
+// - **Make sure** constant or variable has value set before the first time its value is read
+// - if the value of a variable isn't modified throughout its lifecycle, or not intended to be modified, define it as a constant instead, this makes sure any unexpected modification could be captured by compiler
 
 // ```swift
 let catsMaximumNumberOfLives = 9 // constant
@@ -143,24 +144,26 @@ print("maximum value of Int32 is \(Int32.max) which is (2^(32-1))-1 = \(Int(pow(
 // ### Type Safe and Type Inferences
 
 // ```swift
-let meaningfulLife = 42
+let youth = 3
 // // inferred to be type `Int`
 
-let pi = 3.14159
+let experienceOfYouth = 0.14
 // // inferred to be type `Double`
 
-let anotherPi = 3 + 0.1415926
+let pi = 3 + 0.1415926
 // // Inferred to be type `Double`
 
-// // let lastPi = meaningfulLife + pi won't work:
+// // you can't get pi by adding:
+// // let youthAndExperienceOfYouth = youth + experienceOfYouth
 // // error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
+// // (you can't have youth and experience of youth at the same time)
 // ```
 
 // ### Type Conversion
 
 // ```swift
-let lastPi = Double(meaningfulLife) + pi
-let werePi = Int(lastPi) // lost precision
+let alsoPi = Double(youth) + experienceOfYouth
+let werePi = Int(alsoPi) // lost precision
 // ```
 
 // ### Type Alias
@@ -183,7 +186,7 @@ let truth = true
 var b = 10
 var a = 5
 a = b // a is now equal to 10
-let (x, y) = (1, 2)
+let (x, y) = (1, 2) // x is 1 and y is 2
 // ```
 
 // ### Arithmetic operator
@@ -258,6 +261,12 @@ print("some coordinate has x = \(someCoordinatesNamed.x) and y = \(someCoordinat
 
 // _one-sided range_:
 // a range that continue as far as possible, e.g. `array[3...]` from 3 to the end, `array[...9]` from beginning up to 9
+
+// ```swift
+let someArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(someArray[5...])
+print(someArray[...3])
+// ```
 
 // ### Terminology
 
@@ -1097,6 +1106,13 @@ print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(
 
 // ## Enumerations
 
+// > the average pencil is seven inches long, with just a half-inch eraser-in **case** you thought optimism was dead. -- Robert Brault
+
+// Some history regarding switch-case - in case you need to show off your knowledge to friends:
+//
+// In his 1952 text Introduction to Metamathematics, Stephen Kleene formally proved that the CASE function (the IF-THEN-ELSE function being its simplest form) is a primitive recursive function.
+//
+
 // ### Syntax
 
 // ```
@@ -1303,6 +1319,192 @@ escape(from: love)
 // // Fall into another trap
 // // Fall into another trap
 // // Found the right way out
+// ```
+
+// ### Different Uses of Enum
+
+// - enum can have methods inside it, the methods are for each case (so if a method performs case-dependent action, it need to consider all cases)
+// - enum can be a good way of representing hierarchy, structure and even certain kinds of flow
+
+// **Example**
+
+// An `enum` representing seasons with method that evolves to next season
+
+// ```swift
+enum Season: String, CustomStringConvertible {
+
+    case spring
+    case summer
+    case autumn
+    case winter
+
+    mutating func next() {
+        switch self {
+        case .spring:
+            self = .summer
+        case .summer:
+            self = .autumn
+        case .autumn:
+            self = .winter
+        case .winter:
+            self = .spring
+        }
+    }
+    
+    var description: String {
+        return "It's \(self.rawValue) now."
+    }
+}
+
+var currentSeason = Season.spring
+print(currentSeason)
+currentSeason.next()
+print(currentSeason)
+// ```
+
+// Prints:
+// It's spring now.
+// It's autumn now.
+
+// **Example**
+
+// An 'enum' representing stages of love and with ability to evolve
+
+// ```swift
+enum StageOfLove: String {
+    case acquaint
+    case inLove
+    case marriage
+    case accustomed
+    case bored
+    case stranger
+    case separate
+    case lost
+}
+
+extension StageOfLove {
+    func nextStageWithTime() -> StageOfLove {
+        guard self != .lost else {
+            preconditionFailure("No time left")
+        }
+        
+        switch self {
+        case .acquaint:
+            return .inLove
+        case .inLove:
+            return .marriage
+        case .marriage:
+            return .accustomed
+        case .accustomed:
+            return .bored
+        case .bored:
+            return .stranger
+        case .stranger:
+            return .separate
+        case .separate:
+            return .lost
+        default:
+            preconditionFailure()
+        }
+    }
+    
+    func memoryRecall() -> StageOfLove {
+        guard self == .separate else {
+            preconditionFailure("You never know how deep you are involved unless you lost it.")
+        }
+        return .lost
+    }
+}
+
+extension StageOfLove: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .acquaint, .inLove, .marriage, .accustomed:
+            return "You are the one"
+        case .bored, .stranger, .separate:
+            return "Memory fades as time goes by, we got seperated as we were pacing."
+        case .lost:
+            return "The moment I turned round, I found that you were not there. Suddenly, I was flustered."
+        }
+    }
+}
+
+var currentStage = StageOfLove.acquaint
+var nextStage = currentStage.nextStageWithTime()
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.nextStageWithTime()
+
+print(currentStage)
+print(nextStage)
+
+// ```
+
+// prints:
+//
+// acquaint becomes inLove
+// inLove becomes marriage
+// marriage becomes accustomed
+// accustomed becomes bored
+// bored becomes stranger
+// stranger becomes separate
+
+// Memory fades as time goes by, we got seperated as we were pacing.
+// The moment I turned round, I found that you were not there. Suddenly, I was flustered.
+
+// ### Enum with Generic parameters
+
+// Enum can be defined with generic parameters for associated values
+
+// **Example**
+// Define an `enum` representing success and error response with generic response and error type
+
+// ```swift
+enum Response<SuccessType, ErrorType> {
+    case success(SuccessType)
+    case failure(ErrorType)
+}
+
+let response1 = Response<String, Int>.success("valid response")
+let response2 = Response<String, Int>.failure(404)
+
+func print(response: Response<String, Int>) {
+    switch response {
+    case .success(let message):
+        print("success message: \(message)")
+    case .failure(let errorCode):
+        print("error code: \(errorCode)")
+    }
+}
+
+print(response1)
+print(response2)
 // ```
 
 // [ToC](#table-of-contents)
