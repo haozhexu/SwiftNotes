@@ -1898,10 +1898,6 @@ swapValues(&humanWorld, &hell)
 // // `hell` is now empty, `humanWorld` is now "full of evil"
 // ```
 
-// While it's easy to get oneself acquainted with different usages of generics, **it's not easy to use Generics appropriately for specific scenario**;
-
-// Here is an example of utilising different techniques of Generics, just get a feel of what it cana achieve.
-
 // ### Generic Types
 
 // Here we want to create a Box that contains objects of generic types
@@ -1958,7 +1954,7 @@ func exists<T: Equatable>(object: T, in array: [T]) -> Bool {
 
 // ### Associated Types
 
-// Sometimes it can be useful to specify `associatedtype` in `protocol`, they behave like a placeholder.
+// Sometimes it can be useful to specify `associatedtype` in `protocol`, they behave like placeholder.
 
 // Imagine we have a very generic `Generator` which generates output of `OutputType`, from input of `InputType`:
 
@@ -1970,15 +1966,39 @@ protocol Generator {
 }
 // ```
 
-// Now we want to describe the photosynthesis of green plants:
-
-// > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
+// And we also define `Transformable` protocol:
 
 // ```swift
 protocol Transformable {
     associatedtype TransformType
     func transform() -> TransformType
 }
+// ```
+
+// ### Associated Types with Constraints
+
+// Define a `ChainedGenerator` which has has `InputProvider` and `OutputConsumer` of type `Generator`, that generates input and consumes output
+
+// ```swift
+protocol ChainedGenerator: Generator {
+    associatedtype InputProvider: Generator where InputProvider.OutputType == InputType
+    associatedtype OutputConsumer: Generator where OutputConsumer.InputType == OutputType
+    func generate(input: InputProvider, consumer: OutputConsumer) -> OutputConsumer.OutputType
+}
+// ```
+
+// ### Extension of existing type and conform to protocol with generics
+
+// ```swift
+
+// ```
+
+// Now we want to describe the photosynthesis of green plants:
+
+// > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
+
+// ```swift
+
 
 protocol Photosynthate {
     // photosynthate: n. the product of photosynthesis
@@ -2015,7 +2035,7 @@ struct Oxygen: Photosynthate {
 
 // ```swift
 let greenPlant = Photosynthesizer<CO2<Oxygen>, Oxygen>()
-print(greenPlant.generate(input: CO2<Oxygen>()).emit())
+greenPlant.generate(input: CO2<Oxygen>()).emit()
 // // print:
 // // transforming CO2…
 // // emitting oxygen…
@@ -2059,6 +2079,13 @@ func compareTransform<T1: Transformable, T2: Transformable>(_ transformable1: T1
 // ```
 
 // ```swift
+func repeatTransform<T: Transformable>(_ transformable: T) -> T where T.TransformType == T {
+    return transformable.transform().transform()
+}
+
+protocol Poetic: Transformable where TransformType == Poetic {
+    var story: String { get }
+}
 // ```
 
 // [ToC](#table-of-contents)
