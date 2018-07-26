@@ -1990,7 +1990,19 @@ protocol ChainedGenerator: Generator {
 // ### Extension of existing type and conform to protocol with generics
 
 // ```swift
+protocol TouchBottom {
+    associatedtype Item
+    var bottom: Item? { get }
+}
 
+extension Array: TouchBottom {
+    var bottom: Element? {
+        return self.last
+    }
+}
+
+var pandorasBox = ["Disease", "Disaster", "Pain", "Sorrow", "Hope"]
+print("Without opening the box, we could TouchBottom and get: \(pandorasBox.bottom!)")
 // ```
 
 // Now we want to describe the photosynthesis of green plants:
@@ -1998,8 +2010,6 @@ protocol ChainedGenerator: Generator {
 // > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
 
 // ```swift
-
-
 protocol Photosynthate {
     // photosynthate: n. the product of photosynthesis
     init()
@@ -2068,7 +2078,7 @@ print(junkyard.generate(input: Conscience()))
 // // print: transforming conscience into opinions
 // ```
 
-// ### Different forms of generics
+// ### Generics with where clause
 
 // ```swift
 func compareTransform<T1: Transformable, T2: Transformable>(_ transformable1: T1, _ transformable2: T2) -> Bool where T1.TransformType == T2.TransformType, T1.TransformType: Equatable {
