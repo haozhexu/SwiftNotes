@@ -1987,19 +1987,7 @@ protocol ChainedGenerator: Generator {
 ### Extension of existing type and conform to protocol with generics
 
 ```swift
-protocol TouchBottom {
-    associatedtype Item
-    var bottom: Item? { get }
-}
 
-extension Array: TouchBottom {
-    var bottom: Element? {
-        return self.last
-    }
-}
-
-var pandorasBox = ["Disease", "Disaster", "Pain", "Sorrow", "Hope"]
-print("Without opening the box, we could TouchBottom and get: \(pandorasBox.bottom!)")
 ```
 
 Now we want to describe the photosynthesis of green plants:
@@ -2007,6 +1995,8 @@ Now we want to describe the photosynthesis of green plants:
 > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
 
 ```swift
+
+
 protocol Photosynthate {
     // photosynthate: n. the product of photosynthesis
     init()
@@ -2085,15 +2075,52 @@ func compareTransform<T1: Transformable, T2: Transformable>(_ transformable1: T1
 }
 ```
 
+### Extension with generics
+
+Create an extension of `Sequence` for `Statement` to check whether a true statement exists.
+
 ```swift
-func repeatTransform<T: Transformable>(_ transformable: T) -> T where T.TransformType == T {
-    return transformable.transform().transform()
+struct Statement: CustomStringConvertible {
+    let isTruth: Bool
+    var description: String {
+        return "This is a \(isTruth ? "true" : "false") statement."
+    }
 }
 
-protocol Poetic: Transformable where TransformType == Poetic {
-    var story: String { get }
+let statement1 = Statement(isTruth: false)
+let statement2 = Statement(isTruth: false)
+let statement3 = Statement(isTruth: true)
+
+let statements = [statement1, statement2, statement3]
+
+extension Array where Element == Statement {
+    var hasTrueStatement: Bool {
+        return self.contains(where: { $0.isTruth })
+    }
 }
+
+print("Has true statement? \(statements.hasTrueStatement ? "Y" : "N")")
 ```
+
+### Generics subscript
+
+```swift
+extension Array where Element == Statement {
+    subscript<Indices: Sequence>(indices: Indices) -> [Element]
+        where Indices.Iterator.Element == Int {
+            var result = [Element]()
+            for index in indices {
+                result.append(self[index])
+            }
+            return result
+    }
+}
+
+let partialStatements = statements[[1, 2]]
+print(partialStatements)
+
+```
+
 
 [ToC](#table-of-contents)
 
