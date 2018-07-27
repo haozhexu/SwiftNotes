@@ -2121,9 +2121,7 @@ extension Array where Element == Statement {
 
 let partialStatements = statements[[1, 2]]
 print(partialStatements)
-
 // ```
-
 
 // [ToC](#table-of-contents)
 
