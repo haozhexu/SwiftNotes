@@ -1909,7 +1909,11 @@ struct Box<Stuff> {
         return stuff.removeLast()
     }
 }
+```
 
+`Stuff` is a generic type - there's no need to hard code any real type (concrete or protocol) in the `Box` definition; When we create a `Box` instance, we need to specify a type that replaces `Stuff`:
+
+```swift
 var magicBox = Box<String>()
 magicBox.putin("rabbit")
 magicBox.putin("apple")
@@ -1984,19 +1988,11 @@ protocol ChainedGenerator: Generator {
 }
 ```
 
-### Extension of existing type and conform to protocol with generics
-
-```swift
-
-```
-
-Now we want to describe the photosynthesis of green plants:
+Conforming to the `Generator` protocol, we want to describe the photosynthesis of green plants that absorbs carbon dioxide and generates oxygen.
 
 > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
 
 ```swift
-
-
 protocol Photosynthate {
     // photosynthate: n. the product of photosynthesis
     init()
@@ -2031,6 +2027,7 @@ struct Oxygen: Photosynthate {
 Now we can have our green plant:
 
 ```swift
+// Define a green plant that is a `Photosynthesizer` (thus a `Generator`), its input is CO2 (a `Transformable`) that can transform to `Oxygen`
 let greenPlant = Photosynthesizer<CO2<Oxygen>, Oxygen>()
 greenPlant.generate(input: CO2<Oxygen>()).emit()
 // print:
@@ -2038,7 +2035,7 @@ greenPlant.generate(input: CO2<Oxygen>()).emit()
 // emitting oxygen…
 ```
 
-Based on what we've done above, we can also have a concrete default generator:
+We can abstract the idea of `Photosynthesizer` and create a `DefaultGenerator` that __semantically__ works for any `Transformable` (`Photosynthesizer` requires the `Transformable`'s `TransformType` conforms to `Photosynthate`):
 
 ```swift
 class DefaultGenerator<T: Transformable, O>: Generator where O == T.TransformType {
@@ -2048,7 +2045,15 @@ class DefaultGenerator<T: Transformable, O>: Generator where O == T.TransformTyp
 }
 ```
 
-So that we can create different kinds of generators:
+And we could even simplify it:
+
+```swift
+class TransformBasedGenerator<T: Transformable>: Generator {
+    func generate(input: T) -> T.TransformType {
+        return input.transform()
+    }
+}
+```
 
 > the world we live in / is like a junkyard / people are like bugs / fighting against each other for food / all we eat is conscience / all we shit is opinions
 > "Junkyard" - He Yong
@@ -2060,7 +2065,7 @@ struct Conscience: Transformable {
     }
 }
 
-let junkyard = DefaultGenerator<Conscience, String>()
+let junkyard = TransformBasedGenerator<Conscience>()
 print(junkyard.generate(input: Conscience()))
 // print: transforming conscience into opinions
 ```
