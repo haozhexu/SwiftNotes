@@ -1884,7 +1884,7 @@ for _ in 1...distance {
 
 // [回到目录](#目录)
 
-// ## 范型
+// ## 泛型
 
 // > It is __generally__ agreed that "Hello" is an appropriate greeting because if you entered a room and said "Goodbye," it could confuse a lot of people.
 // > -- Dolph Sharp, "I'm O.K., You're Not So Hot"
