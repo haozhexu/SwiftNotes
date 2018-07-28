@@ -2045,7 +2045,7 @@ class DefaultGenerator<T: Transformable, O>: Generator where O == T.TransformTyp
 }
 ```
 
-And we could even simplify it:
+It could be further simplified:
 
 ```swift
 class TransformBasedGenerator<T: Transformable>: Generator {
@@ -2082,21 +2082,21 @@ func compareTransform<T1: Transformable, T2: Transformable>(_ transformable1: T1
 
 ### Extension with generics
 
-Create an extension of `Sequence` for `Statement` to check whether a true statement exists.
+Create an extension of `Array` for `Statement` to check whether a true statement exists.
 
 ```swift
 struct Statement: CustomStringConvertible {
+    let sentence: String
     let isTruth: Bool
     var description: String {
         return "This is a \(isTruth ? "true" : "false") statement."
     }
 }
 
-let statement1 = Statement(isTruth: false)
-let statement2 = Statement(isTruth: false)
-let statement3 = Statement(isTruth: true)
+let statement1 = Statement(sentence: "The following statement is true", isTruth: true)
+let statement2 = Statement(sentence: "The previous statement is false", isTruth: false)
 
-let statements = [statement1, statement2, statement3]
+let statements = [statement1, statement2]
 
 extension Array where Element == Statement {
     var hasTrueStatement: Bool {

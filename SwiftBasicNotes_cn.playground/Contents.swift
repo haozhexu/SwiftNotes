@@ -47,7 +47,7 @@ print("科学的探索也许某天会验证信仰中一直知道的事实。")
 // - [枚举](#枚举)
 // - [类与结构](#类与结构)
 // - [协议](#协议)
-// - [范型](#范型)
+// - [泛型](#泛型)
 // - [访问控制](#访问控制)
 // - [操作符进阶](#操作符进阶)
 // - [模式](#模式)
@@ -1491,16 +1491,16 @@ print(下阶段)
 // 定义网络请求的返回数据
 
 // ```swift
-enum 响应<成功类型, 错误类型> {
-    case 成功(成功类型)
-    case 失败(错误类型)
+enum 网络请求<结果类, 错误类> {
+    case 成功(结果类)
+    case 失败(错误类)
 }
 
-let 响应1 = 响应<String, Int>.成功("valid response")
-let 响应2 = 响应<String, Int>.失败(404)
+let 请求1 = 网络请求<String, Int>.成功("valid response")
+let 请求2 = 网络请求<String, Int>.失败(404)
 
-func 打印(一个响应: 响应<String, Int>) {
-    switch 一个响应 {
+func 打印(某请求: 网络请求<String, Int>) {
+    switch 某请求 {
     case .成功(let 信息):
         print("成功响应得到信息：\(信息)")
     case .失败(let 错误代码):
@@ -1508,8 +1508,8 @@ func 打印(一个响应: 响应<String, Int>) {
     }
 }
 
-打印(一个响应: 响应1)
-打印(一个响应: 响应2)
+打印(某请求: 请求1)
+打印(某请求: 请求2)
 // ```
 
 // [回到目录](#目录)
@@ -1886,7 +1886,13 @@ for _ in 1...distance {
 
 // ## 范型
 
-// 就如同所有类型的父类型一般
+// > It is __generally__ agreed that "Hello" is an appropriate greeting because if you entered a room and said "Goodbye," it could confuse a lot of people.
+// > -- Dolph Sharp, "I'm O.K., You're Not So Hot"
+// > （“你好”是一个被__广泛__接受的打招呼方式，因为如果你走进一个房间然后说“再见”，会让许多人不解，心想这孙子是谁啊？）
+
+// ### 泛型函数 (Generic Function)
+
+// 假设你需要一个函数来交换两个变量的值，却不想给每两个数据类型单独写一个函数，那么就可以用泛型，**它如同不同类型的父类型。**
 
 // ```swift
 func 互相交换值<T>(_ a: inout T, _ b: inout T) {
@@ -1906,9 +1912,7 @@ var 地狱 = "充满恶魔"
 // // `地狱` 空了，而 `人间` 现在 "充满恶魔"
 // ```
 
-// ### 范型类型
-
-// *例子*
+// ### 范型类型 (Generic Type)
 
 // 用来表示“东西”的范型，“东西”可以放在袋子里并取出
 
@@ -1919,8 +1923,7 @@ struct 口袋<东西> {
         self.口袋里的东西.append(一个东西)
     }
     mutating func 拿出来() -> 东西 {
-        let index: Int = Int(arc4random_uniform(UInt32(self.口袋里的东西.count)))
-        return self.口袋里的东西.remove(at: index)
+        return self.口袋里的东西.removeLast()
     }
 }
 
@@ -1930,98 +1933,252 @@ var 中山装的口袋 = 口袋<String>();
 中山装的口袋.放进去("司法权")
 中山装的口袋.放进去("考试权")
 中山装的口袋.放进去("弹劾权")
-中山装的口袋.拿出来()
+print(中山装的口袋.拿出来())
 // ```
 
-// ### 关联类型
+// ### 类型约束 (Type Constraints)
 
 // ```swift
-protocol 命运 {
-    associatedtype 机会类型
-    associatedtype 事件类型
-    
-    func 触发事件(针对 机会: 机会类型) -> 事件类型
-}
-
-enum 机会: String {
-    case 出生 = "一个新的生命诞生"
-    case 死亡 = "开始一段新的旅程"
-}
-
-class 人生: 命运 {
-    typealias 机会类型 = 机会
-    typealias 事件类型 = String
-    
-    func 触发事件(针对 一个机会: 机会) -> String {
-        return 一个机会.rawValue
-    }
-}
-
-let 蝼蚁 = 人生()
-print("一个机遇 \"死亡\" 触发的事件：\(蝼蚁.触发事件(针对: .死亡))")
-print("机遇 \"出生\" 触发的事件：\(蝼蚁.触发事件(针对: .出生))")
-
-// // 输出： "chance "death" triggered event: a new life was born".
-// // 输出： "chance "birth" triggered event: a new journey just started".
+// func 斗争<Z: 正义Protocol, X: 邪恶Protocol>(正义: Z, 邪恶: X)
 // ```
 
-// ### 类型约束
-
-// ```
-// func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someP: U)
-// ```
-
-// `命运` 还可以这样被实现：
+// 为什么不可以这样：
 
 // ```swift
-// // 类型约束：ChanceT 必须遵循 Hashable
-class 机器人<ChanceT: Hashable, EventT>: 命运 {
-    
-    private var 编程指令 = [ChanceT: EventT]()
-    
-    func 增加指令(_ 动作: EventT, 针对 事件: ChanceT) {
-        编程指令[事件] = 动作
-    }
-    
-    // 这里不需要`typealias`
-    // 因为类型可以被推断出来
-    func 触发事件(针对 一个机会: ChanceT) -> EventT {
-        return 编程指令[一个机会]!
-    }
-}
-
-let 新新人类 = 机器人<String, String>()
-新新人类.增加指令("灯光闪烁，手臂随机摆动", 针对: "通电")
-新新人类.增加指令("忽然停止，面无表情且眼中无神", 针对: "断电")
-
-print("机器人事件 '通电' 触发：\(新新人类.触发事件(针对: "通电"))")
-print("机器人事件 '断电' 触发：\(新新人类.触发事件(针对: "断电"))")
-
-// // 输出："机器人事件 '通电' 触发：灯光闪烁，手臂随机摆动"
-// // 输出："机器人事件 '断电' 触发：忽然停止，面无表情且眼中无神"
+// func 斗争(正义: 正义Protocol, 邪恶: 邪恶Protocol)
 // ```
 
-// ### 范型里的`where`
+// 因为编译器必须在__编译时__弄清具体什么类被用到了（而不能是带有Generic的类），如果`正义Protocol`或`邪恶Protocol`里用到了`associatedtype`或者指定了一些必须满足的约束条件，那么这么写就无法编译通过。
+
+// 举个栗子，下面的代码是不能编译的：
 
 // ```swift
-func 命运的接触<一种命运: 命运, 另一种命运: 命运>(_ 一个人: 一种命运, _ 另一个人: 另一种命运, 机遇: 一种命运.机会类型) -> String where 一种命运.机会类型 == 另一种命运.机会类型, 一种命运.事件类型 == 另一种命运.事件类型, 一种命运.事件类型: Equatable {
-    let 事件1 = 一个人.触发事件(针对: 机遇)
-    let 事件2 = 另一个人.触发事件(针对: 机遇)
-    if (事件1 == 事件2) {
-        return "命运的接触：\(事件1)"
-    } else {
-        return "擦肩而过的命运"
+// func 是否存在(某对象: Equatable, 于 数组: [Equatable]) -> Bool {
+//     return 数组.contains(某对象)
+// }
+// ```
+
+// 而这样写就没事了：
+
+// ```swift
+func 是否存在<T: Equatable>(某对象: T, 于 数组: [T]) -> Bool {
+    return 数组.contains(某对象)
+}
+// ```
+
+// ### 关联类型 (Associated Type)
+
+// 关联类型`associatedtype`有的时候很有用，就像占位符一样。
+// 假设我们有一个非常泛型的`制造机`协议，它根据符合输入类型的参数，来产生输出类型的结果
+
+// ```swift
+protocol 制造机 {
+    associatedtype 输入类型
+    associatedtype 输出类型
+    func 制造(输入: 输入类型) -> 输出类型
+}
+// ```
+
+// 我们又建立了一个`可转换`协议：
+
+// ```swift
+protocol 可转换 {
+    associatedtype 转换后的类型
+    func 转换() -> 转换后的类型
+}
+// ```
+
+// ### 带有约束的关联类型 (Associated Type with Constraints)
+
+// 定义一个`婚姻介绍所`，它有一个`配偶供应`和`求偶需求`，二者各自都遵循`制造机`协议，前者提供`婚姻介绍所`的输入类型，后者使用`婚姻介绍所`的输出类型。
+
+// ```swift
+protocol 配偶供应 {
+    associatedtype 配偶类型
+    var 配偶: 配偶类型 { get }
+}
+
+protocol 求偶需求 {
+    associatedtype 求偶类型
+    func 求偶(某人: 求偶类型) -> String
+}
+
+protocol 婚姻介绍所: 制造机 {
+    associatedtype 配偶: 配偶供应 where 配偶.配偶类型 == 输入类型
+    associatedtype 求偶: 求偶需求 where 求偶.求偶类型 == 输出类型
+    init(配偶: 配偶, 求偶: 求偶)
+}
+
+struct 介绍人: 配偶供应 {
+    let 配偶: String
+}
+
+struct 求偶人: 求偶需求 {
+    let name: String
+    func 求偶(某人: String) -> String {
+        return "遇到\(某人)"
     }
 }
 
-let 丈夫 = 人生()
-let 妻子 = 人生()
-let 命运的交集 = 命运的接触(丈夫, 妻子, 机遇: .出生)
-print("夫妻本是同林鸟，林子大了什么鸟都有：\(命运的交集)")
-// // 输出： "夫妻本是同林鸟，林子大了什么鸟都有：命运的接触：一个新的生命诞生"
+class 夕阳红婚介所: 婚姻介绍所 {
+    
+    let 配偶: String
+    let 求偶: String
+    
+    required init(配偶: 介绍人, 求偶: 求偶人) {
+        self.配偶 = 配偶.配偶
+        self.求偶 = 求偶.求偶(某人: 配偶.配偶)
+    }
+    
+    func 制造(输入: String) -> String {
+        return "\(输入) 使得 \(self.求偶) 遇到 \(self.配偶)"
+    }
+}
+
+let 左隔壁大妈 = 介绍人(配偶: "大妈本人")
+let 右隔壁大爷 = 求偶人(name: "王大爷")
+let 夕阳红 = 夕阳红婚介所(配偶: 左隔壁大妈, 求偶: 右隔壁大爷)
+夕阳红.制造(输入: "孤独空虚寂寞冷")
 // ```
 
-// _PS: 我感觉 命运／机遇／事件 这三者的逻辑套路可以演变成很有趣的游戏，然而由于这份文档的初衷，我们先在这里打住。_
+// ### 复杂一些的栗子
+
+// 遵循`制造机`协议，描述绿色植物的光合作用。
+
+// > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
+// > （有些微观生物同时具有植物和动物的特性，当有阳光的时候它们进行__光合作用__；而没有光的时候，它们就变成了禽兽。不过，我们不都是如此吗？）
+
+// ```swift
+protocol 光合作用产物 {
+    init()
+    func 发散()
+}
+// ```
+
+// 遵循`制造机`协议
+
+// ```swift
+class 光合作用产生器<T: 可转换, P: 光合作用产物>: 制造机 where T.转换后的类型 == P {
+    func 制造(输入: T) -> P {
+        return 输入.转换()
+    }
+}
+
+struct 二氧化碳<P: 光合作用产物>: 可转换 {
+    func 转换() -> P {
+        print("转换二氧化碳进行中……")
+        return P()
+    }
+}
+
+struct 氧气: 光合作用产物 {
+    init() {}
+    func 发散() {
+        print("氧气不断发散中……")
+    }
+}
+// ```
+
+// 现在我们可以定义绿色植物了：
+
+// ```swift
+// // 定义一个绿色植物，它的类型是`光合作用产生器`（也即遵循`制造机`协议），它的输入是`二氧化碳`（遵循`可转换`协议），可以转换为`氧气`
+let 绿植 = 光合作用产生器<二氧化碳<氧气>, 氧气>()
+绿植.制造(输入: 二氧化碳<氧气>()).发散()
+// // 输出：
+// // 转换二氧化碳进行中……
+// // 氧气不断发散中……
+// ```
+
+// `光合作用产生器`可以被抽象为`通用产生器`，适用于所有遵循`可转换`协议的类型。(否则`光合作用产生器`需要`可转换`协议类型的`转换后的类型`遵循`光合作用产物`)
+
+// ```swift
+class 通用制造机<T: 可转换, O>: 制造机 where O == T.转换后的类型 {
+    func 制造(输入: T) -> O {
+        return 输入.转换()
+    }
+}
+// ```
+
+// 其实还可以更简洁：
+
+// ```swift
+class 简洁制造机<T: 可转换>: 制造机 {
+    func 制造(输入: T) -> T.转换后的类型 {
+        return 输入.转换()
+    }
+}
+// ```
+
+// > 我们生活的地方 / 就像一个垃圾场 / 人们都像是虫子一样 / 在这里你争我抢 / 吃进的都是良心 / 拉出的全是思想
+// > "垃圾场" - 何勇
+
+// ```swift
+struct 良心: 可转换 {
+    func 转换() -> String {
+        return "思想"
+    }
+}
+
+let 垃圾场 = 简洁制造机<良心>()
+print(垃圾场.制造(输入: 良心()))
+// // 打印："思想"
+// ```
+
+// ### 带有where分句的泛型 (Generics with where Clause)
+
+// ```swift
+func 比较转换结果<T1: 可转换, T2: 可转换>(_ 转换物1: T1, _ 转换物2: T2) -> Bool where T1.转换后的类型 == T2.转换后的类型, T1.转换后的类型: Equatable {
+    let 转换结果1 = 转换物1.转换()
+    let 转换结果2 = 转换物2.转换()
+    return 转换结果1 == 转换结果2
+}
+// ```
+
+// ### 泛型扩展 (Extension with Generics)
+
+// 给`Array`增加一个扩展，检查是否有真的`陈述`存在
+
+// ```swift
+struct 陈述: CustomStringConvertible {
+    let 句子: String
+    let 是真的吗: Bool
+    var description: String {
+        return "这是一个\(是真的吗 ? "真" : "假")的陈述。"
+    }
+}
+
+let 陈述1 = 陈述(句子: "下一个陈述是真的", 是真的吗: false)
+let 陈述2 = 陈述(句子: "上一个陈述是假的", 是真的吗: true)
+
+let 好几条陈述 = [陈述1, 陈述2]
+
+extension Array where Element == 陈述 {
+    var 有真的陈述吗: Bool {
+        return self.contains(where: { $0.是真的吗 })
+    }
+}
+
+print("有真的陈述吗？\(好几条陈述.有真的陈述吗 ? "有" : "无")")
+// ```
+
+// ### 泛型下标 (Generic Subscript)
+
+// ```swift
+extension Array where Element == 陈述 {
+    subscript<Indices: Sequence>(indices: Indices) -> [Element]
+        where Indices.Iterator.Element == Int {
+            var result = [Element]()
+            for index in indices {
+                result.append(self[index])
+            }
+            return result
+    }
+}
+
+let 部分陈述 = 好几条陈述[[1, 0]]
+print(部分陈述)
+// ```
 
 // [回到目录](#目录)
 
