@@ -1875,7 +1875,12 @@ commentary(of: person)
 
 ## Generics
 
-It's like a super-type of different types.
+> It is __generally__ agreed that "Hello" is an appropriate greeting because if you entered a room and said "Goodbye," it could confuse a lot of people.
+> -- Dolph Sharp, "I'm O.K., You're Not So Hot"
+
+### Generic Function
+
+Suppose you want to create a function that swaps the values of its parameters, and the function has to work for different types. Instead of having one function per data type, you can have one single function with generic type. **It is like a super-type of different types.**
 
 ```swift
 func swapValues<T>(_ a: inout T, _ b: inout T) {
@@ -1883,11 +1888,6 @@ func swapValues<T>(_ a: inout T, _ b: inout T) {
     a = b
     b = temporaryA
 }
-
-var firstNumber = 3
-var secondNumber = 7
-swapValues(&firstNumber, &secondNumber)
-// `firstNumber` is now 7, `secondNumber` is now 3
 
 var humanWorld = ""
 var hell = "full of evil"
@@ -1897,116 +1897,233 @@ swapValues(&humanWorld, &hell)
 
 ### Generic Types
 
-**Example**
-
-Implement a bag of generic typed stuff, stuff can be put in the bag and picked up randomly
+Here we want to create a Box that contains objects of generic types
 
 ```swift
-struct Bag<Stuff> {
+struct Box<Stuff> {
     var stuff = [Stuff]()
     mutating func putin(_ stuff: Stuff) {
         self.stuff.append(stuff)
     }
     mutating func pickup() -> Stuff {
-        let index: Int = Int(arc4random_uniform(UInt32(self.stuff.count)))
-        return self.stuff.remove(at: index)
+        return stuff.removeLast()
     }
 }
-
-var bagOfStrings = Bag<String>();
-bagOfStrings.putin("Masquito's leg")
-bagOfStrings.putin("Grandma's beard")
-bagOfStrings.pickup()
 ```
 
-### Associated types
+`Stuff` is a generic type - there's no need to hard code any real type (concrete or protocol) in the `Box` definition; When we create a `Box` instance, we need to specify a type that replaces `Stuff`:
 
 ```swift
-protocol Fate {
-    associatedtype ChanceType
-    associatedtype EventType
-    
-    func event(for chance: ChanceType) -> EventType
-}
+var magicBox = Box<String>()
+magicBox.putin("rabbit")
+magicBox.putin("apple")
+magicBox.putin("hat")
 
-enum Chance: String {
-    case birth = "a new life was born"
-    case death = "a new journey just started"
-}
-
-class Life: Fate {
-    typealias ChanceType = Chance
-    typealias EventType = String
-    
-    func event(for chance: Chance) -> String {
-        return chance.rawValue
-    }
-}
-
-let ant = Life()
-print("chance \"death\" triggered event: \(ant.event(for: .death))")
-print("chance \"birth\" triggered event: \(ant.event(for: .birth))")
-
-// prints "chance "death" triggered event: a new life was born".
-// prints "chance "birth" triggered event: a new journey just started".
+print("Something from the box: \(magicBox.pickup())")
+// print: hat
 ```
 
-### Type constraints
-
-```
-func someFunctionL<T: SomeClass, U: SomeProtocol>(someT: T, someP: U)
-```
-
-Alternatively, `Fate` can be conformed this way:
+### Type Constraints
 
 ```swift
-// type constraint, ChanceT must conform to `Hashable`
-class Robot<ChanceT: Hashable, EventT>: Fate {
-    
-    private var programmedInstructions = [ChanceT: EventT]()
-    
-    func add(_ event: EventT, for chance: ChanceT) {
-        programmedInstructions[chance] = event
-    }
-    
-    // no need to have `typealias` here
-    // since types can be inferred
-    func event(for chance: ChanceT) -> EventT {
-        return programmedInstructions[chance]!
-    }
-}
-
-let mrBetterHuman = Robot<String, String>()
-mrBetterHuman.add("lights blinking and arms waving", for: "poweron")
-mrBetterHuman.add("sudden stop with dull and lifeless eyes", for: "poweroff")
-
-print("Robot gets chance of 'poweron': \(mrBetterHuman.event(for: "poweron"))")
-print("Robot gets chance of 'poweroff': \(mrBetterHuman.event(for: "poweroff"))")
+func fight<G: GoodProtocol, E: EvilProtocol>(somethingGood: G, somethingEvil: E)
 ```
 
-### Generic where clauses
-
-A piece of code worths thousands of words:
+Why not:
 
 ```swift
-func crossFate<F1: Fate, F2: Fate>(_ someFate: F1, _ otherFate: F2, chance: F1.ChanceType) -> String where F1.ChanceType == F2.ChanceType, F1.EventType == F2.EventType, F1.EventType: Equatable {
-    let event1 = someFate.event(for: chance)
-    let event2 = otherFate.event(for: chance)
-    if (event1 == event2) {
-        return "Fate meets with common event: \(event1)"
-    } else {
-        return "Fate crossed but missed!"
+func fight(somethingGood: GoodProtocol, somethingEvil: EvilProtocol)
+```
+
+Because the compiler must be able to figure out at __compile time__ what types are used, if either `GoodProtocol` or `EvilProtocol` has `associatedtype` or defined in a way that certain constraints it declares must be satisfied, using the protocol directly won't compile.
+
+For example, the code below would not work:
+
+```swift
+func exists(object: Equatable, in array: [Equatable]) -> Bool {
+    return array.contains(object)
+}
+```
+
+while this does:
+
+```swift
+func exists<T: Equatable>(object: T, in array: [T]) -> Bool {
+    return array.contains(object)
+}
+```
+
+### Associated Types
+
+Sometimes it can be useful to specify `associatedtype` in `protocol`, they behave like placeholder.
+
+Imagine we have a very generic `Generator` which generates output of `OutputType`, from input of `InputType`:
+
+```swift
+protocol Generator {
+    associatedtype InputType
+    associatedtype OutputType
+    func generate(input: InputType) -> OutputType
+}
+```
+
+And we also define `Transformable` protocol:
+
+```swift
+protocol Transformable {
+    associatedtype TransformType
+    func transform() -> TransformType
+}
+```
+
+### Associated Types with Constraints
+
+Define a `ChainedGenerator` which has has `InputProvider` and `OutputConsumer` of type `Generator`, that generates input and consumes output
+
+```swift
+protocol ChainedGenerator: Generator {
+    associatedtype InputProvider: Generator where InputProvider.OutputType == InputType
+    associatedtype OutputConsumer: Generator where OutputConsumer.InputType == OutputType
+    func generate(input: InputProvider, consumer: OutputConsumer) -> OutputConsumer.OutputType
+}
+```
+
+Conforming to the `Generator` protocol, we want to describe the photosynthesis of green plants that absorbs carbon dioxide and generates oxygen.
+
+> There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
+
+```swift
+protocol Photosynthate {
+    // photosynthate: n. the product of photosynthesis
+    init()
+    func emit()
+}
+```
+
+Now we can define the generator:
+
+```swift
+class Photosynthesizer<T: Transformable, P: Photosynthate>: Generator where T.TransformType == P {
+    func generate(input: T) -> P {
+        return input.transform()
     }
 }
 
-let husband = Life()
-let wife = Life()
-let fateCrossed = crossFate(husband, wife, chance: .birth)
-print("Cross fated husband and wife: \(fateCrossed)")
-// Prints "Cross fated husband and wife: Fate meets with common event: a new life was born"
+struct CO2<P: Photosynthate>: Transformable {
+    func transform() -> P {
+        print("transforming CO2…")
+        return P()
+    }
+}
+
+struct Oxygen: Photosynthate {
+    init() {}
+    func emit() {
+        print("emitting oxygen…")
+    }
+}
 ```
 
-_PS: I have a feeling that the whole Fate/Chance/Event thing could be made super fun, but for the purpose of this study notes let's stop here_
+Now we can have our green plant:
+
+```swift
+// Define a green plant that is a `Photosynthesizer` (thus a `Generator`), its input is CO2 (a `Transformable`) that can transform to `Oxygen`
+let greenPlant = Photosynthesizer<CO2<Oxygen>, Oxygen>()
+greenPlant.generate(input: CO2<Oxygen>()).emit()
+// print:
+// transforming CO2…
+// emitting oxygen…
+```
+
+We can abstract the idea of `Photosynthesizer` and create a `DefaultGenerator` that __semantically__ works for any `Transformable` (`Photosynthesizer` requires the `Transformable`'s `TransformType` conforms to `Photosynthate`):
+
+```swift
+class DefaultGenerator<T: Transformable, O>: Generator where O == T.TransformType {
+    func generate(input: T) -> O {
+        return input.transform()
+    }
+}
+```
+
+It could be further simplified:
+
+```swift
+class TransformBasedGenerator<T: Transformable>: Generator {
+    func generate(input: T) -> T.TransformType {
+        return input.transform()
+    }
+}
+```
+
+> the world we live in / is like a junkyard / people are like bugs / fighting against each other for food / all we eat is conscience / all we shit is opinions
+> "Junkyard" - He Yong
+
+```swift
+struct Conscience: Transformable {
+    func transform() -> String {
+        return "transforming conscience into opinions"
+    }
+}
+
+let junkyard = TransformBasedGenerator<Conscience>()
+print(junkyard.generate(input: Conscience()))
+// print: transforming conscience into opinions
+```
+
+### Generics with where clause
+
+```swift
+func compareTransform<T1: Transformable, T2: Transformable>(_ transformable1: T1, _ transformable2: T2) -> Bool where T1.TransformType == T2.TransformType, T1.TransformType: Equatable {
+    let transformed1 = transformable1.transform()
+    let transformed2 = transformable2.transform()
+    return transformed1 == transformed2
+}
+```
+
+### Extension with generics
+
+Create an extension of `Array` for `Statement` to check whether a true statement exists.
+
+```swift
+struct Statement: CustomStringConvertible {
+    let sentence: String
+    let isTruth: Bool
+    var description: String {
+        return "This is a \(isTruth ? "true" : "false") statement."
+    }
+}
+
+let statement1 = Statement(sentence: "The following statement is true", isTruth: true)
+let statement2 = Statement(sentence: "The previous statement is false", isTruth: false)
+
+let statements = [statement1, statement2]
+
+extension Array where Element == Statement {
+    var hasTrueStatement: Bool {
+        return self.contains(where: { $0.isTruth })
+    }
+}
+
+print("Has true statement? \(statements.hasTrueStatement ? "Y" : "N")")
+```
+
+### Generics subscript
+
+```swift
+extension Array where Element == Statement {
+    subscript<Indices: Sequence>(indices: Indices) -> [Element]
+        where Indices.Iterator.Element == Int {
+            var result = [Element]()
+            for index in indices {
+                result.append(self[index])
+            }
+            return result
+    }
+}
+
+let partialStatements = statements[[1, 2]]
+print(partialStatements)
+```
 
 [ToC](#table-of-contents)
 
