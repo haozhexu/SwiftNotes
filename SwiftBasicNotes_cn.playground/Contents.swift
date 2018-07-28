@@ -1888,7 +1888,7 @@ for _ in 1...distance {
 
 // > It is __generally__ agreed that "Hello" is an appropriate greeting because if you entered a room and said "Goodbye," it could confuse a lot of people.
 // > -- Dolph Sharp, "I'm O.K., You're Not So Hot"
-// > （“你好”是一个被__广泛__接受的打招呼方式，因为如果你走进一个房间然后说“再见”，会让许多人不解，心想这孙子是谁啊？）
+// > （“你好”是一个被*广泛*接受的打招呼方式，因为如果你走进一个房间然后说“再见”，会让许多人不解，心想这孙子是谁啊？）
 
 // ### 泛型函数 (Generic Function)
 
@@ -1948,7 +1948,7 @@ print(中山装的口袋.拿出来())
 // func 斗争(正义: 正义Protocol, 邪恶: 邪恶Protocol)
 // ```
 
-// 因为编译器必须在__编译时__弄清具体什么类被用到了（而不能是带有Generic的类），如果`正义Protocol`或`邪恶Protocol`里用到了`associatedtype`或者指定了一些必须满足的约束条件，那么这么写就无法编译通过。
+// 因为编译器必须在*编译时*弄清具体什么类被用到了（而不能是带有Generic的类），如果`正义Protocol`或`邪恶Protocol`里用到了`associatedtype`或者指定了一些必须满足的约束条件，那么这么写就无法编译通过。
 
 // 举个栗子，下面的代码是不能编译的：
 
@@ -2046,7 +2046,7 @@ let 夕阳红 = 夕阳红婚介所(配偶: 左隔壁大妈, 求偶: 右隔壁大
 // 遵循`制造机`协议，描述绿色植物的光合作用。
 
 // > There are some micro-organisms that exhibit characteristics of both plants and animals. When exposed to light they undergo __photosynthesis__; and when the lights go out, they turn into animals. But then again, don't we all?
-// > （有些微观生物同时具有植物和动物的特性，当有阳光的时候它们进行__光合作用__；而没有光的时候，它们就变成了禽兽。不过，我们不都是如此吗？）
+// > （有些微观生物同时具有植物和动物的特性，当有阳光的时候它们进行*光合作用*；而没有光的时候，它们就变成了禽兽。不过，我们不都是如此吗？）
 
 // ```swift
 protocol 光合作用产物 {
