@@ -2124,7 +2124,7 @@ extension Array where Element == Statement {
     }
 }
 
-let partialStatements = statements[[1, 2]]
+let partialStatements = statements[[1, 0]]
 print(partialStatements)
 // ```
 
@@ -2566,6 +2566,8 @@ print("Divine's life: \(divineLife)")
 
 // ### Cleanup with `defer`
 
+// > I expect to pass through life but once. If therefore, there be any kindness I can show, or any good thing I can do to any fellow being, let me do it now, and not defer or neglect it, as I shall not pass this way again. -- William Penn
+
 // excuted when current scope exists, in reverse order; I guess it is to have a logical way of cleanup from the most recent to the least recent changes; It's like when you go upstairs from level 1 to level 3, and you want to go downstairs, you have to follow the reversed way as when you went up, that is level 3, 2, 1.
 
 // ```
@@ -2590,6 +2592,40 @@ printInstructions()
 // // cleanup step 2
 // // cleanup step 1
 // ```
+
+// Guess what happens if you put `defer` inside `defer`?
+
+// ```
+func quoteMarkTwain() {
+    defer { print("wisdom never to use either") }
+    defer { defer { print("freedom of thought") } }
+    defer { defer { defer { print("freedom of speech") } } }
+    print("It is by the fortune of God that, in this country, we have three benefits:")
+}
+
+quoteMarkTwain()
+
+// // prints:
+// // It is by the fortune of God that, in this country, we have three benefits:
+// // freedom of speech
+// // freedom of thought
+// // wisdom never to use either
+// ```
+
+
+// `defer` blocks don't __capture__ the current value of a variable.
+
+func tasteOfLove() {
+    var taste = "sweet"
+    defer { print("a bit \(taste)") }
+    taste = "sour"
+    defer { print("a bit \(taste)") }
+    print("Taste of the first time one falls in love:")
+}
+
+tasteOfLove()
+
+// We want to express that sweet and sour are the taste of the first time one falls in love, however there's only sour printed.
 
 // [ToC](#table-of-contents)
 

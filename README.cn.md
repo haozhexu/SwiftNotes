@@ -2619,6 +2619,9 @@ print("何为神？\(神圣的生命)")
 
 ### 用`defer`来收拾残局
 
+> I expect to pass through life but once. If therefore, there be any kindness I can show, or any good thing I can do to any fellow being, let me do it now, and not defer or neglect it, as I shall not pass this way again. -- William Penn
+> （我大概只在世间走一遭，因此，如果有什么善念与善行，就让我现在去做，而不是推迟"defer"或抗拒，因为也许不会再这样走一遭了。）
+
 `defer`的代码会在当前的执行范围结束后执行，以相反与 `defer` 定义的顺序；
 我猜这是遵循了清理应该从最近到最远的顺序，
 就好像打扫卫生一般先清理高处再清理低处；
@@ -2646,6 +2649,41 @@ func 打印实验手册() {
 // 清理第二步
 // 清理第一步
 ```
+
+如果把`defer`放在`defer`里会怎样？
+
+```
+func 马克吐温的名言() {
+    defer { print("不去享受任何一种的精明") }
+    defer { defer { print("思想的自由") } }
+    defer { defer { defer { print("言论的自由") } } }
+    print("上帝给了这个国家的国民两个权利：")
+}
+
+马克吐温的名言()
+
+// 输出：
+// 上帝给了这个国家的国民两个权利：
+// 言论的自由
+// 思想的自由
+// 不去享受任何一种的精明
+```
+
+
+`defer`的闭包不会 __捕获__ 变量当前的值。
+
+func 初恋的味道() {
+    var taste = "甜"
+    defer { print("有点 \(taste)") }
+    taste = "酸"
+    defer { print("有点 \(taste)") }
+    print("初恋的味道：")
+}
+
+初恋的味道()
+
+我们想表达初恋的味道是酸酸甜甜，可实际上却只有酸。
+
 
 [回到目录](#目录)
 
