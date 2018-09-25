@@ -4,7 +4,7 @@
 
 (中文版请看[README.cn.md](./README.cn.md))
 
-This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/index.html#//apple_ref/doc/uid/TP40014097-CH3-ID0) from Apple, took notes and wrote code as I read.
+This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://docs.swift.org/swift-book/index.html) from Apple, took notes and wrote code as I read.
 
 Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with a little tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
 
@@ -32,7 +32,7 @@ sed 's/^\/\/ //g' SwiftBasicNotes.playground/Contents.swift > ~/Documents/SwiftB
 
 ## "Hello, world!" Printing
 
-The classic "Hello, world!" print out illustrates a few points of the language, for example, no semicolon needed to end a line, how a function/method call looks like, how string literal is represented.
+The classic "Hello, world!" print out illustrates a few things of the language, for example, no semicolon needed to end a line, how a function/method call looks like, how string literal is represented.
 
 ```
 print("Science may someday discover what faith has always known.")
@@ -2121,7 +2121,7 @@ extension Array where Element == Statement {
     }
 }
 
-let partialStatements = statements[[1, 2]]
+let partialStatements = statements[[1, 0]]
 print(partialStatements)
 ```
 
@@ -2563,6 +2563,8 @@ print("Divine's life: \(divineLife)")
 
 ### Cleanup with `defer`
 
+> I expect to pass through life but once. If therefore, there be any kindness I can show, or any good thing I can do to any fellow being, let me do it now, and not defer or neglect it, as I shall not pass this way again. -- William Penn
+
 excuted when current scope exists, in reverse order; I guess it is to have a logical way of cleanup from the most recent to the least recent changes; It's like when you go upstairs from level 1 to level 3, and you want to go downstairs, you have to follow the reversed way as when you went up, that is level 3, 2, 1.
 
 ```
@@ -2587,6 +2589,40 @@ printInstructions()
 // cleanup step 2
 // cleanup step 1
 ```
+
+Guess what happens if you put `defer` inside `defer`?
+
+```
+func quoteMarkTwain() {
+    defer { print("wisdom never to use either") }
+    defer { defer { print("freedom of thought") } }
+    defer { defer { defer { print("freedom of speech") } } }
+    print("It is by the fortune of God that, in this country, we have three benefits:")
+}
+
+quoteMarkTwain()
+
+// prints:
+// It is by the fortune of God that, in this country, we have three benefits:
+// freedom of speech
+// freedom of thought
+// wisdom never to use either
+```
+
+
+`defer` blocks don't __capture__ the current value of a variable.
+
+func tasteOfLove() {
+    var taste = "sweet"
+    defer { print("a bit \(taste)") }
+    taste = "sour"
+    defer { print("a bit \(taste)") }
+    print("Taste of the first time one falls in love:")
+}
+
+tasteOfLove()
+
+We want to express that sweet and sour are the taste of the first time one falls in love, however there's only sour printed.
 
 [ToC](#table-of-contents)
 
