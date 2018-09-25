@@ -2612,6 +2612,7 @@ quoteMarkTwain()
 
 `defer` blocks don't __capture__ the current value of a variable.
 
+```
 func tasteOfLove() {
     var taste = "sweet"
     defer { print("a bit \(taste)") }
@@ -2621,6 +2622,7 @@ func tasteOfLove() {
 }
 
 tasteOfLove()
+```
 
 We want to express that sweet and sour are the taste of the first time one falls in love, however there's only sour printed.
 
