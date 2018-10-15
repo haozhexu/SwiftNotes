@@ -63,6 +63,7 @@ print("Science may someday discover what faith has always known.")
 // - [Error Handling](#error-handling)
 // - [Encoding and Decoding](#encoding-and-decoding)
 // - [Memory Safety](#memory-safety)
+// - [Data Structure in Swift](#data-structure-in-swift)
 
 // ## Constants and Variables
 
@@ -699,6 +700,7 @@ someNumbers = [] // type has been provided as `Int`
 
 // ```swift
 var fiveNumbers = Array(repeating: 1.2, count: 3)
+// result: [1.2, 1.2, 1.2]
 // ```
 
 // #### Adding two array together
@@ -745,6 +747,14 @@ for (index, item) in shoppingList.enumerated() {
     print("Shopping list item \(index): \(item)")
 }
 // ```
+
+// #### Implementation
+
+// `Array` in Swift combines and replaces `NSArray` and `NSMutalbeArray` in Objective-C, there are several kinds of arrays.
+
+// - `ContiguousArray<Element>`: a specialized array that always stores its elements in a contiguous region of memory, this is the most efficient implementation.
+// - `Array<Element>`: store its elements in either a contiguous region of memory or an NSArray instance if its Element type is a class or @objc protocol.
+// - `ArraySlice<Element>`: a slice of an Array, ContiguousArray, or ArraySlice instance, it represents a view onto the storage of a larger array instead of copying over elements into a new storage.
 
 // [ToC](#table-of-contents)
 
@@ -804,6 +814,37 @@ let openDays: Set = [1, 2, 3, 4, 5]
 let closedDays: Set = [6, 7]
 openDays.union(closedDays)
 openDays.intersection(closedDays)
+// ```
+
+// ***$interview$***
+
+// Given an array of numbers and a target value, determine whether the array has two numbers whose sum equals to the target value
+
+// ```
+func twoSum(numbers: [Int], _ target: Int) -> Bool {
+    var set = Set<Int>()
+
+    for number in numbers {
+        if set.contains(target - number) {
+            return true
+        }
+        set.insert(number)
+    }
+    
+    return false
+}
+
+func twoSumIndices(numbers: [Int], _ target: Int) -> (Int, Int)? {
+    var dict = [Int: Int]()
+    for (index, number) in numbers.enumerated() {
+        if let lastIndex = dict[target - number] {
+            return (lastIndex, index)
+        } else {
+            dict[number] = index
+        }
+    }
+    return nil
+}
 // ```
 
 // [ToC](#table-of-contents)
@@ -1101,6 +1142,45 @@ let lastWord = englishForDummy[indexOfR...]
 print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(String(firstWord))\" and \"\(String(lastWord))\"?")
 // // Prints: "Have you ever realised the word "therapist" is made up by "the" and "rapist"?
 // ```
+
+// ***$interview$***
+
+// Given a string, return another string which is a reverse of given string by words,
+// example: "what the f**k" becomes "f**k the what"
+
+// ```
+func reverse<T>(_ things: inout [T], _ start: Int, _ end: Int) {
+    var startIndex = start, endIndex = end
+    while startIndex < endIndex {
+        (things[startIndex], things[endIndex]) = (things[endIndex], things[startIndex])
+        startIndex += 1
+        endIndex -= 1
+    }
+}
+
+func reverseWords(_ s: String?) -> String? {
+    guard let s = s else {
+        return nil
+    }
+
+    var mutableString = Array(s), start = 0
+    reverse(&mutableString, 0, mutableString.count - 1)
+
+    for i in 0..<mutableString.count {
+        if i == mutableString.count - 1 || mutableString[i + 1] == " " {
+            reverse(&mutableString, start, i)
+            start = i + 2
+        }
+    }
+    
+    return String(mutableString)
+}
+
+reverseWords("what the f**k")
+// // prints: f**k the what
+// ```
+
+// Note: one could use of `components(separatedBy:)` and `joined(separator:)`, but interview question is usually not this straight forward, at least a more primitive solution could make you stand out among other interviewees.
 
 // [ToC](#table-of-contents)
 
@@ -2784,3 +2864,338 @@ extension Book {
 
 // [ToC](#table-of-contents)
 
+// ## Data Structure in Swift
+
+// ###$interview$###
+
+// ### Stack
+
+// ```
+class Stack<T> {
+
+    var stack = [T]()
+    var isEmpty: Bool {
+        return self.stack.isEmpty
+    }
+    var peek: T? {
+        return self.stack.last
+    }
+    var size: Int {
+        return self.stack.count
+    }
+
+    func push(_ thing: T) {
+        self.stack.append(thing)
+    }
+
+    func pop() -> T? {
+        guard self.isEmpty == false else {
+            return nil
+        }
+        return self.stack.removeLast()
+    }
+}
+// ```
+
+// ### Linked List
+
+// ```
+class ListNode<T> {
+    var value: T
+    var next: ListNode<T>?
+
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
+class LinkedList<T> {
+    var head: ListNode<T>?
+    var tail: ListNode<T>?
+}
+
+extension LinkedList {
+    func appendToTail(_ value: T) {
+        if let tail = self.tail {
+            tail.next = ListNode(value)
+            self.tail = tail.next
+        } else {
+            self.tail = ListNode(value)
+            self.head = self.tail
+        }
+    }
+    
+    func appendToHead(_ value: T) {
+        if let head = self.head {
+            let newHead = ListNode(value)
+            newHead.next = head
+            self.head = newHead
+        } else {
+            self.head = ListNode(value)
+            self.tail = self.head
+        }
+    }
+}
+
+func printNode<T: CustomStringConvertible>(_ node: ListNode<T>?) {
+    var current = node
+    var values = [T]()
+    while current != nil {
+        values.append(current!.value)
+        current = current!.next
+    }
+    print("Values in list nodes: \(values)")
+}
+
+let node1 = ListNode(2)
+let node2 = ListNode(9)
+let node3 = ListNode(7)
+let node4 = ListNode(3)
+node1.next = node2
+node2.next = node3
+node3.next = node4
+
+printNode(node1)
+// ```
+
+// Given a linked list and a value X, return a new linked list with values less than X on left and values greater than X on right
+
+// ```
+func partition<T: Comparable>(_ head: ListNode<T>?, _ x: T) -> ListNode<T>? {
+    var leftHead: ListNode<T>?
+    var rightHead: ListNode<T>?
+    var left: ListNode<T>?
+    var right: ListNode<T>?
+    var node = head
+
+    while node != nil {
+        if node!.value < x {
+            if leftHead == nil {
+                leftHead = node
+                left = leftHead
+            } else {
+                left!.next = node
+                left = node!
+            }
+        } else {
+            if rightHead == nil {
+                rightHead = node
+                right = rightHead
+            } else {
+                right!.next = node
+                right = node!
+            }
+        }
+        node = node!.next
+    }
+    
+    if let right = right {
+        right.next = nil
+    }
+    if let left = left {
+        left.next = rightHead
+    }
+    if leftHead != nil {
+        return leftHead
+    } else {
+        return rightHead
+    }
+}
+
+if let partitionedList = partition(node1, 5) {
+    printNode(partitionedList)
+}
+
+// // prints: Values in list nodes: [2, 3, 9, 7]
+// ```
+
+// Given a head node, determine whether a cycle exists.
+
+// ```
+func hasCycle<T>(_ head: ListNode<T>?) -> Bool {
+    var slow = head
+    var fast = head
+
+    while fast != nil && fast!.next != nil {
+        slow = slow!.next
+        fast = fast!.next!.next
+        
+        if slow === fast {
+            return true
+        }
+    }
+
+    return false
+}
+// ```
+
+// Given a head node, remove the nth last node.
+
+// ```
+func removeNthFromEnd<T>(head: ListNode<T>?, _ n: Int) -> ListNode<T>? {
+    guard let head = head else {
+        return nil
+    }
+    
+    var first: ListNode<T>? = head
+    var second: ListNode<T>? = head
+
+    for _ in 0 ..< n {
+        if second == nil {
+            break
+        }
+        second = second!.next
+    }
+    
+    while second != nil && second!.next != nil {
+        first = first!.next
+        second = second!.next
+    }
+    
+    first!.next = first!.next!.next
+    return head
+}
+
+print("Existing list:")
+printNode(node1)
+
+print("List with 2nd last node removed:")
+if let newHead = removeNthFromEnd(head: node1, 2) {
+    printNode(newHead)
+}
+// ```
+
+// ### Queue
+
+// ```
+protocol Queue {
+    associatedtype Element
+
+    var isEmpty: Bool { get }
+    var size: Int { get }
+    var peek: Element? { get }
+
+    mutating func enqueue(_ newElement: Element)
+    mutating func dequeue() -> Element?
+}
+
+struct ArrayQueue<T>: Queue {
+
+    var isEmpty: Bool {
+        return self.left.isEmpty && self.right.isEmpty
+    }
+    
+    var size: Int {
+        return self.left.count + self.right.count
+    }
+    
+    var peek: T? {
+        return self.left.isEmpty ? self.right.first : self.left.last
+    }
+    
+    private var left = [T]()
+    private var right = [T]()
+    
+    mutating func enqueue(_ newElement: T) {
+        self.right.append(newElement)
+    }
+    
+    mutating func dequeue() -> T? {
+        if self.left.isEmpty {
+            self.left = self.right.reversed()
+            self.right.removeAll()
+        }
+        return self.left.popLast()
+    }
+}
+
+struct StackQueue<T>: Queue {
+
+    var isEmpty: Bool {
+        return self.stackA.isEmpty && self.stackB.isEmpty
+    }
+    
+    var peek: T? {
+        self.shift()
+        return self.stackB.peek
+    }
+    
+    var size: Int {
+        return self.stackA.size + self.stackB.size
+    }
+    
+    mutating func enqueue(_ newElement: T) {
+        self.stackA.push(newElement)
+    }
+    
+    func dequeue() -> T? {
+        self.shift()
+        return self.stackB.pop()
+    }
+    
+    private func shift() {
+        if self.stackB.isEmpty {
+            while let fromA = self.stackA.pop() {
+                self.stackB.push(fromA)
+            }
+        }
+    }
+
+    private var stackA = Stack<T>()
+    private var stackB = Stack<T>()
+}
+// ```
+
+// Simplify a file path.
+
+// ```
+func simplifyPath(_ path: String) -> String {
+    var simplifiedPath = [String]()
+    let pathComponents = path.components(separatedBy: "/")
+    for component in pathComponents {
+        guard component != "." else {
+            continue
+        }
+        if component == ".." {
+            if simplifiedPath.isEmpty == false {
+                simplifiedPath.removeLast()
+            }
+        } else if component.isEmpty == false {
+            simplifiedPath.append(component)
+        }
+    }
+    
+    let fullPath = simplifiedPath.reduce("") { (base, path) -> String in
+        return "\(base)/\(path)"
+    }
+    
+    return fullPath.isEmpty ? "/" : fullPath
+}
+
+let shortPath = "/home/username/Documents/../Picture/./Travel/"
+let simplifiedPath = simplifyPath(shortPath)
+print("Simplified path: \(simplifiedPath)")
+// ```
+
+// ### Binary Tree
+
+// ```
+class TreeNode<T> {
+    var value: T
+    var left: TreeNode<T>?
+    var right: TreeNode<T>?
+
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
+func depthOfTree<T>(_ root: TreeNode<T>?) -> Int {
+    guard let root = root else {
+        return 0
+    }
+    return max(depthOfTree(root.left), depthOfTree(root.right)) + 1
+}
+// ```
+
+// [ToC](#table-of-contents)
