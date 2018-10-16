@@ -835,7 +835,7 @@ openDays.intersection(closedDays)
 
 Given an array of numbers and a target value, determine whether the array has two numbers whose sum equals to the target value
 
-```
+```swift
 func twoSum(numbers: [Int], _ target: Int) -> Bool {
     var set = Set<Int>()
 
@@ -875,7 +875,7 @@ Many collection types as well as other types (e.g. `String`) are reference type 
 
 #### Creating a Dictionary
 
-```
+```swift
 // creating empty dictionary:
 var meaningsOfAges = [String: String]()
 meaningsOfAges["eighteen"] = "By which the acquired collection of prejudices become common sense"
@@ -1020,7 +1020,7 @@ Implement OR (||) operation.
 
 Flawed version:
 
-```
+```swift
 func ||(left: Bool, right: Bool) -> Bool {
     if left {
         return true
@@ -1046,7 +1046,7 @@ func ||(left: Bool, right: @autoclosure () -> Bool) -> Bool {
 
 Due to the support of functional closures, many problems can be solved funtionally. For example, get all numbers between 0 to 100 that are 1. even and 2. squares of other numbers
 
-```
+```swift
 (0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
 ```
 
@@ -1206,7 +1206,7 @@ print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(
 Given a string, return another string which is a reverse of given string by words,
 example: "what the f**k" becomes "f**k the what"
 
-```
+```swift
 func reverse<T>(_ things: inout [T], _ start: Int, _ end: Int) {
     var startIndex = start, endIndex = end
     while startIndex < endIndex {
