@@ -40,6 +40,11 @@ import UIKit //!
 print("Science may someday discover what faith has always known.")
 // ```
 
+// ###$interview$###
+
+// Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code.
+// In this regard, Swift is both object-oriented and functional programming language.
+
 // ## Table of Contents
 
 // - [Constants and Variables](#constants-and-variables)
@@ -64,6 +69,7 @@ print("Science may someday discover what faith has always known.")
 // - [Encoding and Decoding](#encoding-and-decoding)
 // - [Memory Safety](#memory-safety)
 // - [Data Structure in Swift](#data-structure-in-swift)
+// - [Sorting in Swift](#sorting-in-swift)
 
 // ## Constants and Variables
 
@@ -678,6 +684,10 @@ if let errorCode = errorCode {
 }
 // ```
 
+// ***$interview$***
+
+// Both reference type and value type can be optional, they both represent the situation when the variable has no value. There's no such a concept in Objective-C, although a variable of reference type can be assigned `nil`, to indicate the variable has no (referenced) value.
+
 // [ToC](#table-of-contents)
 
 // ## Collection Types
@@ -755,6 +765,12 @@ for (index, item) in shoppingList.enumerated() {
 // - `ContiguousArray<Element>`: a specialized array that always stores its elements in a contiguous region of memory, this is the most efficient implementation.
 // - `Array<Element>`: store its elements in either a contiguous region of memory or an NSArray instance if its Element type is a class or @objc protocol.
 // - `ArraySlice<Element>`: a slice of an Array, ContiguousArray, or ArraySlice instance, it represents a view onto the storage of a larger array instead of copying over elements into a new storage.
+
+// #### copy-on-write
+
+// ***$interview&***
+
+// When value-type is copied, the copied version still points to the same memory location as the original version, only when copied version is modified, a new memory region is allocated for the copied version. This means that memory footprint of copied value type only increases when copied value changes, this ensures maximum efficiency of memory usage.
 
 // [ToC](#table-of-contents)
 
@@ -992,6 +1008,34 @@ serve(dinner: "Vegetable")
 // // which is only evaluated when being called
 // ```
 
+// ***$interview$***
+
+// Implement OR (||) operation.
+
+// Flawed version:
+
+// ```
+// func ||(left: Bool, right: Bool) -> Bool {
+//     if left {
+//         return true
+//     } else {
+//         return right
+//     }
+// }
+// ```
+
+// The problem with above implementation is that both `left` and `right` sides are evaluated when `left` is `true`, so there's a better implementation using autoclosure:
+
+// ```
+// func ||(left: Bool, right: @autoclosure () -> Bool) -> Bool {
+//     if left {
+//         return true
+//     } else {
+//         return right()
+//     }
+// }
+// ```
+
 // [ToC](#table-of-contents)
 
 // ## Strings and Characters
@@ -1162,10 +1206,10 @@ func reverseWords(_ s: String?) -> String? {
     guard let s = s else {
         return nil
     }
-
+    
     var mutableString = Array(s), start = 0
     reverse(&mutableString, 0, mutableString.count - 1)
-
+    
     for i in 0..<mutableString.count {
         if i == mutableString.count - 1 || mutableString[i + 1] == " " {
             reverse(&mutableString, start, i)
@@ -1709,6 +1753,28 @@ static func printNotes(about love: Love) {
     }
 }
 // ```
+
+// Property Observer
+
+// ```swift
+    var notes: String? {
+        willSet {
+            if let newNotes = newValue {
+                print("Notes will be \(newNotes)")
+            }
+        }
+        didSet {
+            if let notes = self.notes, let oldNotes = oldValue {
+                print("Notes has been set to \(notes) from \(oldNotes)")
+            }
+        }
+    }
+// ```
+
+// ***$interview$***
+
+// Note: setting a property in `init`, `willSet` and `didSet` won't trigger property observer.
+
 } //!
 
 // make some loves:
@@ -1747,6 +1813,7 @@ struct Address {
     // type constant
     static let format = "British"
     
+    var nickName: String
     var streetNumber: String
     var streetName: String
     var suburb: String
@@ -1757,8 +1824,16 @@ struct Address {
     var fullAddress: String {
         return "\(streetNumber) \(streetName), \(suburb), \(state) \(postcode), \(country)"
     }
+    
+    mutating func updateNickName(_ nickName: String) {
+        self.nickName = nickName
+    }
 }
 // ```
+
+// ***$interview$***
+
+// Be careful, `mutating` prefix is need for `struct` and `enum` to modify its own value.
 
 // ```swift
 print("Using \(Address.format) format")
@@ -1766,7 +1841,7 @@ print("Using \(Address.format) format")
 
 // ```swift
 // // default struct-wise initializer
-let address = Address(streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
+let address = Address(nickName: "Beehive", streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
 print(address.fullAddress)
 // ```
 
@@ -1834,18 +1909,24 @@ shortTermLove = nil
 
 // ### class vs struct
 
+// ***$interview$***
+
 // *class*:
 
 // - reference type, object with identity, e.g. `Student`
 // - slower on heap
 // - updated with logic
 // - internals can remain mutable even when declared with `let`
+// - can be inherited
+// - type conversion can check the type of instance at runtime
+// - can use `deinit`
+// - same instance can be referenced more than once
 
 // *struct*:
 
-// - value type, e.g. `Address`
+// - value type, object without identity, e.g. `Address`, copy on assignment
 // - faster on stack
-// - simple data store
+// - simple data store, safer for multi-threading
 // - immutable when declared with `let`
 
 // [ToC](#table-of-contents)
@@ -2007,6 +2088,8 @@ print("Something from the box: \(magicBox.pickup())")
 // ```
 
 // ### Type Constraints
+
+// ***$interview$***
 
 // ```swift
 // func fight<G: GoodProtocol, E: EvilProtocol>(somethingGood: G, somethingEvil: E)
@@ -2229,6 +2312,8 @@ private func privateFunctionRoom() {}
 // ```
 
 // ### Access control levels
+
+// ***$interview$***
 
 // - `open` and `public` entities can be used within any source file from their defining module, and also in source files from other modules that imports the defining module. Usually used for framework public interface.
 // - `internal` entities can be used within any source file from defining module but not in any file outside.
@@ -2790,8 +2875,15 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 
 // ## Memory Safety
 
-// - **Weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
-// - **Unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
+// ***$interview$***
+
+// Similar to Objective-C, memory management in Swift is also based on ARC (Automatic Reference Counting), when there's no reference to an object, its allocated memory will be released, otherwise, if there's at least one reference to the object, it will stay in memory until further notice.
+
+// - **strong** is the default, when a reference of object is declared as **strong**, the reference is strongly hold, and the object's reference counter will increment by 1
+// - **weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
+// - **unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
+// - use `weak` when object can be deallocated while referencing, for example, `delegate`
+// - use `unowned` when object cannot be deallocated while referencing, for example, referencing `self` in an escaping completion block
 
 // ### Capture list
 
@@ -3195,6 +3287,285 @@ func depthOfTree<T>(_ root: TreeNode<T>?) -> Int {
         return 0
     }
     return max(depthOfTree(root.left), depthOfTree(root.right)) + 1
+}
+// ```
+
+// Check whether a binary tree is a valid search tree. (BST)
+
+// ```
+func isValidBST<T: Comparable>(root: TreeNode<T>?) -> Bool {
+    return isValidBSTNode(root, nil, nil)
+}
+
+func isValidBSTNode<T: Comparable>(_ node: TreeNode<T>?, _ min: T?, _ max: T?) -> Bool {
+    guard let node = node else {
+        return true
+    }
+    if let min = min, node.value <= min {
+        return false
+    }
+    if let max = max, node.value >= max {
+        return false
+    }
+    return isValidBSTNode(node.left, min, node.value) && isValidBSTNode(node.right, node.value, max)
+}
+// ```
+
+// Traversal Binary Tree
+
+// ```
+func preorderTraversal<T>(root: TreeNode<T>?) -> [T] {
+    var result = [T]()
+    var stack = [TreeNode<T>]()
+    var node = root
+    while node != nil || stack.isEmpty == false {
+        if let nonNilNode = node {
+            result.append(nonNilNode.value)
+            stack.append(nonNilNode)
+            node = nonNilNode.left
+        } else {
+            node = stack.removeLast().right
+        }
+    }
+    return result
+}
+
+let tnode1 = TreeNode(1)
+let tnode2 = TreeNode(2)
+let tnode3 = TreeNode(3)
+let tnode4 = TreeNode(4)
+let tnode5 = TreeNode(5)
+let tnode6 = TreeNode(6)
+let tnode7 = TreeNode(7)
+let tnode8 = TreeNode(8)
+let tnode9 = TreeNode(9)
+let tnode10 = TreeNode(10)
+let tnode11 = TreeNode(11)
+let tnode12 = TreeNode(12)
+let tnode13 = TreeNode(13)
+let tnode14 = TreeNode(14)
+let tnode15 = TreeNode(15)
+
+tnode1.left = tnode2
+tnode1.right = tnode3
+tnode2.left = tnode4
+tnode2.right = tnode5
+tnode3.left = tnode6
+tnode3.right = tnode7
+tnode4.left = tnode8
+tnode4.right = tnode9
+tnode5.left = tnode10
+tnode5.right = tnode11
+tnode6.left = tnode12
+tnode6.right = tnode13
+tnode7.left = tnode14
+tnode7.right = tnode15
+
+let result = preorderTraversal(root: tnode1)
+print("Preorder traversal result:")
+result.forEach { print("\($0)") }
+
+// // Preorder traversal result:
+// // 1
+// // 2
+// // 4
+// // 8
+// // 9
+// // 5
+// // 10
+// // 11
+// // 3
+// // 6
+// // 12
+// // 13
+// // 7
+// // 14
+// // 15
+// ```
+
+// [ToC](#table-of-contents)
+
+// ## Sorting and Searching in Swift
+
+// ***$interview$***
+
+// ### Merge Sort
+
+func mergeSort(_ array: [Int]) -> [Int] {
+    var helper = Array(repeating: 0, count: array.count), array = array
+    mergeSort(&array, &helper, 0, array.count - 1)
+    return array
+}
+
+func mergeSort(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ high: Int) {
+    guard low < high else {
+        return
+    }
+    let middle = (high - low) / 2 + low
+    mergeSort(&array, &helper, low, middle)
+    mergeSort(&array, &helper, middle + 1, high)
+    merge(&array, &helper, low, middle, high)
+}
+
+func merge(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ middle: Int, _ high: Int) {
+    for i in low...high {
+        helper[i] = array[i]
+    }
+    
+    var left = low, right = middle + 1, current = low
+    while left <= middle && right <= high {
+        if helper[left] < helper[right] {
+            array[current] = helper[left]
+            left += 1
+        } else {
+            array[current] = helper[right]
+            right += 1
+        }
+        current += 1
+    }
+    
+    guard middle - left >= 0 else {
+        // check whether left half exhausted, if so, there's no need to handle rest
+        return
+    }
+    
+    for i in 0...(middle - left) {
+        // handle the rest, only left half can have remaining
+        array[current] = helper[left + i]
+    }
+}
+
+// ### Quick Sort
+
+// ```
+func quickSort(_ array: [Int]) -> [Int] {
+    guard array.count > 1 else {
+        return array
+    }
+    let pivot = array[array.count / 2]
+    let left = array.filter { $0 < pivot }
+    let middle = array.filter { $0 == pivot }
+    let right = array.filter { $0 > pivot }
+    return quickSort(left) + middle + quickSort(right)
+}
+// ```
+
+// ### Basic Searching
+
+// While iterating through the whole collection could find search term in O(n), searching in a sorted collection in a binary way could reduce it to O(logn).
+
+// ```
+func binarySearch<T: Comparable>(_ values: [T], _ target: T) -> Bool {
+    var left = 0, mid = 0, right = values.count - 1
+    while left <= right {
+        mid = (right - left) / 2 + left
+        if values[mid] == target {
+            return true
+        } else if values[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid - 1
+        }
+    }
+    return false
+}
+
+// // note: people often forget +1 and -1 when re-adjusting left and right
+// ```
+
+// There are a few meetings, merge the ones that overlap.
+// Example: given [[1, 3], [5, 6], [4, 7], [2, 3]]
+// Output: [[1, 3], [4, 7]]
+
+// ```
+class MeetingTime {
+    var start: Int
+    var end: Int
+    init(_ start: Int, _ end: Int) {
+        self.start = start
+        self.end = end
+    }
+}
+
+func merge(meetingTimes: [MeetingTime]) -> [MeetingTime] {
+    guard meetingTimes.count > 1 else {
+        return meetingTimes
+    }
+    
+    var sortedTimes = meetingTimes.sorted { (time1, time2) -> Bool in
+        if time1.start != time2.start {
+            return time1.start < time2.start
+        } else {
+            return time1.end < time2.end
+        }
+    }
+    
+    var mergedTimes = [MeetingTime]()
+    mergedTimes.append(sortedTimes[0])
+    
+    for i in 1..<sortedTimes.count {
+        let current = sortedTimes[i]
+        let last = sortedTimes[sortedTimes.count - 1]
+        if current.start > last.end {
+            mergedTimes.append(current)
+        } else {
+            last.end = max(last.end, current.end)
+        }
+    }
+    
+    return mergedTimes
+}
+// ```
+
+// A product has several versions, if version n had a bug, versions after n would all have the same bug. Given a function that checks whether a given version has a bug, find the first version that has the bug.
+
+// ```
+func findFirstBugVersion(version: Int, isBugVersion: ((Int) -> Bool)) -> Int {
+    guard version > 1 else {
+        return version
+    }
+    var left = 1, mid = version / 2, right = version
+    while left < right {
+        mid = (right - left) / 2 + left
+        if isBugVersion(mid) {
+            right = mid
+        } else {
+            left = mid + 1
+        }
+    }
+    return left
+}
+// ```
+
+// Use binary search for rotated array, for example, [0, 1, 2, 4, 5, 6, 9] becomes [4, 5, 6, 9, 0, 1, 2].
+
+// ```
+func searchRotated<T: Comparable>(values: [T], target: T) -> Int {
+    var (left, mid, right) = (0, 0, values.count - 1)
+    
+    while left <= right {
+        mid = (right - left) / 2 + left
+        
+        if values[mid] == target {
+            return mid
+        }
+        
+        if values[mid] > values[left] {
+            if values[mid] > target && target >= values[left] {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        } else {
+            if values[mid] < target && target <= values[right] {
+                left = mid + 1
+            } else {
+                right = mid + 1
+            }
+        }
+    }
+    
+    return -1
 }
 // ```
 
