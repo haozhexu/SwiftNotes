@@ -69,8 +69,8 @@ print("Science may someday discover what faith has always known.")
 // - [Encoding and Decoding](#encoding-and-decoding)
 // - [Memory Safety](#memory-safety)
 // - [Data Structure in Swift](#data-structure-in-swift)
-// - [Sorting in Swift](#sorting-in-swift)
-// - [Objective-C](#objectivec)
+// - [Sorting and Searching](#sorting-and-searching)
+// - [Objective-C](#objective-c)
 
 // ## Constants and Variables
 
@@ -3409,7 +3409,7 @@ result.forEach { print("\($0)") }
 
 // [ToC](#table-of-contents)
 
-// ## Sorting and Searching in Swift
+// ## Sorting and Searching
 
 // ***$interview$***
 
