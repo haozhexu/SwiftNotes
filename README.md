@@ -2983,7 +2983,7 @@ extension Book {
 
 ### Stack
 
-```
+```swift
 class Stack<T> {
 
     var stack = [T]()
@@ -3012,7 +3012,7 @@ class Stack<T> {
 
 ### Linked List
 
-```
+```swift
 class ListNode<T> {
     var value: T
     var next: ListNode<T>?
@@ -3073,7 +3073,7 @@ printNode(node1)
 
 Given a linked list and a value X, return a new linked list with values less than X on left and values greater than X on right
 
-```
+```swift
 func partition<T: Comparable>(_ head: ListNode<T>?, _ x: T) -> ListNode<T>? {
     var leftHead: ListNode<T>?
     var rightHead: ListNode<T>?
@@ -3124,7 +3124,7 @@ if let partitionedList = partition(node1, 5) {
 
 Given a head node, determine whether a cycle exists.
 
-```
+```swift
 func hasCycle<T>(_ head: ListNode<T>?) -> Bool {
     var slow = head
     var fast = head
@@ -3144,7 +3144,7 @@ func hasCycle<T>(_ head: ListNode<T>?) -> Bool {
 
 Given a head node, remove the nth last node.
 
-```
+```swift
 func removeNthFromEnd<T>(head: ListNode<T>?, _ n: Int) -> ListNode<T>? {
     guard let head = head else {
         return nil
@@ -3180,7 +3180,7 @@ if let newHead = removeNthFromEnd(head: node1, 2) {
 
 ### Queue
 
-```
+```swift
 protocol Queue {
     associatedtype Element
 
@@ -3261,7 +3261,7 @@ struct StackQueue<T>: Queue {
 
 Simplify a file path.
 
-```
+```swift
 func simplifyPath(_ path: String) -> String {
     var simplifiedPath = [String]()
     let pathComponents = path.components(separatedBy: "/")
@@ -3292,7 +3292,7 @@ print("Simplified path: \(simplifiedPath)")
 
 ### Binary Tree
 
-```
+```swift
 class TreeNode<T> {
     var value: T
     var left: TreeNode<T>?
@@ -3313,7 +3313,7 @@ func depthOfTree<T>(_ root: TreeNode<T>?) -> Int {
 
 Check whether a binary tree is a valid search tree. (BST)
 
-```
+```swift
 func isValidBST<T: Comparable>(root: TreeNode<T>?) -> Bool {
     return isValidBSTNode(root, nil, nil)
 }
@@ -3334,7 +3334,7 @@ func isValidBSTNode<T: Comparable>(_ node: TreeNode<T>?, _ min: T?, _ max: T?) -
 
 Traversal Binary Tree
 
-```
+```swift
 func preorderTraversal<T>(root: TreeNode<T>?) -> [T] {
     var result = [T]()
     var stack = [TreeNode<T>]()
@@ -3412,6 +3412,7 @@ result.forEach { print("\($0)") }
 
 ### Merge Sort
 
+```swift
 func mergeSort(_ array: [Int]) -> [Int] {
     var helper = Array(repeating: 0, count: array.count), array = array
     mergeSort(&array, &helper, 0, array.count - 1)
@@ -3455,10 +3456,11 @@ func merge(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ middle: In
         array[current] = helper[left + i]
     }
 }
+```
 
 ### Quick Sort
 
-```
+```swift
 func quickSort(_ array: [Int]) -> [Int] {
     guard array.count > 1 else {
         return array
@@ -3475,7 +3477,7 @@ func quickSort(_ array: [Int]) -> [Int] {
 
 While iterating through the whole collection could find search term in O(n), searching in a sorted collection in a binary way could reduce it to O(logn).
 
-```
+```swift
 func binarySearch<T: Comparable>(_ values: [T], _ target: T) -> Bool {
     var left = 0, mid = 0, right = values.count - 1
     while left <= right {
@@ -3498,7 +3500,7 @@ There are a few meetings, merge the ones that overlap.
 Example: given [[1, 3], [5, 6], [4, 7], [2, 3]]
 Output: [[1, 3], [4, 7]]
 
-```
+```swift
 class MeetingTime {
     var start: Int
     var end: Int
@@ -3540,7 +3542,7 @@ func merge(meetingTimes: [MeetingTime]) -> [MeetingTime] {
 
 A product has several versions, if version n had a bug, versions after n would all have the same bug. Given a function that checks whether a given version has a bug, find the first version that has the bug.
 
-```
+```swift
 func findFirstBugVersion(version: Int, isBugVersion: ((Int) -> Bool)) -> Int {
     guard version > 1 else {
         return version
@@ -3560,7 +3562,7 @@ func findFirstBugVersion(version: Int, isBugVersion: ((Int) -> Bool)) -> Int {
 
 Use binary search for rotated array, for example, [0, 1, 2, 4, 5, 6, 9] becomes [4, 5, 6, 9, 0, 1, 2].
 
-```
+```swift
 func searchRotated<T: Comparable>(values: [T], target: T) -> Int {
     var (left, mid, right) = (0, 0, values.count - 1)
     
