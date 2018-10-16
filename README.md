@@ -38,6 +38,11 @@ The classic "Hello, world!" print out illustrates a few things of the language, 
 print("Science may someday discover what faith has always known.")
 ```
 
+###$interview$###
+
+Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code.
+In this regard, Swift is both object-oriented and functional programming language.
+
 ## Table of Contents
 
 - [Constants and Variables](#constants-and-variables)
@@ -61,6 +66,9 @@ print("Science may someday discover what faith has always known.")
 - [Error Handling](#error-handling)
 - [Encoding and Decoding](#encoding-and-decoding)
 - [Memory Safety](#memory-safety)
+- [Data Structure in Swift](#data-structure-in-swift)
+- [Sorting in Swift](#sorting-in-swift)
+- [Objective-C](#objectivec)
 
 ## Constants and Variables
 
@@ -675,6 +683,10 @@ if let errorCode = errorCode {
 }
 ```
 
+***$interview$***
+
+Both reference type and value type can be optional, they both represent the situation when the variable has no value. There's no such a concept in Objective-C, although a variable of reference type can be assigned `nil`, to indicate the variable has no (referenced) value.
+
 [ToC](#table-of-contents)
 
 ## Collection Types
@@ -697,6 +709,7 @@ someNumbers = [] // type has been provided as `Int`
 
 ```swift
 var fiveNumbers = Array(repeating: 1.2, count: 3)
+result: [1.2, 1.2, 1.2]
 ```
 
 #### Adding two array together
@@ -743,6 +756,20 @@ for (index, item) in shoppingList.enumerated() {
     print("Shopping list item \(index): \(item)")
 }
 ```
+
+#### Implementation
+
+`Array` in Swift combines and replaces `NSArray` and `NSMutalbeArray` in Objective-C, there are several kinds of arrays.
+
+- `ContiguousArray<Element>`: a specialized array that always stores its elements in a contiguous region of memory, this is the most efficient implementation.
+- `Array<Element>`: store its elements in either a contiguous region of memory or an NSArray instance if its Element type is a class or @objc protocol.
+- `ArraySlice<Element>`: a slice of an Array, ContiguousArray, or ArraySlice instance, it represents a view onto the storage of a larger array instead of copying over elements into a new storage.
+
+#### copy-on-write
+
+***$interview&***
+
+When value-type is copied, the copied version still points to the same memory location as the original version, only when copied version is modified, a new memory region is allocated for the copied version. This means that memory footprint of copied value type only increases when copied value changes, this ensures maximum efficiency of memory usage.
 
 [ToC](#table-of-contents)
 
@@ -803,6 +830,44 @@ let closedDays: Set = [6, 7]
 openDays.union(closedDays)
 openDays.intersection(closedDays)
 ```
+
+***$interview$***
+
+Given an array of numbers and a target value, determine whether the array has two numbers whose sum equals to the target value
+
+```
+func twoSum(numbers: [Int], _ target: Int) -> Bool {
+    var set = Set<Int>()
+
+    for number in numbers {
+        if set.contains(target - number) {
+            return true
+        }
+        set.insert(number)
+    }
+    
+    return false
+}
+
+func twoSumIndices(numbers: [Int], _ target: Int) -> (Int, Int)? {
+    var dict = [Int: Int]()
+    for (index, number) in numbers.enumerated() {
+        if let lastIndex = dict[target - number] {
+            return (lastIndex, index)
+        } else {
+            dict[number] = index
+        }
+    }
+    return nil
+}
+```
+
+***$interview$***
+
+Many collection types as well as other types (e.g. `String`) are reference type in Objective-C but value type in Swift, the reasons are:
+
+- value type can make memory usage more efficient, value types are stored on stack whereas reference types are stored on heap. Copy-on-write makes sure minimum memory overhead
+- value type defined as `let` are immutable, which increases thread-safety
 
 [ToC](#table-of-contents)
 
@@ -947,6 +1012,42 @@ func serve(dinner provider: @autoclosure () -> String) {
 serve(dinner: "Vegetable")
 // "Hi" will be converted to a closure that returns this string
 // which is only evaluated when being called
+```
+
+***$interview$***
+
+Implement OR (||) operation.
+
+Flawed version:
+
+```
+func ||(left: Bool, right: Bool) -> Bool {
+    if left {
+        return true
+    } else {
+        return right
+    }
+}
+```
+
+The problem with above implementation is that both `left` and `right` sides are evaluated when `left` is `true`, so there's a better implementation using autoclosure:
+
+```
+func ||(left: Bool, right: @autoclosure () -> Bool) -> Bool {
+    if left {
+        return true
+    } else {
+        return right()
+    }
+}
+```
+
+***$interview$***
+
+Due to the support of functional closures, many problems can be solved funtionally. For example, get all numbers between 0 to 100 that are 1. even and 2. squares of other numbers
+
+```
+(0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
 ```
 
 [ToC](#table-of-contents)
@@ -1099,6 +1200,45 @@ let lastWord = englishForDummy[indexOfR...]
 print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(String(firstWord))\" and \"\(String(lastWord))\"?")
 // Prints: "Have you ever realised the word "therapist" is made up by "the" and "rapist"?
 ```
+
+***$interview$***
+
+Given a string, return another string which is a reverse of given string by words,
+example: "what the f**k" becomes "f**k the what"
+
+```
+func reverse<T>(_ things: inout [T], _ start: Int, _ end: Int) {
+    var startIndex = start, endIndex = end
+    while startIndex < endIndex {
+        (things[startIndex], things[endIndex]) = (things[endIndex], things[startIndex])
+        startIndex += 1
+        endIndex -= 1
+    }
+}
+
+func reverseWords(_ s: String?) -> String? {
+    guard let s = s else {
+        return nil
+    }
+    
+    var mutableString = Array(s), start = 0
+    reverse(&mutableString, 0, mutableString.count - 1)
+    
+    for i in 0..<mutableString.count {
+        if i == mutableString.count - 1 || mutableString[i + 1] == " " {
+            reverse(&mutableString, start, i)
+            start = i + 2
+        }
+    }
+    
+    return String(mutableString)
+}
+
+reverseWords("what the f**k")
+// prints: f**k the what
+```
+
+Note: one could use of `components(separatedBy:)` and `joined(separator:)`, but interview question is usually not this straight forward, at least a more primitive solution could make you stand out among other interviewees.
 
 [ToC](#table-of-contents)
 
@@ -1628,6 +1768,28 @@ static func printNotes(about love: Love) {
 }
 ```
 
+Property Observer
+
+```swift
+    var notes: String? {
+        willSet {
+            if let newNotes = newValue {
+                print("Notes will be \(newNotes)")
+            }
+        }
+        didSet {
+            if let notes = self.notes, let oldNotes = oldValue {
+                print("Notes has been set to \(notes) from \(oldNotes)")
+            }
+        }
+    }
+```
+
+***$interview$***
+
+Note: setting a property in `init`, `willSet` and `didSet` won't trigger property observer.
+
+
 make some loves:
 
 ```swift
@@ -1664,6 +1826,7 @@ struct Address {
     // type constant
     static let format = "British"
     
+    var nickName: String
     var streetNumber: String
     var streetName: String
     var suburb: String
@@ -1674,8 +1837,16 @@ struct Address {
     var fullAddress: String {
         return "\(streetNumber) \(streetName), \(suburb), \(state) \(postcode), \(country)"
     }
+    
+    mutating func updateNickName(_ nickName: String) {
+        self.nickName = nickName
+    }
 }
 ```
+
+***$interview$***
+
+Be careful, `mutating` prefix is need for `struct` and `enum` to modify its own value.
 
 ```swift
 print("Using \(Address.format) format")
@@ -1683,7 +1854,7 @@ print("Using \(Address.format) format")
 
 ```swift
 // default struct-wise initializer
-let address = Address(streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
+let address = Address(nickName: "Beehive", streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
 print(address.fullAddress)
 ```
 
@@ -1751,18 +1922,24 @@ love disappears in a puff of logic
 
 ### class vs struct
 
+***$interview$***
+
 *class*:
 
 - reference type, object with identity, e.g. `Student`
 - slower on heap
 - updated with logic
 - internals can remain mutable even when declared with `let`
+- can be inherited
+- type conversion can check the type of instance at runtime
+- can use `deinit`
+- same instance can be referenced more than once
 
 *struct*:
 
-- value type, e.g. `Address`
+- value type, object without identity, e.g. `Address`, copy on assignment
 - faster on stack
-- simple data store
+- simple data store, safer for multi-threading
 - immutable when declared with `let`
 
 [ToC](#table-of-contents)
@@ -1871,6 +2048,14 @@ commentary(of: person)
 // Print: "God saved you"
 ```
 
+***$interview$***
+
+In Swift, by default all the functions in protocol are __required__, unlike in Objective-C where `@optional` and `@required` can be used to annotate methods in a protocol.
+There are two workarounds:
+
+1. prefix protocol and optional function with `@objc`, so function can be made `@optional`
+2. provide a default implementation of protocol function via extension
+
 [ToC](#table-of-contents)
 
 ## Generics
@@ -1924,6 +2109,8 @@ print("Something from the box: \(magicBox.pickup())")
 ```
 
 ### Type Constraints
+
+***$interview$***
 
 ```swift
 func fight<G: GoodProtocol, E: EvilProtocol>(somethingGood: G, somethingEvil: E)
@@ -2146,6 +2333,8 @@ private func privateFunctionRoom() {}
 ```
 
 ### Access control levels
+
+***$interview$***
 
 - `open` and `public` entities can be used within any source file from their defining module, and also in source files from other modules that imports the defining module. Usually used for framework public interface.
 - `internal` entities can be used within any source file from defining module but not in any file outside.
@@ -2707,8 +2896,15 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 
 ## Memory Safety
 
-- **Weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
-- **Unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
+***$interview$***
+
+Similar to Objective-C, memory management in Swift is also based on ARC (Automatic Reference Counting), when there's no reference to an object, its allocated memory will be released, otherwise, if there's at least one reference to the object, it will stay in memory until further notice.
+
+- **strong** is the default, when a reference of object is declared as **strong**, the reference is strongly hold, and the object's reference counter will increment by 1
+- **weak references** don't increase/decrease the **reference count** of a certain object, declared as optionals, they become `nil` once the reference count reaches zero
+- **unowned references** behave similar to `weak`, they always expect to have a value - can't be declared as optional.
+- use `weak` when object can be deallocated while referencing, for example, `delegate`
+- use `unowned` when object cannot be deallocated while referencing, for example, referencing `self` in an escaping completion block
 
 ### Capture list
 
@@ -2781,3 +2977,647 @@ extension Book {
 
 [ToC](#table-of-contents)
 
+## Data Structure in Swift
+
+###$interview$###
+
+### Stack
+
+```
+class Stack<T> {
+
+    var stack = [T]()
+    var isEmpty: Bool {
+        return self.stack.isEmpty
+    }
+    var peek: T? {
+        return self.stack.last
+    }
+    var size: Int {
+        return self.stack.count
+    }
+
+    func push(_ thing: T) {
+        self.stack.append(thing)
+    }
+
+    func pop() -> T? {
+        guard self.isEmpty == false else {
+            return nil
+        }
+        return self.stack.removeLast()
+    }
+}
+```
+
+### Linked List
+
+```
+class ListNode<T> {
+    var value: T
+    var next: ListNode<T>?
+
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
+class LinkedList<T> {
+    var head: ListNode<T>?
+    var tail: ListNode<T>?
+}
+
+extension LinkedList {
+    func appendToTail(_ value: T) {
+        if let tail = self.tail {
+            tail.next = ListNode(value)
+            self.tail = tail.next
+        } else {
+            self.tail = ListNode(value)
+            self.head = self.tail
+        }
+    }
+    
+    func appendToHead(_ value: T) {
+        if let head = self.head {
+            let newHead = ListNode(value)
+            newHead.next = head
+            self.head = newHead
+        } else {
+            self.head = ListNode(value)
+            self.tail = self.head
+        }
+    }
+}
+
+func printNode<T: CustomStringConvertible>(_ node: ListNode<T>?) {
+    var current = node
+    var values = [T]()
+    while current != nil {
+        values.append(current!.value)
+        current = current!.next
+    }
+    print("Values in list nodes: \(values)")
+}
+
+let node1 = ListNode(2)
+let node2 = ListNode(9)
+let node3 = ListNode(7)
+let node4 = ListNode(3)
+node1.next = node2
+node2.next = node3
+node3.next = node4
+
+printNode(node1)
+```
+
+Given a linked list and a value X, return a new linked list with values less than X on left and values greater than X on right
+
+```
+func partition<T: Comparable>(_ head: ListNode<T>?, _ x: T) -> ListNode<T>? {
+    var leftHead: ListNode<T>?
+    var rightHead: ListNode<T>?
+    var left: ListNode<T>?
+    var right: ListNode<T>?
+    var node = head
+
+    while node != nil {
+        if node!.value < x {
+            if leftHead == nil {
+                leftHead = node
+                left = leftHead
+            } else {
+                left!.next = node
+                left = node!
+            }
+        } else {
+            if rightHead == nil {
+                rightHead = node
+                right = rightHead
+            } else {
+                right!.next = node
+                right = node!
+            }
+        }
+        node = node!.next
+    }
+    
+    if let right = right {
+        right.next = nil
+    }
+    if let left = left {
+        left.next = rightHead
+    }
+    if leftHead != nil {
+        return leftHead
+    } else {
+        return rightHead
+    }
+}
+
+if let partitionedList = partition(node1, 5) {
+    printNode(partitionedList)
+}
+
+// prints: Values in list nodes: [2, 3, 9, 7]
+```
+
+Given a head node, determine whether a cycle exists.
+
+```
+func hasCycle<T>(_ head: ListNode<T>?) -> Bool {
+    var slow = head
+    var fast = head
+
+    while fast != nil && fast!.next != nil {
+        slow = slow!.next
+        fast = fast!.next!.next
+        
+        if slow === fast {
+            return true
+        }
+    }
+
+    return false
+}
+```
+
+Given a head node, remove the nth last node.
+
+```
+func removeNthFromEnd<T>(head: ListNode<T>?, _ n: Int) -> ListNode<T>? {
+    guard let head = head else {
+        return nil
+    }
+    
+    var first: ListNode<T>? = head
+    var second: ListNode<T>? = head
+
+    for _ in 0 ..< n {
+        if second == nil {
+            break
+        }
+        second = second!.next
+    }
+    
+    while second != nil && second!.next != nil {
+        first = first!.next
+        second = second!.next
+    }
+    
+    first!.next = first!.next!.next
+    return head
+}
+
+print("Existing list:")
+printNode(node1)
+
+print("List with 2nd last node removed:")
+if let newHead = removeNthFromEnd(head: node1, 2) {
+    printNode(newHead)
+}
+```
+
+### Queue
+
+```
+protocol Queue {
+    associatedtype Element
+
+    var isEmpty: Bool { get }
+    var size: Int { get }
+    var peek: Element? { get }
+
+    mutating func enqueue(_ newElement: Element)
+    mutating func dequeue() -> Element?
+}
+
+struct ArrayQueue<T>: Queue {
+
+    var isEmpty: Bool {
+        return self.left.isEmpty && self.right.isEmpty
+    }
+    
+    var size: Int {
+        return self.left.count + self.right.count
+    }
+    
+    var peek: T? {
+        return self.left.isEmpty ? self.right.first : self.left.last
+    }
+    
+    private var left = [T]()
+    private var right = [T]()
+    
+    mutating func enqueue(_ newElement: T) {
+        self.right.append(newElement)
+    }
+    
+    mutating func dequeue() -> T? {
+        if self.left.isEmpty {
+            self.left = self.right.reversed()
+            self.right.removeAll()
+        }
+        return self.left.popLast()
+    }
+}
+
+struct StackQueue<T>: Queue {
+
+    var isEmpty: Bool {
+        return self.stackA.isEmpty && self.stackB.isEmpty
+    }
+    
+    var peek: T? {
+        self.shift()
+        return self.stackB.peek
+    }
+    
+    var size: Int {
+        return self.stackA.size + self.stackB.size
+    }
+    
+    mutating func enqueue(_ newElement: T) {
+        self.stackA.push(newElement)
+    }
+    
+    func dequeue() -> T? {
+        self.shift()
+        return self.stackB.pop()
+    }
+    
+    private func shift() {
+        if self.stackB.isEmpty {
+            while let fromA = self.stackA.pop() {
+                self.stackB.push(fromA)
+            }
+        }
+    }
+
+    private var stackA = Stack<T>()
+    private var stackB = Stack<T>()
+}
+```
+
+Simplify a file path.
+
+```
+func simplifyPath(_ path: String) -> String {
+    var simplifiedPath = [String]()
+    let pathComponents = path.components(separatedBy: "/")
+    for component in pathComponents {
+        guard component != "." else {
+            continue
+        }
+        if component == ".." {
+            if simplifiedPath.isEmpty == false {
+                simplifiedPath.removeLast()
+            }
+        } else if component.isEmpty == false {
+            simplifiedPath.append(component)
+        }
+    }
+    
+    let fullPath = simplifiedPath.reduce("") { (base, path) -> String in
+        return "\(base)/\(path)"
+    }
+    
+    return fullPath.isEmpty ? "/" : fullPath
+}
+
+let shortPath = "/home/username/Documents/../Picture/./Travel/"
+let simplifiedPath = simplifyPath(shortPath)
+print("Simplified path: \(simplifiedPath)")
+```
+
+### Binary Tree
+
+```
+class TreeNode<T> {
+    var value: T
+    var left: TreeNode<T>?
+    var right: TreeNode<T>?
+
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
+func depthOfTree<T>(_ root: TreeNode<T>?) -> Int {
+    guard let root = root else {
+        return 0
+    }
+    return max(depthOfTree(root.left), depthOfTree(root.right)) + 1
+}
+```
+
+Check whether a binary tree is a valid search tree. (BST)
+
+```
+func isValidBST<T: Comparable>(root: TreeNode<T>?) -> Bool {
+    return isValidBSTNode(root, nil, nil)
+}
+
+func isValidBSTNode<T: Comparable>(_ node: TreeNode<T>?, _ min: T?, _ max: T?) -> Bool {
+    guard let node = node else {
+        return true
+    }
+    if let min = min, node.value <= min {
+        return false
+    }
+    if let max = max, node.value >= max {
+        return false
+    }
+    return isValidBSTNode(node.left, min, node.value) && isValidBSTNode(node.right, node.value, max)
+}
+```
+
+Traversal Binary Tree
+
+```
+func preorderTraversal<T>(root: TreeNode<T>?) -> [T] {
+    var result = [T]()
+    var stack = [TreeNode<T>]()
+    var node = root
+    while node != nil || stack.isEmpty == false {
+        if let nonNilNode = node {
+            result.append(nonNilNode.value)
+            stack.append(nonNilNode)
+            node = nonNilNode.left
+        } else {
+            node = stack.removeLast().right
+        }
+    }
+    return result
+}
+
+let tnode1 = TreeNode(1)
+let tnode2 = TreeNode(2)
+let tnode3 = TreeNode(3)
+let tnode4 = TreeNode(4)
+let tnode5 = TreeNode(5)
+let tnode6 = TreeNode(6)
+let tnode7 = TreeNode(7)
+let tnode8 = TreeNode(8)
+let tnode9 = TreeNode(9)
+let tnode10 = TreeNode(10)
+let tnode11 = TreeNode(11)
+let tnode12 = TreeNode(12)
+let tnode13 = TreeNode(13)
+let tnode14 = TreeNode(14)
+let tnode15 = TreeNode(15)
+
+tnode1.left = tnode2
+tnode1.right = tnode3
+tnode2.left = tnode4
+tnode2.right = tnode5
+tnode3.left = tnode6
+tnode3.right = tnode7
+tnode4.left = tnode8
+tnode4.right = tnode9
+tnode5.left = tnode10
+tnode5.right = tnode11
+tnode6.left = tnode12
+tnode6.right = tnode13
+tnode7.left = tnode14
+tnode7.right = tnode15
+
+let result = preorderTraversal(root: tnode1)
+print("Preorder traversal result:")
+result.forEach { print("\($0)") }
+
+// Preorder traversal result:
+// 1
+// 2
+// 4
+// 8
+// 9
+// 5
+// 10
+// 11
+// 3
+// 6
+// 12
+// 13
+// 7
+// 14
+// 15
+```
+
+[ToC](#table-of-contents)
+
+## Sorting and Searching in Swift
+
+***$interview$***
+
+### Merge Sort
+
+func mergeSort(_ array: [Int]) -> [Int] {
+    var helper = Array(repeating: 0, count: array.count), array = array
+    mergeSort(&array, &helper, 0, array.count - 1)
+    return array
+}
+
+func mergeSort(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ high: Int) {
+    guard low < high else {
+        return
+    }
+    let middle = (high - low) / 2 + low
+    mergeSort(&array, &helper, low, middle)
+    mergeSort(&array, &helper, middle + 1, high)
+    merge(&array, &helper, low, middle, high)
+}
+
+func merge(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ middle: Int, _ high: Int) {
+    for i in low...high {
+        helper[i] = array[i]
+    }
+    
+    var left = low, right = middle + 1, current = low
+    while left <= middle && right <= high {
+        if helper[left] < helper[right] {
+            array[current] = helper[left]
+            left += 1
+        } else {
+            array[current] = helper[right]
+            right += 1
+        }
+        current += 1
+    }
+    
+    guard middle - left >= 0 else {
+        // check whether left half exhausted, if so, there's no need to handle rest
+        return
+    }
+    
+    for i in 0...(middle - left) {
+        // handle the rest, only left half can have remaining
+        array[current] = helper[left + i]
+    }
+}
+
+### Quick Sort
+
+```
+func quickSort(_ array: [Int]) -> [Int] {
+    guard array.count > 1 else {
+        return array
+    }
+    let pivot = array[array.count / 2]
+    let left = array.filter { $0 < pivot }
+    let middle = array.filter { $0 == pivot }
+    let right = array.filter { $0 > pivot }
+    return quickSort(left) + middle + quickSort(right)
+}
+```
+
+### Basic Searching
+
+While iterating through the whole collection could find search term in O(n), searching in a sorted collection in a binary way could reduce it to O(logn).
+
+```
+func binarySearch<T: Comparable>(_ values: [T], _ target: T) -> Bool {
+    var left = 0, mid = 0, right = values.count - 1
+    while left <= right {
+        mid = (right - left) / 2 + left
+        if values[mid] == target {
+            return true
+        } else if values[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid - 1
+        }
+    }
+    return false
+}
+
+// note: people often forget +1 and -1 when re-adjusting left and right
+```
+
+There are a few meetings, merge the ones that overlap.
+Example: given [[1, 3], [5, 6], [4, 7], [2, 3]]
+Output: [[1, 3], [4, 7]]
+
+```
+class MeetingTime {
+    var start: Int
+    var end: Int
+    init(_ start: Int, _ end: Int) {
+        self.start = start
+        self.end = end
+    }
+}
+
+func merge(meetingTimes: [MeetingTime]) -> [MeetingTime] {
+    guard meetingTimes.count > 1 else {
+        return meetingTimes
+    }
+    
+    var sortedTimes = meetingTimes.sorted { (time1, time2) -> Bool in
+        if time1.start != time2.start {
+            return time1.start < time2.start
+        } else {
+            return time1.end < time2.end
+        }
+    }
+    
+    var mergedTimes = [MeetingTime]()
+    mergedTimes.append(sortedTimes[0])
+    
+    for i in 1..<sortedTimes.count {
+        let current = sortedTimes[i]
+        let last = sortedTimes[sortedTimes.count - 1]
+        if current.start > last.end {
+            mergedTimes.append(current)
+        } else {
+            last.end = max(last.end, current.end)
+        }
+    }
+    
+    return mergedTimes
+}
+```
+
+A product has several versions, if version n had a bug, versions after n would all have the same bug. Given a function that checks whether a given version has a bug, find the first version that has the bug.
+
+```
+func findFirstBugVersion(version: Int, isBugVersion: ((Int) -> Bool)) -> Int {
+    guard version > 1 else {
+        return version
+    }
+    var left = 1, mid = version / 2, right = version
+    while left < right {
+        mid = (right - left) / 2 + left
+        if isBugVersion(mid) {
+            right = mid
+        } else {
+            left = mid + 1
+        }
+    }
+    return left
+}
+```
+
+Use binary search for rotated array, for example, [0, 1, 2, 4, 5, 6, 9] becomes [4, 5, 6, 9, 0, 1, 2].
+
+```
+func searchRotated<T: Comparable>(values: [T], target: T) -> Int {
+    var (left, mid, right) = (0, 0, values.count - 1)
+    
+    while left <= right {
+        mid = (right - left) / 2 + left
+        
+        if values[mid] == target {
+            return mid
+        }
+        
+        if values[mid] > values[left] {
+            if values[mid] > target && target >= values[left] {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        } else {
+            if values[mid] < target && target <= values[right] {
+                left = mid + 1
+            } else {
+                right = mid + 1
+            }
+        }
+    }
+    
+    return -1
+}
+```
+
+[ToC](#table-of-contents)
+
+## Objective-C
+
+### Mixing Objective-C and Swift
+
+- To use Objective-C code in Swift, the header file name of Objective-C code need to be in ProjectName-Bridging-Header.h
+- To use Swift in Objective-C, import header file ProjectName-Swift.h
+- To expose Swift function or property, prefix it with `@objc`; If a Swift class is a subclass of `NSObject`, Swift would add `@objc` to non-private functions and properties
+
+### Initializer (init)
+
+- In Objective-C, initializer cannot make sure all member properties are initialized (ie. have values); Compiler does not warn for uninitialized properties.
+- In Swift, initializer has to make sure all non-optional member properties have values.
+- Swift also added `convenience` and `required` prefix for initializer.
+
+### Difference of Protocol
+
+- Both Objective-C and Swift can use protocol as delegate
+- Protocol in Swift can have extension and default implementation; Value-type can also conform to protocol.
+
+### Introspection
+
+In Objective-C, there are two methods to check whether an object is of certain type:
+
+- `isKindOfClass`: check whether the object is of specified class type or its subclass types
+- `isMemberOfClass`: check whether the object is of specified class type (not its subclass types)
+
+In Swift, `is` can be used for the same purpose, it's the same as `isKindOfClass`.
+
+[ToC](#table-of-contents)
