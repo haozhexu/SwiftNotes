@@ -70,6 +70,7 @@ print("Science may someday discover what faith has always known.")
 // - [Memory Safety](#memory-safety)
 // - [Data Structure in Swift](#data-structure-in-swift)
 // - [Sorting in Swift](#sorting-in-swift)
+// - [Objective-C](#objectivec)
 
 // ## Constants and Variables
 
@@ -863,6 +864,13 @@ func twoSumIndices(numbers: [Int], _ target: Int) -> (Int, Int)? {
 }
 // ```
 
+// ***$interview$***
+
+// Many collection types as well as other types (e.g. `String`) are reference type in Objective-C but value type in Swift, the reasons are:
+
+// - value type can make memory usage more efficient, value types are stored on stack whereas reference types are stored on heap. Copy-on-write makes sure minimum memory overhead
+// - value type defined as `let` are immutable, which increases thread-safety
+
 // [ToC](#table-of-contents)
 
 // ### Dictionary
@@ -1034,6 +1042,14 @@ serve(dinner: "Vegetable")
 //         return right()
 //     }
 // }
+// ```
+
+// ***$interview$***
+
+// Due to the support of functional closures, many problems can be solved funtionally. For example, get all numbers between 0 to 100 that are 1. even and 2. squares of other numbers
+
+// ```
+(0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
 // ```
 
 // [ToC](#table-of-contents)
@@ -2034,6 +2050,14 @@ for _ in 1...distance {
 commentary(of: person)
 // // Print: "God saved you"
 // ```
+
+// ***$interview$***
+
+// In Swift, by default all the functions in protocol are __required__, unlike in Objective-C where `@optional` and `@required` can be used to annotate methods in a protocol.
+// There are two workarounds:
+
+// 1. prefix protocol and optional function with `@objc`, so function can be made `@optional`
+// 2. provide a default implementation of protocol function via extension
 
 // [ToC](#table-of-contents)
 
@@ -3568,5 +3592,35 @@ func searchRotated<T: Comparable>(values: [T], target: T) -> Int {
     return -1
 }
 // ```
+
+// [ToC](#table-of-contents)
+
+// ## Objective-C
+
+// ### Mixing Objective-C and Swift
+
+// - To use Objective-C code in Swift, the header file name of Objective-C code need to be in ProjectName-Bridging-Header.h
+// - To use Swift in Objective-C, import header file ProjectName-Swift.h
+// - To expose Swift function or property, prefix it with `@objc`; If a Swift class is a subclass of `NSObject`, Swift would add `@objc` to non-private functions and properties
+
+// ### Initializer (init)
+
+// - In Objective-C, initializer cannot make sure all member properties are initialized (ie. have values); Compiler does not warn for uninitialized properties.
+// - In Swift, initializer has to make sure all non-optional member properties have values.
+// - Swift also added `convenience` and `required` prefix for initializer.
+
+// ### Difference of Protocol
+
+// - Both Objective-C and Swift can use protocol as delegate
+// - Protocol in Swift can have extension and default implementation; Value-type can also conform to protocol.
+
+// ### Introspection
+
+// In Objective-C, there are two methods to check whether an object is of certain type:
+
+// - `isKindOfClass`: check whether the object is of specified class type or its subclass types
+// - `isMemberOfClass`: check whether the object is of specified class type (not its subclass types)
+
+// In Swift, `is` can be used for the same purpose, it's the same as `isKindOfClass`.
 
 // [ToC](#table-of-contents)
