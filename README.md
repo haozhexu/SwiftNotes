@@ -38,7 +38,7 @@ The classic "Hello, world!" print out illustrates a few things of the language, 
 print("Science may someday discover what faith has always known.")
 ```
 
-###$interview$###
+***$interview$***
 
 Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code.
 In this regard, Swift is both object-oriented and functional programming language.
@@ -2979,7 +2979,7 @@ extension Book {
 
 ## Data Structure in Swift
 
-###$interview$###
+***$interview$***
 
 ### Stack
 
