@@ -55,7 +55,7 @@ Swift内建了对函数式编程的支持，如`map`，`reduce`，`filter`，`co
 - [错误处理](#错误处理)
 - [编码与解码](#编码与解码)
 - [内存安全](#内存安全)
-- [Swift数据结构](#Swift数据结构)
+- [Swift数据结构](#swift数据结构)
 - [排序和搜索](#排序和搜索)
 - [Objective-C](#objective-c)
 
