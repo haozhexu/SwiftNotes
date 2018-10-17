@@ -1034,7 +1034,7 @@ serve(dinner: "Vegetable")
 
 // The problem with above implementation is that both `left` and `right` sides are evaluated when `left` is `true`, so there's a better implementation using autoclosure:
 
-// ```
+// ```swift
 // func ||(left: Bool, right: @autoclosure () -> Bool) -> Bool {
 //     if left {
 //         return true

@@ -29,6 +29,9 @@ sed 's/^\/\/ //g' SwiftBasicNotes_cn.playground/Contents.swift | sed '/\/\/!$/d'
 print("科学的探索也许某天会验证信仰中一直知道的事实。")
 ```
 
+***$interview$***
+Swift内建了对函数式编程的支持，如`map`，`reduce`，`filter`，`compactMap`等等，让开发者可以只要思考计算的结果而省略掉中间重复的过程，在这点上，Swift即是面向对象又是函数式语言。
+
 ## 目录
 
 - [常量与变量](#常量与变量)
@@ -52,6 +55,9 @@ print("科学的探索也许某天会验证信仰中一直知道的事实。")
 - [错误处理](#错误处理)
 - [编码与解码](#编码与解码)
 - [内存安全](#内存安全)
+- [Swift数据结构](#Swift数据结构)
+- [排序和搜索](#排序和搜索)
+- [Objective-C](#objective-c)
 
 ## 常量与变量
 
@@ -666,6 +672,9 @@ if let 错误代码 = 错误代码 {
 }
 ```
 
+***$interview$***
+值类型和引用类型都可以是Optional，以表示变量里没有值，这跟Objective-C不同，虽然Objective-C里引用类型的变量可以被赋予`nil`来表示没有引用的值。
+
 [回到目录](#目录)
 
 ## 合集类型
@@ -688,6 +697,7 @@ var 有些数 = [Int]()
 
 ```swift
 var 三个数 = Array(repeating: 1.2, count: 3)
+// 输出：[1.2, 1.2, 1.2]
 ```
 
 #### 把两个数组加到一起
@@ -734,6 +744,16 @@ for (索引, 物品) in 购物单.enumerated() {
     print("购物单物品 \(索引): \(物品)")
 }
 ```
+
+#### 数组实现
+Swift的`Array`结合并取代了Objective-C的`NSArray`以及`NSMutableArray`：
+- `ContiguousArray<Element>`：一个分配在连续内存区域的数组，这是最高效的。
+- `Array<Element>`：或者跟`ContiguousArray<Element>`一样，如果数组元素里有`class`或者`@objc`桥接过来的东西时则等同于`NSArray`。
+- `ArraySlice<Element>`：一个普通数组的片段，代表此数组的部分内容，指向愿数组同样的空间。
+
+#### copy-on-write
+***$interview&***
+当一个值类型被复制时，复制的版本依然指向原版本的内存位置，只有当复制版本被改动时，才会有一个新的内存区域被分配来存储复制的版本。这意味着内存的使用被极大的优化，只有当复制版本产生变化时才会消耗内存。
 
 [回到目录](#目录)
 
@@ -801,13 +821,13 @@ let 休息日: Set = [6, 7]
 
 #### 创建一个字典
 
-```
+```swift
 // 创建空字典：
 var 年纪的意义 = [String: String]()
 年纪的意义["十八"] = "到了这个岁数，之前积累的各种成见就成了常识。"
 ```
 
-```
+```swift
 // 以直接元素来创建字典
 var 单词的含义 = ["共识": "当人们懒得继续思考时"]
 // 根据直接元素类型来推断出字典类型为：[String: String]`
@@ -834,6 +854,42 @@ for (年纪, 意义) in 年纪的意义 {
     print("年纪 \(年纪) 的意义：\(意义)")
 }
 ```
+
+***$interview$***
+
+给一个整数数组和一个目标值，计算此数组里是否有两个数字之和等于目标值。
+
+```swift
+func twoSum(numbers: [Int], _ target: Int) -> Bool {
+    var set = Set<Int>()
+    for number in numbers {
+        if set.contains(target - number) {
+            return true
+        }
+        set.insert(number)
+    }
+    
+    return false
+}
+
+func twoSumIndices(numbers: [Int], _ target: Int) -> (Int, Int)? {
+    var dict = [Int: Int]()
+    for (index, number) in numbers.enumerated() {
+        if let lastIndex = dict[target - number] {
+            return (lastIndex, index)
+        } else {
+            dict[number] = index
+        }
+    }
+    return nil
+}
+```
+
+***$interview$***
+
+许多集合类型以及其他类型如`String`在Swift里是值类型，但在Objective-C里却是引用类型，原因在于：
+- 值类型可以让内存使用更高效，因为存储在栈上而引用类型存储在堆里。尤其是copy-on-write使得内存使用消耗降至最低。
+- 定义为`let`的值类型更可以保证多线程安全。
 
 [回到目录](#目录)
 
@@ -940,6 +996,40 @@ func 享用(刀俎鱼肉: @autoclosure () -> String) {
 享用(刀俎鱼肉: "我")
 // "我" 被转换为一个闭包，闭包返回"我"这个字符串
 // 且只在用到时返回
+```
+
+***$interview$***
+
+实现 或 （||） 操作。
+有问题的版本：
+
+```swift
+func ||(left: Bool, right: Bool) -> Bool {
+    if left {
+        return true
+    } else {
+        return right
+    }
+}
+```
+
+上面代码的问题时无论左边的布尔值，右边都会被计算，如果左边为真，右边是可以忽略的：
+
+```swift
+func ||(left: Bool, right: @autoclosure () -> Bool) -> Bool {
+    if left {
+        return true
+    } else {
+        return right()
+    }
+}
+```
+
+***$interview$***
+因为函数式编程的特性，有的问题可以以函数式编程的思维来解答。比如找出1-100之间所有的偶数，并且是其他数的平方。
+
+```swift
+(0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
 ```
 
 [回到目录](#目录)
@@ -1108,6 +1198,43 @@ let 第二个单词 = 临床医学家[字母R的索引...]
 print("你可曾注意到临床医学家的英文单词 \"\(临床医学家)\" 是由另外两个单词 \"\(String(第一个单词))\"(此) 和 \"\(String(第二个单词))\"(强奸者) 组成?")
 // 输出："你可曾注意到临床医学家的英文单词 "therapist" 是由另外两个单词 "the"(此) 和 "rapist"(强奸者) 组成?"
 ```
+
+***$interview$***
+给出一个字符串，返回按单词颠倒的另一个字符串。
+例如：给出"what the f**k"返回"f**k the what"
+
+```swift
+func reverse<T>(_ things: inout [T], _ start: Int, _ end: Int) {
+    var startIndex = start, endIndex = end
+    while startIndex < endIndex {
+        (things[startIndex], things[endIndex]) = (things[endIndex], things[startIndex])
+        startIndex += 1
+        endIndex -= 1
+    }
+}
+
+func reverseWords(_ s: String?) -> String? {
+    guard let s = s else {
+        return nil
+    }
+    
+    var mutableString = Array(s), start = 0
+    reverse(&mutableString, 0, mutableString.count - 1)
+    
+    for i in 0..<mutableString.count {
+        if i == mutableString.count - 1 || mutableString[i + 1] == " " {
+            reverse(&mutableString, start, i)
+            start = i + 2
+        }
+    }
+    
+    return String(mutableString)
+}
+reverseWords("一首诗 成了 就他妈 断开说 一句话 你把")
+输出：你把 一句话 断开说 就他妈 成了 一首诗
+```
+
+注意：同样的目的其实可以用`components(separatedBy:)`和`joined(separator:)`来实现，但是作为面试题来说，一般都得自己想办法而不能用SDK里现成的东西。至少这么做可以让你在其他面试者中突出一点。
 
 [回到目录](#目录)
 
@@ -1630,6 +1757,24 @@ static func 打印花语(关于 花: 情花) {
         print("\(显示名字) \(look) 但是 \(taste)")
     }
 }
+
+// 属性观察器
+    var 备注: String? {
+        willSet {
+            if let newNotes = newValue {
+                print("备注将要改为\(newNotes)")
+            }
+        }
+        didSet {
+            if let 备注 = self.备注, let oldNotes = oldValue {
+                print("备注已改为\(备注) 旧备注：\(oldNotes)")
+            }
+        }
+    }
+
+// ***$interview$***
+// 注意：在`init`、`willSet`以及`didSet`里设置一个属性并不会出发观察器。
+
 ```
 
 创建一些实例：
@@ -1670,6 +1815,7 @@ struct 地址 {
     // 结构常量
     static let 格式 = "中国"
     
+    var 昵称: String
     var 门牌号: String
     var 街道名: String
     var 区名: String
@@ -1678,10 +1824,17 @@ struct 地址 {
     var 国家: String
     
     var 完整地址: String {
-        return "\(门牌号) \(街道名)，\(区名)，\(市名) \(邮编)，\(国家)"
+        return "\(昵称)：\(门牌号) \(街道名)，\(区名)，\(市名) \(邮编)，\(国家)"
+    }
+    
+    mutating func 更新昵称(_ 昵称: String) {
+        self.昵称 = 昵称
     }
 }
 ```
+
+***$interview$***
+注意：`mutating`前缀对于修改自身属性的`struct`和`enum`是必须的。
 
 ```swift
 print("地址遵循 \(地址.格式) 格式")
@@ -1689,7 +1842,7 @@ print("地址遵循 \(地址.格式) 格式")
 
 ```swift
 // 缺省的所有属性构建器
-let 某个地址 = 地址(门牌号: "369", 街道名: "青龙门大街", 区名: "东城区", 市名: "甘肃", 邮编: "2207", 国家: "明朝")
+let 某个地址 = 地址(昵称: "桃花源", 门牌号: "369", 街道名: "青龙门大街", 区名: "东城区", 市名: "甘肃", 邮编: "2207", 国家: "明朝")
 print(某个地址.完整地址)
 ```
 
@@ -1759,18 +1912,24 @@ var 一瞬即逝的花: 情花? = 情花(看起来美: true)
 
 ### 类与结构
 
+***$interview$***
+
 *类*:
 
 - 引用类型(reference type)，一般用来表示有身份特征的对象，如“学生”
 - 存在“堆”内存，速度较慢
 - 一般存在改变内部状态的逻辑
 - 即使定义为`let`常量，内部状态依然可变
+- 可以被继承
+- 类型转换可以在运行时检查
+- 可以有`deinit`
+- 同样的对象可以有多个引用
 
 *结构*:
 
-- 值类型(value type)，例如“地址”
+- 值类型(value type)，例如“地址”，赋值时会被复制
 - 存在“栈”内存，速度较快
-- 简单的数据存储（不牵涉复杂逻辑）
+- 简单的数据存储（不牵涉复杂逻辑），多线程环境里更加安全
 - 定义为`let`常量时不可改变
 
 [回到目录](#目录)
@@ -1879,6 +2038,13 @@ for _ in 1...distance {
 // Print: "神救赎了你"
 ```
 
+***$interview$***
+在Swift的protocol里，默认所有的方法都是必须实现的，不像在Objective-C里可以用`@optional`和`@required`。
+
+有两个办法来解决此问题：
+1. 在协议前加上前缀`@objc`，然后方法就可以标记为`@optional`
+2. 通过协议的扩展(extension)来提供可选方法的默认实现
+
 [回到目录](#目录)
 
 ## 泛型
@@ -1938,6 +2104,8 @@ print(中山装的口袋.拿出来())
 ```swift
 func 斗争<Z: 正义Protocol, X: 邪恶Protocol>(正义: Z, 邪恶: X)
 ```
+
+***$interview$***
 
 为什么不可以这样：
 
@@ -2198,6 +2366,8 @@ private func 私有功能室() {}
 ```
 
 ### 访问控制等级
+
+***$interview$***
 
 - 定义为 `open` 和 `public` 的实体可以被定义它们的模块里的任何代码使用，其他引用定义模块的模块代码也可以使用。一般用作框架(framework)的公共接口。
 - `internal` 实体只能在被定义的模块里使用
@@ -2768,8 +2938,15 @@ fool = try! jsonDecoder.decode(傻子.self, from: jsonData)
 
 ## 内存安全
 
-- **弱引用**不会改变对象的**引用计数**，定义为或有或无（Optional），在对象的引用计数为0的时候变成`nil`。
+***$interview$***
+
+与Objective-C类似，Swift的内存管理也用到了ARC，当一个对象没有被引用时，它的内存将会被释放，否则，只要有一个引用，那么这个对象的内存将会被保留。
+
+- **strong** 是默认的，当一个对象的引用定义为`strong`时，这个引用为强引用，引用计数器会增加1
+- **weak弱引用** 不会改变对象的 **引用计数**，定义为或有或无（Optional），在对象的引用计数为0的时候变成`nil`。
 - **非拥有引用（unowned reference**跟弱引用`weak`类似，他们假定引用总是有一个值，因此不能定义为或有或无（Optional）。
+- 当对象可以在引用时被释放，用`weak`，例如`delegate`。
+- 当对象在被引用时不能被释放，用`unowned`，例如，在完成闭包里引用`self`。
 
 ### 捕获列表 Capture list
 
@@ -2842,3 +3019,650 @@ extension 书籍 {
 
 [回到目录](#目录)
 
+## Swift数据结构
+
+***$interview$***
+
+### Stack栈
+
+```swift
+class Stack<T> {
+    
+    var stack = [T]()
+    var isEmpty: Bool {
+        return self.stack.isEmpty
+    }
+    var peek: T? {
+        return self.stack.last
+    }
+    var size: Int {
+        return self.stack.count
+    }
+    
+    func push(_ thing: T) {
+        self.stack.append(thing)
+    }
+    
+    func pop() -> T? {
+        guard self.isEmpty == false else {
+            return nil
+        }
+        return self.stack.removeLast()
+    }
+}
+```
+
+### Linked List 链表
+
+```swift
+class ListNode<T> {
+    var value: T
+    var next: ListNode<T>?
+    
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
+class LinkedList<T> {
+    var head: ListNode<T>?
+    var tail: ListNode<T>?
+}
+
+extension LinkedList {
+    func appendToTail(_ value: T) {
+        if let tail = self.tail {
+            tail.next = ListNode(value)
+            self.tail = tail.next
+        } else {
+            self.tail = ListNode(value)
+            self.head = self.tail
+        }
+    }
+    
+    func appendToHead(_ value: T) {
+        if let head = self.head {
+            let newHead = ListNode(value)
+            newHead.next = head
+            self.head = newHead
+        } else {
+            self.head = ListNode(value)
+            self.tail = self.head
+        }
+    }
+}
+
+func printNode<T: CustomStringConvertible>(_ node: ListNode<T>?) {
+    var current = node
+    var values = [T]()
+    while current != nil {
+        values.append(current!.value)
+        current = current!.next
+    }
+    print("Values in list nodes: \(values)")
+}
+
+let node1 = ListNode(2)
+let node2 = ListNode(9)
+let node3 = ListNode(7)
+let node4 = ListNode(3)
+node1.next = node2
+node2.next = node3
+node3.next = node4
+
+printNode(node1)
+```
+
+已知一个链表和一个值X，返回一个新链表，其中所有小于X的节点在左边，其余在右边。
+
+```swift
+func partition<T: Comparable>(_ head: ListNode<T>?, _ x: T) -> ListNode<T>? {
+    var leftHead: ListNode<T>?
+    var rightHead: ListNode<T>?
+    var left: ListNode<T>?
+    var right: ListNode<T>?
+    var node = head
+    
+    while node != nil {
+        if node!.value < x {
+            if leftHead == nil {
+                leftHead = node
+                left = leftHead
+            } else {
+                left!.next = node
+                left = node!
+            }
+        } else {
+            if rightHead == nil {
+                rightHead = node
+                right = rightHead
+            } else {
+                right!.next = node
+                right = node!
+            }
+        }
+        node = node!.next
+    }
+    
+    if let right = right {
+        right.next = nil
+    }
+    if let left = left {
+        left.next = rightHead
+    }
+    if leftHead != nil {
+        return leftHead
+    } else {
+        return rightHead
+    }
+}
+
+if let partitionedList = partition(node1, 5) {
+    printNode(partitionedList)
+}
+
+// 输出： Values in list nodes: [2, 3, 9, 7]
+```
+
+已知链表的头节点，判断是否有循环。
+
+```swift
+func hasCycle<T>(_ head: ListNode<T>?) -> Bool {
+    var slow = head
+    var fast = head
+    
+    while fast != nil && fast!.next != nil {
+        slow = slow!.next
+        fast = fast!.next!.next
+        
+        if slow === fast {
+            return true
+        }
+    }
+    
+    return false
+}
+```
+
+已知链表头节点，删除倒数第n个节点。
+
+```swift
+func removeNthFromEnd<T>(head: ListNode<T>?, _ n: Int) -> ListNode<T>? {
+    guard let head = head else {
+        return nil
+    }
+    
+    var first: ListNode<T>? = head
+    var second: ListNode<T>? = head
+    
+    for _ in 0 ..< n {
+        if second == nil {
+            break
+        }
+        second = second!.next
+    }
+    
+    while second != nil && second!.next != nil {
+        first = first!.next
+        second = second!.next
+    }
+    
+    first!.next = first!.next!.next
+    return head
+}
+
+print("已有链表：")
+printNode(node1)
+
+print("倒数第二个节点删除后：")
+if let newHead = removeNthFromEnd(head: node1, 2) {
+    printNode(newHead)
+}
+```
+
+### Queue队列
+
+```swift
+protocol Queue {
+    associatedtype Element
+    
+    var isEmpty: Bool { get }
+    var size: Int { get }
+    var peek: Element? { get }
+    
+    mutating func enqueue(_ newElement: Element)
+    mutating func dequeue() -> Element?
+}
+
+struct ArrayQueue<T>: Queue {
+    
+    var isEmpty: Bool {
+        return self.left.isEmpty && self.right.isEmpty
+    }
+    
+    var size: Int {
+        return self.left.count + self.right.count
+    }
+    
+    var peek: T? {
+        return self.left.isEmpty ? self.right.first : self.left.last
+    }
+    
+    private var left = [T]()
+    private var right = [T]()
+    
+    mutating func enqueue(_ newElement: T) {
+        self.right.append(newElement)
+    }
+    
+    mutating func dequeue() -> T? {
+        if self.left.isEmpty {
+            self.left = self.right.reversed()
+            self.right.removeAll()
+        }
+        return self.left.popLast()
+    }
+}
+
+struct StackQueue<T>: Queue {
+    
+    var isEmpty: Bool {
+        return self.stackA.isEmpty && self.stackB.isEmpty
+    }
+    
+    var peek: T? {
+        self.shift()
+        return self.stackB.peek
+    }
+    
+    var size: Int {
+        return self.stackA.size + self.stackB.size
+    }
+    
+    mutating func enqueue(_ newElement: T) {
+        self.stackA.push(newElement)
+    }
+    
+    func dequeue() -> T? {
+        self.shift()
+        return self.stackB.pop()
+    }
+    
+    private func shift() {
+        if self.stackB.isEmpty {
+            while let fromA = self.stackA.pop() {
+                self.stackB.push(fromA)
+            }
+        }
+    }
+    
+    private var stackA = Stack<T>()
+    private var stackB = Stack<T>()
+}
+```
+
+简化一个文件路径。
+
+```swift
+func simplifyPath(_ path: String) -> String {
+    var simplifiedPath = [String]()
+    let pathComponents = path.components(separatedBy: "/")
+    for component in pathComponents {
+        guard component != "." else {
+            continue
+        }
+        if component == ".." {
+            if simplifiedPath.isEmpty == false {
+                simplifiedPath.removeLast()
+            }
+        } else if component.isEmpty == false {
+            simplifiedPath.append(component)
+        }
+    }
+    
+    let fullPath = simplifiedPath.reduce("") { (base, path) -> String in
+        return "\(base)/\(path)"
+    }
+    
+    return fullPath.isEmpty ? "/" : fullPath
+}
+
+let shortPath = "/home/username/Documents/../Picture/./Travel/"
+let simplifiedPath = simplifyPath(shortPath)
+print("简化后的路径：\(simplifiedPath)")
+```
+
+### 二叉树
+
+```swift
+class TreeNode<T> {
+    var value: T
+    var left: TreeNode<T>?
+    var right: TreeNode<T>?
+    
+    init(_ value: T) {
+        self.value = value
+    }
+}
+
+// 计算树的深度
+func depthOfTree<T>(_ root: TreeNode<T>?) -> Int {
+    guard let root = root else {
+        return 0
+    }
+    return max(depthOfTree(root.left), depthOfTree(root.right)) + 1
+}
+```
+
+检查二叉树是不是一个二叉查找树(BST)
+
+```swift
+func isValidBST<T: Comparable>(root: TreeNode<T>?) -> Bool {
+    return isValidBSTNode(root, nil, nil)
+}
+
+func isValidBSTNode<T: Comparable>(_ node: TreeNode<T>?, _ min: T?, _ max: T?) -> Bool {
+    guard let node = node else {
+        return true
+    }
+    if let min = min, node.value <= min {
+        return false
+    }
+    if let max = max, node.value >= max {
+        return false
+    }
+    return isValidBSTNode(node.left, min, node.value) && isValidBSTNode(node.right, node.value, max)
+}
+```
+
+遍历二叉树
+
+```swift
+func preorderTraversal<T>(root: TreeNode<T>?) -> [T] {
+    var result = [T]()
+    var stack = [TreeNode<T>]()
+    var node = root
+    while node != nil || stack.isEmpty == false {
+        if let nonNilNode = node {
+            result.append(nonNilNode.value)
+            stack.append(nonNilNode)
+            node = nonNilNode.left
+        } else {
+            node = stack.removeLast().right
+        }
+    }
+    return result
+}
+
+let tnode1 = TreeNode(1)
+let tnode2 = TreeNode(2)
+let tnode3 = TreeNode(3)
+let tnode4 = TreeNode(4)
+let tnode5 = TreeNode(5)
+let tnode6 = TreeNode(6)
+let tnode7 = TreeNode(7)
+let tnode8 = TreeNode(8)
+let tnode9 = TreeNode(9)
+let tnode10 = TreeNode(10)
+let tnode11 = TreeNode(11)
+let tnode12 = TreeNode(12)
+let tnode13 = TreeNode(13)
+let tnode14 = TreeNode(14)
+let tnode15 = TreeNode(15)
+
+tnode1.left = tnode2
+tnode1.right = tnode3
+tnode2.left = tnode4
+tnode2.right = tnode5
+tnode3.left = tnode6
+tnode3.right = tnode7
+tnode4.left = tnode8
+tnode4.right = tnode9
+tnode5.left = tnode10
+tnode5.right = tnode11
+tnode6.left = tnode12
+tnode6.right = tnode13
+tnode7.left = tnode14
+tnode7.right = tnode15
+
+let result = preorderTraversal(root: tnode1)
+print("前序遍历结果：")
+result.forEach { print("\($0)") }
+
+// 前序遍历结果：
+// 1
+// 2
+// 4
+// 8
+// 9
+// 5
+// 10
+// 11
+// 3
+// 6
+// 12
+// 13
+// 7
+// 14
+// 15
+```
+
+[ToC](#table-of-contents)
+
+## 排序和搜索
+
+***$interview$***
+
+### Merge Sort
+
+```swift
+func mergeSort(_ array: [Int]) -> [Int] {
+    var helper = Array(repeating: 0, count: array.count), array = array
+    mergeSort(&array, &helper, 0, array.count - 1)
+    return array
+}
+
+func mergeSort(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ high: Int) {
+    guard low < high else {
+        return
+    }
+    let middle = (high - low) / 2 + low
+    mergeSort(&array, &helper, low, middle)
+    mergeSort(&array, &helper, middle + 1, high)
+    merge(&array, &helper, low, middle, high)
+}
+
+func merge(_ array: inout [Int], _ helper: inout [Int], _ low: Int, _ middle: Int, _ high: Int) {
+    for i in low...high {
+        helper[i] = array[i]
+    }
+    
+    var left = low, right = middle + 1, current = low
+    while left <= middle && right <= high {
+        if helper[left] < helper[right] {
+            array[current] = helper[left]
+            left += 1
+        } else {
+            array[current] = helper[right]
+            right += 1
+        }
+        current += 1
+    }
+    
+    guard middle - left >= 0 else {
+        // check whether left half exhausted, if so, there's no need to handle rest
+        return
+    }
+    
+    for i in 0...(middle - left) {
+        // handle the rest, only left half can have remaining
+        array[current] = helper[left + i]
+    }
+}
+```
+
+### Quick Sort
+
+```swift
+func quickSort(_ array: [Int]) -> [Int] {
+    guard array.count > 1 else {
+        return array
+    }
+    let pivot = array[array.count / 2]
+    let left = array.filter { $0 < pivot }
+    let middle = array.filter { $0 == pivot }
+    let right = array.filter { $0 > pivot }
+    return quickSort(left) + middle + quickSort(right)
+}
+```
+
+### Basic Searching
+
+遍历整个集合来搜索指定值的效率是O(n)，如果这个集合已被排序，那么用二分法查找的效率是O(logn)。
+
+```swift
+func binarySearch<T: Comparable>(_ values: [T], _ target: T) -> Bool {
+    var left = 0, mid = 0, right = values.count - 1
+    while left <= right {
+        mid = (right - left) / 2 + left
+        if values[mid] == target {
+            return true
+        } else if values[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid - 1
+        }
+    }
+    return false
+}
+
+// 注意：重新调整left和right时，世人常常忘记+1和-1
+```
+
+面试题：合并重叠的会议
+例如：已知[[1, 3], [5, 6], [4, 7], [2, 3]]
+输出：[[1, 3], [4, 7]]
+
+```swift
+class MeetingTime {
+    var start: Int
+    var end: Int
+    init(_ start: Int, _ end: Int) {
+        self.start = start
+        self.end = end
+    }
+}
+
+func merge(meetingTimes: [MeetingTime]) -> [MeetingTime] {
+    guard meetingTimes.count > 1 else {
+        return meetingTimes
+    }
+    
+    var sortedTimes = meetingTimes.sorted { (time1, time2) -> Bool in
+        if time1.start != time2.start {
+            return time1.start < time2.start
+        } else {
+            return time1.end < time2.end
+        }
+    }
+    
+    var mergedTimes = [MeetingTime]()
+    mergedTimes.append(sortedTimes[0])
+    
+    for i in 1..<sortedTimes.count {
+        let current = sortedTimes[i]
+        let last = sortedTimes[sortedTimes.count - 1]
+        if current.start > last.end {
+            mergedTimes.append(current)
+        } else {
+            last.end = max(last.end, current.end)
+        }
+    }
+    
+    return mergedTimes
+}
+```
+
+面试题：一个产品有许多版本，如果版本n里有个bug，那么n之后的版本都会有这个bug，已知一个函数可以检查给出的版本是否有bug，写一段代码找到最初有bug的版本。
+
+```swift
+func findFirstBugVersion(version: Int, isBugVersion: ((Int) -> Bool)) -> Int {
+    guard version > 1 else {
+        return version
+    }
+    var left = 1, mid = version / 2, right = version
+    while left < right {
+        mid = (right - left) / 2 + left
+        if isBugVersion(mid) {
+            right = mid
+        } else {
+            left = mid + 1
+        }
+    }
+    return left
+}
+```
+
+用二分法搜索旋转的数列，例如：[0, 1, 2, 4, 5, 6, 9] 成了 [4, 5, 6, 9, 0, 1, 2].
+
+```swift
+func searchRotated<T: Comparable>(values: [T], target: T) -> Int {
+    var (left, mid, right) = (0, 0, values.count - 1)
+    
+    while left <= right {
+        mid = (right - left) / 2 + left
+        
+        if values[mid] == target {
+            return mid
+        }
+        
+        if values[mid] > values[left] {
+            if values[mid] > target && target >= values[left] {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        } else {
+            if values[mid] < target && target <= values[right] {
+                left = mid + 1
+            } else {
+                right = mid + 1
+            }
+        }
+    }
+    
+    return -1
+}
+```
+
+[回到目录](#目录)
+
+## Objective-C
+
+### 混合Objective-C、Swift
+
+- 如果要在Swift里使用Objective-C代码，需要在ProjectName-Bridging-Header.h文件里加入Objective-C代码的头文件
+- 如果要在Objective-C里用Swift代码，需要导入头文件ProjectName-Swift.h
+- 如果要将Swift方法或属性暴露给Objective-C，给它加一个`@objc`前缀；如果一个Swift类是`NSObject`子类，Swift则会给非私有方法和属性加上`@objc`前缀
+
+### 初始化器 (init)
+
+- Objective-C里，初始化器无法确保所有属性都被初始化（ie. 都有初始值）；编译器不会警告未初始化的属性。
+- Swift里，初始化器必须保证所有非Optional的成员都有初始值。
+- Swift还对初始化器加入了`convenience`和`required`前缀。
+
+### 协议的不同
+
+- Objective-C和Swift都可以用协议作代理delegate。
+- Swift的协议可以有扩展，以及默认实现；值类型也可以遵循协议。
+
+### 自查
+
+Objective-C里，有两种办法可以判断一个对象的类型：
+
+- `isKindOfClass`：检查一个对象的类型是否是某个类或其子类。
+- `isMemberOfClass`：检查一个对象类型是否是某个类（不包括子类）。
+
+Swift里，`is` 关键字的作用和`isKindOfClass`一样。
+
+[回到目录](#目录)
