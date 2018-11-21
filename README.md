@@ -100,9 +100,9 @@ var variable1 = 0.0, variable2 = 1.2, variable3 = 5.6
 ### Type Annotations
 
 ```swift
-var welcomeMessage: String
-var red, green, blue: Double
-var someNumber: Int
+var welcomeMessage: String = "Welcome!"
+var red: Double = 1.0
+var someNumber: Int = 9
 ```
 
 Semicolon (;) isn't required after each statement although you can;
@@ -117,10 +117,10 @@ string interpolation was used above to include the name of a constant or variabl
 ### Integers
 
 ```swift
-let integer8: Int8 // signed 8-bit integer, UInt8 for unsigned
-let integer16: Int16 // signed 16-bit integer, UInt16 for unsigned
-let integer32: Int32 // signed 32-bit integer, UInt32 for unsigned
-let integer64: Int64 // signed 64-bit integer, UInt64 for unsigned
+let integer8: Int8 = 8 // signed 8-bit integer, UInt8 for unsigned
+let integer16: Int16 = 16 // signed 16-bit integer, UInt16 for unsigned
+let integer32: Int32 = 32 // signed 32-bit integer, UInt32 for unsigned
+let integer64: Int64 = 64 // signed 64-bit integer, UInt64 for unsigned
 ```
 
 Usually `Int` is used, it's the same size as `Int32` on 32-bit platform and same size as `Int64` on 64-bit platform
@@ -1369,10 +1369,9 @@ enum Direction {
     case east
 }
 
-var lostDirection: Direction
+var lostDirection: Direction = .north
 var nextDirection = Direction.east
 
-lostDirection = .north
 nextDirection = .west
 ```
 
@@ -2914,15 +2913,20 @@ We want to express that sweet and sour are the taste of the first time one falls
 
 ### Protocols
 
-*Encodable*
+_Encodable_
+
+A type that can encode itself into a different representation.
 
 ```swift
 func encode(to: Encoder) throws
 ```
 
-*Decodable*
+_Decodable_
+
+A type that can decode itself from a different representation.
 
 ```swift
+// creates a new instance by decoding from given decoder
 init(from decoder: Decoder) throws
 ```
 
@@ -2934,11 +2938,14 @@ typealias Codable = Encodable & Decodable
 
 ### Automatic coding
 
-Conforming to `Codable` and make sure all stored properties are also codable
+Conforming to `Codable` and make sure all stored properties are also codable.
+
+- several built-in types are already `Codable`: `String`, `Int`, `Double`, `Data`, `URL`
+- `Array`, `Dictionary`, `Optional` are `Codable` if they contain only `Codable` types
 
 **Example**
 
-a fool with a tool (is still a fool).
+> a fool with a tool (is still a fool).
 
 ```swift
 struct Fool: Codable {
@@ -2979,6 +2986,45 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 - also need `String` as raw type
 - include all properties in the enumeration including the ones that are not renamed
 - created by default, implemented when renaming is needed
+
+### Coding manually
+
+Suppose the JSON looks like:
+{"identifier": "Some One", name: "Foo", toolInHand: "Hammer"}
+
+```swift
+struct AnotherFool {
+    var id: String
+    var name: String
+    var tool: Tool
+    
+    // renaming properties
+    enum CodingKeys: String, CodingKey {
+        case id = "identifier"
+        case name
+        case toolInHand
+    }
+}
+
+extension AnotherFool: Encodable {
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(tool.name, forKey: .toolInHand)
+    }
+}
+
+extension AnotherFool: Decodable {
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(String.self, forKey: .id)
+        name = try values.decode(String.self, forKey: .name)
+        let toolInHand = try values.decode(String.self, forKey: .toolInHand)
+        tool = Tool(name: toolInHand)
+    }
+}
+```
 
 ### Limitation
 
