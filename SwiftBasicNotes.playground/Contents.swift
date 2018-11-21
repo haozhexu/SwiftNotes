@@ -40,11 +40,6 @@ import UIKit //!
 print("Science may someday discover what faith has always known.")
 // ```
 
-// ***$interview$***
-
-// Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code.
-// In this regard, Swift is both object-oriented and functional programming language.
-
 // ## Table of Contents
 
 // - [Constants and Variables](#constants-and-variables)
@@ -924,14 +919,12 @@ for (age, meaning) in meaningsOfAges {
 // ```
 
 // ```swift
-let cups = ["A", "B", "C", "D", "E"]
-let biggestCup = cups.sorted { (c1: String, c2: String) -> Bool in
-    c1 > c2
-    }.first!
-let smallestCup = cups.sorted { (c1: String, c2: String) -> Bool in
-    c1 < c2
-    }.first!
-print("Biggest cup is \(biggestCup), most environemtnal friendly cup is \(smallestCup)")
+let matters = ["🥚", "🐓"]
+let sortedMatters = matters.sorted(by: { (m1: String, m2: String) -> Bool in
+    m1 < m2
+})
+print("first there's \(String(describing: sortedMatters.first!))")
+print("then there comes \(String(describing: sortedMatters.last!))")
 // ```
 
 // ### Inferring type from context
@@ -939,7 +932,7 @@ print("Biggest cup is \(biggestCup), most environemtnal friendly cup is \(smalle
 // without parameter type:
 
 // ```swift
-cups.sorted { (c1, c2) -> Bool in
+matters.sorted { (c1, c2) -> Bool in
     c1 > c2
 }
 // ```
@@ -947,19 +940,19 @@ cups.sorted { (c1, c2) -> Bool in
 // without return type:
 
 // ```swift
-cups.sorted { (c1, c2) in c1 > c2 }
+matters.sorted { (c1, c2) in c1 > c2 }
 // ```
 
 // shorthand argument names:
 
 // ```swift
-cups.sorted { $0 > $1 }
+matters.sorted { $0 > $1 }
 // ```
 
 // operator methods:
 
 // ```swift
-cups.sorted(by: >)
+matters.sorted(by: >)
 // ```
 
 // - A closure can _capture_ constants and variables from the surrounding context in which it is defined.
@@ -1051,6 +1044,90 @@ serve(dinner: "Vegetable")
 // ```swift
 (0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
 // ```
+
+// ### Higher Order Functions
+
+// Closures in Swift enable higher order functions, which are functions that can either accept functions or closures as arguments, and/or return a function/closure.
+
+// Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code.
+
+// In this regard, Swift is both object-oriented and functional programming language.
+
+// Functional composition in mathematical term is to combine multiple functions into one function, the idea behind functional composition in Swift is applying one function to the result of another function.
+
+// ```swift
+func unique(_ array: [Int]) -> [Int] {
+    return array.reduce(into: []) { (result, number) in
+        if result.contains(number) == false {
+            result.append(number)
+        }
+    }
+}
+
+func even(_ array: [Int]) -> [Int] {
+    return array.filter { $0 % 2 == 0 }
+}
+
+func square(_ array: [Int]) -> [Int] {
+    return array.map { $0 * $0 }
+}
+
+precedencegroup Group { associativity: left }
+infix operator >>> : Group
+func >>><T, U, V>(left: @escaping (T) -> U, right: @escaping (U) -> V) -> ((T) -> V) {
+    return { right(left($0)) }
+}
+
+let testIntArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+var resultArray = (unique >>> even >>> square)(testIntArray)
+print("result: \(resultArray)")
+// ```
+
+// #### map
+
+// Map can be used to loop over a collection and apply the same operation to each element in the collection.
+
+// ```swift
+let numberOfMonks = [1, 2, 3]
+let hasWaterToDrink: [(Int, Bool)] = numberOfMonks.map { monks in
+    return (monks, monks < 3)
+}
+hasWaterToDrink.forEach { (numberOfMonks, hasWater) in
+    print("\(numberOfMonks) monks, water to drink? \(hasWater ? "YES" : "NO")")
+}
+// // output:
+// // 1 monks, water to drink? YES
+// // 2 monks, water to drink? YES
+// // 3 monks, water to drink? NO
+// ```
+
+// #### compactMap / flatMap
+
+// `compactMap` is the same as `map` but also handles optionals.
+
+// ```swift
+let couldBeNumbers = ["1", "3", "five", "12"]
+let compactedNumbers = couldBeNumbers.compactMap { Int($0) }
+print(compactedNumbers)
+// // result: [1, 3, 12]
+let mappedNumbers = couldBeNumbers.map { Int($0) }
+print(mappedNumbers)
+// // result: [Optional(1), Optional(3), nil, Optional(12)]
+// ```
+
+// `flatMap` is to receive a single-level collection when each element is a sequence or collection:
+
+// ```swift
+let bloodTemperatureByGroup = ["A": [0, 36, 48], "B": [12, 32, 39]]
+let temperaturesMapped = bloodTemperatureByGroup.map { $0.value }
+print(temperaturesMapped)
+// // output: [[12, 32, 39], [0, 36, 48]]
+let temperaturesFlatened = bloodTemperatureByGroup.flatMap { $0.value }
+print(temperaturesFlatened)
+// // output: [12, 32, 39, 0, 36, 48]
+// ```
+
+// General rule: use `compactMap` for mapping a sequence and mapped result could be an optional value; If not, use either map or flatMap depending on the form of result expected.
 
 // [ToC](#table-of-contents)
 
@@ -1666,7 +1743,7 @@ class Love { // class name
     static let defaultPersistency = false
 // ```
 
-// Stored properties
+// ### Stored properties
 
 // ```swift
 var name: String?
@@ -1677,17 +1754,16 @@ var isPersistent = defaultPersistency
 var looksPretty: Bool // variable
 // ```
 
-// Computed property
+// ### Computed property
 
 // ```swift
 var tastesGood: Bool {
-// // computed property
-// // must be variable
+// // computed property must be variable
     return !looksPretty
 }
 // ```
 
-// Lazy property
+// ### Lazy property
 
 // ```swift
 lazy var complexity: Int = { [unowned self] in
@@ -1699,7 +1775,7 @@ lazy var complexity: Int = { [unowned self] in
 }()
 // ```
     
-// Initializer
+// ### Initializer
 
 // ```swift
 // // non-optional properties must be
@@ -1710,7 +1786,7 @@ init(looksPretty: Bool, name: String? = nil) {
 }
 // ```
     
-// Instance method
+// ### Instance method
 
 // ```swift
 func printDescription() {
@@ -1718,7 +1794,7 @@ func printDescription() {
 }
 // ```
     
-// Class/Type method
+// ### Class/Type method
 
 // ```swift
 // // `final` indicates cannot be overwritten
@@ -1732,7 +1808,6 @@ func defaultName() -> String {
 // ```
 
 // ```swift
-
 // // called when no reference to the instance
 // // ie. reference counter reaches 0
 deinit {
@@ -1770,7 +1845,7 @@ static func printNotes(about love: Love) {
 }
 // ```
 
-// Property Observer
+// ### Property Observer
 
 // ```swift
     var notes: String? {
@@ -1823,10 +1898,14 @@ someHate.printDescription()
 // Hate looks pretty but tastes bad
 // ```
 
+// ### static vs class function:
+
+// Both `static` and `class` can associate method of class, subclass can overrie `class` methods but not `static` methods.
+
 // ```swift
 struct Address {
     
-    // type constant
+// // type constant
     static let format = "British"
     
     var nickName: String
@@ -2058,6 +2137,20 @@ commentary(of: person)
 
 // 1. prefix protocol and optional function with `@objc`, so function can be made `@optional`
 // 2. provide a default implementation of protocol function via extension
+
+// ### Class Only Protocol
+
+// Define a class only protocol:
+
+// ```swift
+protocol ClassOnlyProtocol: AnyObject {
+    func someMethodHere()
+}
+// ```
+
+// So that `ClassOnlyProtocol` can be implemented by only class, which is reference type, other than value types like `struct`. One of the reason for needing this is for having delegate which is usually weak, thus value type cannot be used.
+
+// Prior to Swift 4, `class` is used in place of `AnyObject`, now it's made more clear: they represent an existential for classes.
 
 // [ToC](#table-of-contents)
 
