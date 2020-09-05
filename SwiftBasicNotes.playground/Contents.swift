@@ -2,17 +2,17 @@
 
 import UIKit //!
 
-// # Hao's Swift Study Notes
+// # Swift Study Notes
 
 // (中文版请看[README.cn.md](./README.cn.md))
 
-// This is the playground I've used during learning Swift, I mainly read [The Swift Programming Language (Swift 4)](https://docs.swift.org/swift-book/index.html) from Apple, took notes and wrote code as I read.
+// This is the playground I used during learning Swift, I mainly read [The Swift Programming Language](https://docs.swift.org/swift-book/index.html) from Apple, took notes and wrote code as I read.
 
-// Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with a little tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
+// Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with some tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
 
 // As a result, this markdown was directly generated from the code and comments in the playground.
 
-// To make this possible, comments in the code have to follow certain convention, in order to have the right content format for markdown as well as keeping Playground able to compile. The convention looks like:
+// To make this possible, comments in the code have to follow certain conventions in order to have the right content format for markdown as well as keeping Playground able to compile. The convention looks like:
 
 // ```
 // // This is a comment, will become text content of **markdown**.
@@ -34,16 +34,11 @@ import UIKit //!
 
 // ## "Hello, world!" Printing
 
-// The classic "Hello, world!" print out illustrates a few things of the language, for example, no semicolon needed to end a line, how a function/method call looks like, how string literal is represented.
+// The classic "Hello, world!" print out illustrates a few things of the language: no semicolon needed to end a line, how a function/method call looks like, how string literal is represented in Swift which doesn't need an @ sign as in Objective-C.
 
 // ```
 print("Science may someday discover what faith has always known.")
 // ```
-
-// ***$interview$***
-
-// Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code.
-// In this regard, Swift is both object-oriented and functional programming language.
 
 // ## Table of Contents
 
@@ -88,13 +83,15 @@ print("Science may someday discover what faith has always known.")
 // ```
 
 // - **Make sure** constant or variable has value set before the first time its value is read
-// - if the value of a variable isn't modified throughout its lifecycle, or not intended to be modified, define it as a constant instead, this makes sure any unexpected modification could be captured by compiler
+// - _tip_: if the value of a variable isn't modified throughout its lifecycle, or not intended to be modified, define it as a constant instead, this makes sure any unexpected change could be captured by compiler
+
+// > Historians say the Egyptians revered the number nine because they associated it with their sun god, Atum-Ra. According to one version, Ra gave birth to eight other gods. Since Ra often took the form of a cat, people began associating the nine lives (Ra plus eight) with feline longevity.
 
 // ```swift
 let catsMaximumNumberOfLives = 9 // constant
 var catsCurrentDeathCount = 0 // variable
-catsCurrentDeathCount = 9
-// // catsMaximumNumberOfLives = 10 would generate a compiler error
+catsCurrentDeathCount = 3
+// catsMaximumNumberOfLives = 10 // this would generate a compiler error
 
 // // multiple constants or variables on a single line:
 var variable1 = 0.0, variable2 = 1.2, variable3 = 5.6
@@ -116,27 +113,30 @@ var someNumber: Int
 // Required for separating statements on the same line:
 
 // ```swift
-let sameLineGuru = "Same Line"; print("This is Mr. \(sameLineGuru)")
+let sameLineGuru = "Same Liner"; print("This is Mr. \(sameLineGuru)")
 // ```
 
 // string interpolation was used above to include the name of a constant or variable as a placeholder in a longer string, and to prompt Swift to replace it with the current value of that constant or variable.
 
 // ### Integers
 
+// > God made the integers; all else is the work of Man.
+// > -- Kronecker
+
 // ```swift
+// // Int is usually used, it's the same size as `Int32` on 32-bit platform and same size as `Int64` on 64-bit platform
+let integer: Int
 let integer8: Int8 // signed 8-bit integer, UInt8 for unsigned
 let integer16: Int16 // signed 16-bit integer, UInt16 for unsigned
 let integer32: Int32 // signed 32-bit integer, UInt32 for unsigned
 let integer64: Int64 // signed 64-bit integer, UInt64 for unsigned
 // ```
 
-// Usually `Int` is used, it's the same size as `Int32` on 32-bit platform and same size as `Int64` on 64-bit platform
-
 // #### Integer Bounds
 
-// Unsigned X-bit integer range from 0 to (2^X)-1 inclusive
-
-// Signed X-bit integer range from -(2^(X-1)) to (2^(X-1))-1 inclusive
+// General rule of the bounds of integers:
+// - unsigned X-bit integer range from 0 to (2^X)-1 inclusive
+// - signed X-bit integer range from -(2^(X-1)) to (2^(X-1))-1 inclusive
 
 // ```swift
 print("maximum value of UInt16 is \(UInt16.max) which is (2^16)-1 = \(Int(pow(2.0, 16.0) - 1))")
@@ -151,26 +151,27 @@ print("maximum value of Int32 is \(Int32.max) which is (2^(32-1))-1 = \(Int(pow(
 
 // ### Type Safe and Type Inferences
 
+// > The biggest regret in life is that one cannot have youth and the feeling of youth at the same time.
+// > - Hemingway
+
 // ```swift
 let youth = 3
 // // inferred to be type `Int`
 
-let experienceOfYouth = 0.14
+let feelingOfYouth = 0.14
 // // inferred to be type `Double`
 
 let pi = 3 + 0.1415926
 // // Inferred to be type `Double`
 
-// // you can't get pi by adding:
-// // let youthAndExperienceOfYouth = youth + experienceOfYouth
+// let anotherPi = youth + feelingOfYouth
 // // error: binary operator '+' cannot be applied to operands of type 'Int' and 'Double'
-// // (you can't have youth and experience of youth at the same time)
 // ```
 
 // ### Type Conversion
 
 // ```swift
-let alsoPi = Double(youth) + experienceOfYouth
+let alsoPi = Double(youth) + feelingOfYouth
 let werePi = Int(alsoPi) // lost precision
 // ```
 
@@ -181,7 +182,22 @@ typealias Mood = UInt8
 print("mood: happy = \(Mood.max) sad = \(Mood.min)")
 // ```
 
+// ### Numeric Literals
+
+// Apart from decimals, numbers with base 8, 16, or 2 (ie. binary) are sometimes used in programming. Each of these can be written as integer literals.
+
+// - _decimal_ number has no prefix, e.g. 10
+// - _binary_ number with `0b` prefix, e.g. `0b101`
+// - _octal_ number with `0o` prefix
+// - _hexadecimal_ number with `0x` prefix
+
 // ### Booleans
+
+// _Boolean_ type (`Bool`) in Swift is often referred to as _logical_ with values of either `true` or `false`.
+
+// > The following statement is true.
+
+// > The previous statement is false.
 
 // ```swift
 let fake = false
@@ -198,6 +214,8 @@ let (x, y) = (1, 2) // x is 1 and y is 2
 // ```
 
 // ### Arithmetic operator
+
+// > Arithmetic is being able to count up to twenty without taking off your shoes. - Mickey Mouse
 
 // ```swift
 1 + 2       // addition (+)
@@ -272,8 +290,8 @@ print("some coordinate has x = \(someCoordinatesNamed.x) and y = \(someCoordinat
 
 // ```swift
 let someArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-print(someArray[5...])
-print(someArray[...3])
+print(someArray[5...]) // [6, 7, 8, 9]
+print(someArray[...3]) // [1, 2, 3, 4]
 // ```
 
 // ### Terminology
@@ -293,7 +311,9 @@ print(someArray[...3])
 
 // [Comparison Operators](#comparison-operators) let you compare values and get an answer of either `true` or `false`
 
-// ### `if` statement
+// ### if-else statement
+
+// > If all else fails, immortality can always be assured by spectacular error. -- John Kenneth Galbraith
 
 // ```
 // if <condition> {
@@ -326,40 +346,32 @@ let isOnePlusOneEqualThree = (1 + 1) == 3
 let isFake = isOnePlusOneEqualThree == false
 
 if isFake == true {
-    print("Fake, is the new truth")
-}
-// ```
-
-// ```swift
-let nameOfAnimal = "Deer"
-if nameOfAnimal == "Horse" {
-    print("Chaos.")
-} else {
-    print("A place where we don't have to lie.")
+    print("The truth is fake.")
 }
 // ```
 
 // ### Short Circuiting
 
 // ```swift
-if "country" > "people" && 1 + 1 == 2 {
-    // here it won't check if 1 + 1 equals to 2
-    // because the first condition is already wrong
-    print("We can sacrifice the people for the benefit of the country.")
+let isGovernmentGreaterThanItsPeople = "government" > "people"
+if isGovernmentGreaterThanItsPeople && 1 + 1 == 2 {
+    // because the first condition is false
+    // there's no need to check the second condition even if it's true
+    print("People should be afraid of their government.")
 } else {
-    print("Fighting for the people is fighting for the country.")
+    print("Government should be afraid of its people.")
 }
-// // Result: Fighting for the people is fighting for the country.
+// // Result: Government should be afraid of its people.
 // ```
 
 // ```swift
-var someoneIsDrunk = true
-var divorceAgreementReadyToSign = true
+let someoneIsDrunk = true
+let divorceAgreementReadyToSign = true
 
 if someoneIsDrunk || divorceAgreementReadyToSign == false {
-    // here it doesn't matter if divorce agreement is ready to sign or not
-    // because the person is already drunk
-    // ie. first condition true
+    // even if the divorce agreement is ready to sign
+    // since the person is drunk, ie. first condition is true
+    // there's no need to check the second condition
     print("Let's decide later.")
 }
 // ```
@@ -387,6 +399,10 @@ print("Someone's life is \(lifeDescription).")
 
 // ### Loops
 
+// > Endless Loop: n., see Loop, Endless.
+
+// > Loop, Endless: n., see Endless Loop.
+
 // #### `while` Loop
 
 // ```
@@ -399,10 +415,10 @@ print("Someone's life is \(lifeDescription).")
 let weekendStarts = 6
 var today = 1
 while today < weekendStarts {
-    print("Day \(today): start the day with a smile, after that you can be your nasty old self again.")
+    print("Day \(today): start the day with a smile, after that you can be your nasty lazy but true self again.")
     today += 1
 }
-print("Day \(today): weekend starts")
+print("Day \(today): finally weekend")
 // ```
 
 // ```
@@ -411,9 +427,10 @@ print("Day \(today): weekend starts")
 // } while <CONDITION>
 // ```
 
+// > Children seldom misquote you. In fact, they usually repeat word for word what you shouldn't have said.
+
 // ```swift
-let fullCupOfWater = 5
-var waterInCup = fullCupOfWater
+var waterInCup = 5
 
 repeat {
     if (waterInCup > 0) {
@@ -438,7 +455,9 @@ for currentVersion in 1...totalVersions {
 }
 // ```
 
-// **`where`**
+// **where**
+
+// > C++ : Where friends have access to your private members. -- Gavin Russell Baker
 
 // ```swift
 let versionNumberOfBadLuck = 4
@@ -449,6 +468,8 @@ for currentVersion in 1...totalVersions where currentVersion != versionNumberOfB
 
 // **`continue` and Labeld Statements**
 
+// > Trust in what you love, continue to do it, and it will take you where you need to go. -- Natalie Goldberg
+
 // ```swift
 for currentVersion in 1...totalVersions {
     if currentVersion == versionNumberOfBadLuck {
@@ -457,37 +478,60 @@ for currentVersion in 1...totalVersions {
     }
     print("Current version: \(currentVersion)")
 }
+// // output:
+// // Current version: 1
+// // Current version: 2
+// // Current version: 3
+// // We skip version 4 to avoid bad luck.
+// // Current version: 5
 // ```
 
-// **Example**
+// Labeled statement lets you continue or break specific loop, this is useful for multi-layer loops.
 
-// Dating with different lovers:
+// Example: dating with different people:
 
-// - avoid dating if wife might know
-// - we'll be in big trouble if the lover is also wife's friend and wife might know the dating
+// - avoid dating if lover is wife's friend
+// - dating with wife instead of lover
 
 // ```swift
-let numberOfSecretLovers = 3
-let plannedDatesPerLover = 5
-let loverThatIsAlsoWifesFriend = 2
-let dateThatWifeMightKnow = 4
+let numberOfLovers = 3
+let datesPerLover = 2
+let wifesFriend = 2
+let datingWithWife = 1
 
-lover: for currentLover in 1...numberOfSecretLovers {
-    date: for currentDate in 1...plannedDatesPerLover {
+lover: for currentLover in 1...numberOfLovers {
+    date: for currentDate in 1...datesPerLover {
         print("lover \(currentLover) date \(currentDate)")
-        if currentLover == loverThatIsAlsoWifesFriend && currentDate == dateThatWifeMightKnow {
-            print("We are in trouble now.")
-            break lover
-        } else if currentDate == dateThatWifeMightKnow {
-            print("Do not date if wife might know.")
+        if currentLover == wifesFriend {
+            print("Do not date if lover is also wife's friend.")
+            continue lover
+        } else if currentDate == datingWithWife {
+            print("Go dating with wife instead.")
             continue date
         }
-        print("Let's go dating.")
+        print("Dating with lover.")
     }
 }
+
+// // output:
+// // lover 1 date 1
+// // Go dating with wife instead.
+// // lover 1 date 2
+// // Dating with lover.
+// // lover 2 date 1
+// // Do not date if lover is also wife's friend.
+// // lover 3 date 1
+// // Go dating with wife instead.
+// // lover 3 date 2
+// // Dating with lover.
 // ```
 
 // ### Switch
+
+// > There's no kill switch on awesome. -- Dilbert (Scott Adams)
+
+// - `switch` determines which `case` the _switched_ value matches
+// - it works with any data types that can be compared
 
 // ```
 // switch <control expression> {
@@ -506,7 +550,7 @@ lover: for currentLover in 1...numberOfSecretLovers {
 // ```swift
 let occupied = true, unoccupied = false
 var gender = "boy" // try changing it to "girl"
-var toiletOccupancy = (male: occupied, female: unoccupied)
+var toiletOccupancy = (male: occupied, female: unoccupied) // try changing occupied and unoccupied
 
 switch toiletOccupancy {
 case let (male, female) where male != female:
@@ -555,6 +599,8 @@ default:
 
 // ## Functions
 
+// > Character is higher than intellect. Thinking is the function. Living is the functionary. The stream retreats to its source. A great soul will be strong to live, as well as strong to think. -- Ralph Waldo Emerson
+
 // ```
 // func <function name>(<parameters>) -> <return type> {
 //     statements
@@ -600,9 +646,9 @@ sayHi("people")
 // Terminology: copy-in copy-out, call by value result
 
 // ```swift
-let vampiresAppetitePerPerson = 0.4
+let vampiresAppetite = 0.4
 func payTax(for income: inout Double) {
-    income *= (1.0 - vampiresAppetitePerPerson)
+    income *= (1.0 - vampiresAppetite)
 }
 
 var income = 100.00
@@ -614,14 +660,12 @@ print("After tax, income becomes \(income)")
 
 // ### Functions as variables
 
-// A function that takes a parameter, and returns another function that uses the parameter:
+// A function that takes a parameter, and returns another function that uses the parameter.
 
-// **Example**
-
-// Define a generic function that returns a function mimicing money deduction behaviour with specified deduction rate
+// Example: define a generic function that returns a function mimicing money deduction behaviour with specified deduction rate
 
 // ```swift
-func createMoneyDeductor(with percentage: Double) -> (Double) -> Double {
+func makeMoneyDeductor(with percentage: Double) -> ((Double) -> Double) {
     // define and return another function:
     func bloodSuckingVampire(bloodQuantity: Double) -> Double {
         return bloodQuantity * (1 - percentage)
@@ -629,9 +673,9 @@ func createMoneyDeductor(with percentage: Double) -> (Double) -> Double {
     return bloodSuckingVampire
 }
 
-let taxOffice = createMoneyDeductor(with: 0.3)
-let laywer = createMoneyDeductor(with: 0.1)
-let dentist = createMoneyDeductor(with: 0.1)
+let taxOffice = makeMoneyDeductor(with: 0.3)
+let laywer = makeMoneyDeductor(with: 0.2)
+let dentist = makeMoneyDeductor(with: 0.1)
 
 income = 10_000.00
 print("Start with income \(income)")
@@ -639,6 +683,9 @@ income = taxOffice(income)
 income = laywer(income)
 income = dentist(income)
 print("After tax, laywer and dentist, now it becomes \(income)")
+// // output:
+// // Start with income 10000.0
+// // After tax, laywer and dentist, now it becomes 5040.0
 // ```
 
 // ### Function that Never Returns
@@ -652,20 +699,66 @@ func oneInfiniteLoop() -> Never {
 }
 // ```
 
+// ### Function Overloading
+
+// Function overloading is having several functions with the same name but different _signatures_, after all, the compiler must be able to know which function is invoked, at least one of the difference must exist:
+
+// - different number of parameters
+// - different parameter types
+// - different external parameter names
+// - different return types
+
+// ### Function Documentation
+
+// __Doxygen__ format is often used to document functions:
+
+// ```swift
+/// Returns a substitution of something.
+/// - Parameters:
+///   - something: a string value of something
+/// - Returns: "lie" if something is "truth", a very poor substitute, but the only one discovered to date; returns the same thing otherwise
+func substitution(of something: String) -> String {
+    if something == "truth" {
+        return "lie"
+    }
+    return something
+}
+// ```
+
 // [ToC](#table-of-contents)
 
 // ## Optionals
 
 // A variable holding either some value, or nothing.
 
+// > Money matters, but less than we think and not in the way we think. Family is important. So are friends. Envy is toxic. So is excessive thinking. Beaches are __optional__. Trust is not. Neither is gratitude. -- Eric Weiner
+
 // ```
 // <Type>?
 // ```
+
+// `nil` is the name given to the absense of a value.
+
+// > Accident, n.: a condition in which presence of mind is good, but __absence__ of body is better.
 
 // ```swift
 var errorCode: Int?
 errorCode = 404
 errorCode = nil
+// ```
+
+// **unwrap optional**
+
+// To use the value that optional represents, it first need to be _unwrapped_.
+// _Optional binding_ binds the value in an optional into a constant or variable, if the optional doesn't contain a avalue, the condition for `if` is `false`.
+
+// ```swift
+let optionalDrink: String? = "Beer"
+print("\(String(describing: optionalDrink))")
+// // output: Optional("Beer")
+if let drink = optionalDrink {
+    print("\(drink)") // Beer
+}
 // ```
 
 // **force unwrap**
@@ -674,18 +767,6 @@ errorCode = nil
 errorCode = 500
 print("Error code is \(errorCode!)")
 // ```
-
-// **optional binding**
-
-// ```swift
-if let errorCode = errorCode {
-    print("Error code is \(errorCode)")
-} else {
-    print("No error.")
-}
-// ```
-
-// ***$interview$***
 
 // Both reference type and value type can be optional, they both represent the situation when the variable has no value. There's no such a concept in Objective-C, although a variable of reference type can be assigned `nil`, to indicate the variable has no (referenced) value.
 
@@ -710,7 +791,7 @@ someNumbers = [] // type has been provided as `Int`
 // #### Array with default value
 
 // ```swift
-var fiveNumbers = Array(repeating: 1.2, count: 3)
+var threeFloats = Array(repeating: 1.2, count: 3)
 // result: [1.2, 1.2, 1.2]
 // ```
 
@@ -739,7 +820,7 @@ shoppingList += ["Meat", "Tea"]
 
 var firstItem = shoppingList[0]
 
-shoppingList[3] = "Condom"
+shoppingList[3] = "Egg"
 shoppingList[3...4] = ["Energy Drink"]
 // shoppingList: ["Wine", "Coffee", "Cigarette", "Energy Drink", "Tea"]
 
@@ -754,6 +835,7 @@ for item in shoppingList {
     print("Shopping list item: \(item)")
 }
 
+// // iterating with index
 for (index, item) in shoppingList.enumerated() {
     print("Shopping list item \(index): \(item)")
 }
@@ -769,9 +851,7 @@ for (index, item) in shoppingList.enumerated() {
 
 // #### copy-on-write
 
-// ***$interview&***
-
-// When value-type is copied, the copied version still points to the same memory location as the original version, only when copied version is modified, a new memory region is allocated for the copied version. This means that memory footprint of copied value type only increases when copied value changes, this ensures maximum efficiency of memory usage.
+// _tip_: When value-type is copied, the copied version still points to the same memory location as the original version, only when copied version is modified, a new memory region is allocated for the copied version. This means that memory footprint of copied value type only increases when copied value changes, this ensures maximum efficiency of memory usage.
 
 // [ToC](#table-of-contents)
 
@@ -833,9 +913,7 @@ openDays.union(closedDays)
 openDays.intersection(closedDays)
 // ```
 
-// ***$interview$***
-
-// Given an array of numbers and a target value, determine whether the array has two numbers whose sum equals to the target value
+// Example: given an array of numbers and a target value, determine whether the array has two numbers whose sum equals to the target value
 
 // ```swift
 func twoSum(numbers: [Int], _ target: Int) -> Bool {
@@ -864,8 +942,6 @@ func twoSumIndices(numbers: [Int], _ target: Int) -> (Int, Int)? {
 }
 // ```
 
-// ***$interview$***
-
 // Many collection types as well as other types (e.g. `String`) are reference type in Objective-C but value type in Swift, the reasons are:
 
 // - value type can make memory usage more efficient, value types are stored on stack whereas reference types are stored on heap. Copy-on-write makes sure minimum memory overhead
@@ -876,6 +952,8 @@ func twoSumIndices(numbers: [Int], _ target: Int) -> (Int, Int)? {
 // ### Dictionary
 
 // #### Creating a Dictionary
+
+// Dictionary in Swift can be created using _dictionary literal_, which is a list of key-value pairs separated by commas, inside square brackets.
 
 // ```swift
 // // creating empty dictionary:
@@ -896,11 +974,14 @@ if meaningsOfAges.isEmpty == false {
     print("At least one age has some meaning")
 }
 
-meaningsOfAges["one"] = "One year closer to death"
+meaningsOfAges["four"] = "at which we know all the questions"
+meaningsOfAges["eighteen"] = "at which we know all the answers"
 
 if let meaningOf18 = meaningsOfAges["eighteen"] {
     print("The meaning of age 18:\n\(meaningOf18)")
 }
+// // output:
+// // Meaning of eighteen: at which we know all the answers
 // ```
 
 // #### Iterating Over a Dictionary
@@ -909,6 +990,9 @@ if let meaningOf18 = meaningsOfAges["eighteen"] {
 for (age, meaning) in meaningsOfAges {
     print("Meaning of \(age): \(meaning)")
 }
+// // output:
+// // Meaning of four: at which we know all the questions
+// // Meaning of eighteen: at which we know all the answers
 // ```
 
 // [ToC](#table-of-contents)
@@ -962,8 +1046,8 @@ cups.sorted { $0 > $1 }
 cups.sorted(by: >)
 // ```
 
-// - A closure can _capture_ constants and variables from the surrounding context in which it is defined.
-// - Closures are reference types
+// - a closure can _capture_ constants and variables from the surrounding context in which it is defined.
+// - closures are reference types
 
 // ### Escaping closures
 
@@ -1012,13 +1096,11 @@ func serve(dinner provider: @autoclosure () -> String) {
 
 // // now can pass a String
 serve(dinner: "Vegetable")
-// // "Hi" will be converted to a closure that returns this string
+// // "Vegetable" will be converted to a closure that returns this string
 // // which is only evaluated when being called
 // ```
 
-// ***$interview$***
-
-// Implement OR (||) operation.
+// Example of autoclosure: implement OR (||) operation.
 
 // Flawed version:
 
@@ -1044,9 +1126,9 @@ serve(dinner: "Vegetable")
 // }
 // ```
 
-// ***$interview$***
+// _tip_: Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code. In this regard, Swift is both object-oriented and functional programming language.
 
-// Due to the support of functional closures, many problems can be solved funtionally. For example, get all numbers between 0 to 100 that are 1. even and 2. squares of other numbers
+// Example: due to the support of functional closures, many problems can be solved funtionally. For example, get all numbers between 0 to 100 that are 1. even and 2. squares of other numbers
 
 // ```swift
 (0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
@@ -1140,38 +1222,30 @@ let combinedEAcute: Character = "\u{65}\u{301}"
 var word = "cafe"
 word.count // 4
 word += "\u{301}"
-word.count // 4
+word.count // word is now "café" but count is still 4
 // ```
 
 // ```swift
 let science = "ABCDEFGHIJKMNPQRTVWXYZ"
-
-print(science[science.startIndex])
-// // A
-
-print(science[science.index(before: science.endIndex)])
-// // Z
-
-print(science[science.index(after: science.startIndex)])
-// // B
-
+print(science[science.startIndex]) // A
+print(science[science.index(before: science.endIndex)]) // Z
+print(science[science.index(after: science.startIndex)]) // B
 let index7 = science.index(science.startIndex, offsetBy: 7)
-print(science[index7])
-// // H
+print(science[index7]) // H
 // ```
 
 // ```swift
-var indexS: String.Index? = science.index(of: "S")
-var indexO: String.Index? = science.index(of: "O")
-var indexU: String.Index? = science.index(of: "U")
-var indexL: String.Index? = science.index(of: "L")
+var indexS: String.Index? = science.firstIndex(of: "S")
+var indexO: String.Index? = science.firstIndex(of: "O")
+var indexU: String.Index? = science.firstIndex(of: "U")
+var indexL: String.Index? = science.firstIndex(of: "L")
 
 if (indexS == nil && indexO == nil && indexU == nil && indexL == nil) {
     print("science has no SOUL")
 }
 // ```
 
-// **inserting**
+// #### inserting
 
 // ```swift
 var sentence = "you understand"
@@ -1181,7 +1255,7 @@ print(sentence)
 // // Print: "could you understand?"
 // ```
 
-// **replacing**
+// #### replacing
 
 // ```swift
 let range1 = sentence.range(of: "oul")!
@@ -1192,21 +1266,20 @@ print(sentence)
 // // Prints: "culod you uredntsnad?"
 // ```
 
-// **substrings**
+// #### substrings
 
 // ```swift
 let englishForDummy = "therapist"
-let indexOfR = englishForDummy.index(of: "r")!
+let indexOfR = englishForDummy.firstIndex(of: "r")!
 let firstWord = englishForDummy[..<indexOfR]
 let lastWord = englishForDummy[indexOfR...]
 print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(String(firstWord))\" and \"\(String(lastWord))\"?")
-// // Prints: "Have you ever realised the word "therapist" is made up by "the" and "rapist"?
+// // output:
+// // Have you ever realised the word "therapist" is made up by "the" and "rapist"?
 // ```
 
-// ***$interview$***
-
-// Given a string, return another string which is a reverse of given string by words,
-// example: "what the f**k" becomes "f**k the what"
+// Exercise: given a string, return another string which is a reverse of given string by words,
+// e.g. "what the f**k" becomes "f**k the what"
 
 // ```swift
 func reverse<T>(_ things: inout [T], _ start: Int, _ end: Int) {
@@ -1237,10 +1310,23 @@ func reverseWords(_ s: String?) -> String? {
 }
 
 reverseWords("what the f**k")
-// // prints: f**k the what
+// // output:
+// // f**k the what
 // ```
 
-// Note: one could use of `components(separatedBy:)` and `joined(separator:)`, but interview question is usually not this straight forward, at least a more primitive solution could make you stand out among other interviewees.
+// Note: a simpler way to solve above problem is to use `components(separatedBy:)` and `joined(separator:)`.
+
+// ### Raw strings
+
+// To avoid special characters or string interpolation, use _raw string_.
+
+// > There is a tendency to mistake data for wisdom, just as there has always been a tendency to confuse logic with values, intelligence with insight. Unobstructed access to facts can produce unlimited good only if it is matched by the desire and ability to find out what they mean and where they lead. Facts are terrible things if left sprawling and unattended. They are too easily regarded as evaluated certainties rather than as the rawest of _raw_ materials crying to be processed into the texture of logic. -- Norman Cousins
+
+// ```swift
+let raw1 = #"Eating "raw" fish will not \(interpolate) the string including slash \"#
+let raw2 = ##"Use # in raw string is also possible as long as the open and close hashes match!"##
+let raw3 = #"You can also use raw in raw: \#(raw1)"#
+// ```
 
 // [ToC](#table-of-contents)
 
@@ -1325,7 +1411,7 @@ default:
 
 // ### Associated Values
 
-// **Example**
+// Example:
 
 // Define an enumeration for daily attendence,
 // if unattended, give and execuse as well as a real reason,
@@ -1343,6 +1429,7 @@ func teacherEvaluate(_ attendence: DailyAttendence) {
     case .attended:
         print("Keep up")
     case .unattended(_, let realReason):
+        // teacher know your execuse and only care about real reason
         print("I need to talk to your parents regarding \(realReason)")
     }
 }
@@ -1466,9 +1553,7 @@ escape(from: love)
 // - enum can have methods inside it, the methods are for each case (so if a method performs case-dependent action, it need to consider all cases)
 // - enum can be a good way of representing hierarchy, structure and even certain kinds of flow
 
-// **Example**
-
-// An `enum` representing seasons with method that evolves to next season
+// Example: an `enum` representing seasons with method that evolves to next season
 
 // ```swift
 enum Season: String, CustomStringConvertible {
@@ -1500,15 +1585,13 @@ var currentSeason = Season.spring
 print(currentSeason)
 currentSeason.next()
 print(currentSeason)
+
+// // output:
+// // It's spring now.
+// // It's autumn now.
 // ```
 
-// Prints:
-// It's spring now.
-// It's autumn now.
-
-// **Example**
-
-// An 'enum' representing stages of love and with ability to evolve
+// Example: an 'enum' representing stages of love and with ability to evolve
 
 // ```swift
 enum StageOfLove: String {
@@ -1523,9 +1606,9 @@ enum StageOfLove: String {
 }
 
 extension StageOfLove {
-    func nextStageWithTime() -> StageOfLove {
+    func next() -> StageOfLove {
         guard self != .lost else {
-            preconditionFailure("No time left")
+            preconditionFailure("love ends here!")
         }
         
         switch self {
@@ -1547,16 +1630,10 @@ extension StageOfLove {
             preconditionFailure()
         }
     }
-    
-    func memoryRecall() -> StageOfLove {
-        guard self == .separate else {
-            preconditionFailure("You never know how deep you are involved unless you lost it.")
-        }
-        return .lost
-    }
 }
 
 extension StageOfLove: CustomStringConvertible {
+
     var description: String {
         switch self {
         case .acquaint, .inLove, .marriage, .accustomed:
@@ -1570,60 +1647,57 @@ extension StageOfLove: CustomStringConvertible {
 }
 
 var currentStage = StageOfLove.acquaint
-var nextStage = currentStage.nextStageWithTime()
+var nextStage = currentStage.next()
 print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
 
 currentStage = nextStage
-nextStage = currentStage.nextStageWithTime()
-
-print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
-
-currentStage = nextStage
-nextStage = currentStage.nextStageWithTime()
+nextStage = currentStage.next()
 
 print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
 
 currentStage = nextStage
-nextStage = currentStage.nextStageWithTime()
+nextStage = currentStage.next()
 
 print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
 
 currentStage = nextStage
-nextStage = currentStage.nextStageWithTime()
+nextStage = currentStage.next()
 
 print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
 
 currentStage = nextStage
-nextStage = currentStage.nextStageWithTime()
+nextStage = currentStage.next()
 
 print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
 
 currentStage = nextStage
-nextStage = currentStage.nextStageWithTime()
+nextStage = currentStage.next()
+
+print("\(currentStage.rawValue) becomes \(nextStage.rawValue)")
+
+currentStage = nextStage
+nextStage = currentStage.next()
 
 print(currentStage)
 print(nextStage)
 
+// // output:
+// // acquaint becomes inLove
+// // inLove becomes marriage
+// // marriage becomes accustomed
+// // accustomed becomes bored
+// // bored becomes stranger
+// // stranger becomes separate
+// // Memory fades as time goes by, we got seperated as we were pacing.
+// // The moment I turned round, I found that you were not there. Suddenly, I was flustered.
+
 // ```
-
-// prints:
-//
-// acquaint becomes inLove
-// inLove becomes marriage
-// marriage becomes accustomed
-// accustomed becomes bored
-// bored becomes stranger
-// stranger becomes separate
-
-// Memory fades as time goes by, we got seperated as we were pacing.
-// The moment I turned round, I found that you were not there. Suddenly, I was flustered.
 
 // ### Enum with Generic parameters
 
-// Enum can be defined with generic parameters for associated values
+// Enum can be defined with generic parameters for associated values.
 
-// **Example**
-// Define an `enum` representing success and error response with generic response and error type
+// Example: define an `enum` representing success and error response with generic response and error type
 
 // ```swift
 enum Response<SuccessType, ErrorType> {
@@ -1662,7 +1736,7 @@ class Love { // class name
 // Class/Type constant:
 
 // ```swift
-    // by default, love isn't persistent
+    // by default, love cannot persist
     static let defaultPersistency = false
 // ```
 
@@ -1677,39 +1751,37 @@ var isPersistent = defaultPersistency
 var looksPretty: Bool // variable
 // ```
 
-// Computed property
+// Computed property:
 
 // ```swift
+// // computed property must be variable
 var tastesGood: Bool {
-// // computed property
-// // must be variable
     return !looksPretty
 }
 // ```
 
-// Lazy property
+// Lazy property:
 
 // ```swift
 lazy var complexity: Int = { [unowned self] in
     if let name = self.name {
         return name.lengthOfBytes(using: .utf8)
     } else {
-        return 123
+        return 0
     }
 }()
 // ```
     
-// Initializer
+// Initializer:
 
 // ```swift
-// // non-optional properties must be
-// // initialized before use
+// // non-optional properties must be initialized before use
 init(looksPretty: Bool, name: String? = nil) {
     self.looksPretty = looksPretty
     self.name = name
 }
 // ```
-    
+
 // Instance method
 
 // ```swift
@@ -1717,8 +1789,8 @@ func printDescription() {
     Love.printNotes(about: self)
 }
 // ```
-    
-// Class/Type method
+
+// Class/Type method:
 
 // ```swift
 // // `final` indicates cannot be overwritten
@@ -1732,9 +1804,7 @@ func defaultName() -> String {
 // ```
 
 // ```swift
-
-// // called when no reference to the instance
-// // ie. reference counter reaches 0
+// // called when no reference to the instance, ie. reference counter reaches 0
 deinit {
     print("\(self.displayName()) disappeared in a puff of logic")
 }
@@ -1754,7 +1824,7 @@ static func printNotes(about love: Love) {
     }
 
     if love.isPersistent {
-        print("\(displayName) can be persistent")
+        print("\(displayName) lasts forever")
     } else {
         print("\(displayName) \(Love.defaultPersistency ? "lasts forever" : "doesn't last long") by default")
     }
@@ -1787,9 +1857,7 @@ static func printNotes(about love: Love) {
     }
 // ```
 
-// ***$interview$***
-
-// Note: setting a property in `init`, `willSet` and `didSet` won't trigger property observer.
+// _Tip_: setting a property in `init`, `willSet` and `didSet` won't trigger property observer.
 
 } //!
 
@@ -1816,10 +1884,10 @@ someHate.printDescription()
 // `hate` prints
 
 // ```
-// Notes about Hate:
+// Notes about love:
 // love has a name of "Hate"
 // Hate is thorny
-// Hate can be persistent
+// Hate lasts forever
 // Hate looks pretty but tastes bad
 // ```
 
@@ -1847,9 +1915,7 @@ struct Address {
 }
 // ```
 
-// ***$interview$***
-
-// Be careful, `mutating` prefix is need for `struct` and `enum` to modify its own value.
+// _tip_: `mutating` prefix is need for `struct` and `enum` to modify its own value.
 
 // ```swift
 print("Using \(Address.format) format")
@@ -1859,6 +1925,9 @@ print("Using \(Address.format) format")
 // // default struct-wise initializer
 let address = Address(nickName: "Beehive", streetNumber: "123", streetName: "Straight Street", suburb: "Curveless", state: "XYZ", postcode: "1234", country: "Unobtainable")
 print(address.fullAddress)
+// // output:
+// // Using British format
+// // 123 Straight Street, Curveless, XYZ 1234, Unobtainable
 // ```
 
 // ### Inheritance
@@ -1866,6 +1935,7 @@ print(address.fullAddress)
 // ```swift
 // // hate is a kind of love
 class Hate: Love {
+
     init() {
         super.init(looksPretty: false, name: "exclusive love")
         self.isPersistent = true
@@ -1887,7 +1957,7 @@ moreHate.printDescription()
 // Notes about hate:
 // hate has a name of "exclusive love"
 // exclusive love is thorny
-// exclusive love can be persistent
+// exclusive love lasts forever
 // exclusive love looks ugly but tastes good
 // ```
 
@@ -1903,6 +1973,7 @@ moreHate.printDescription()
 // - a convenience initializer must ultimately call a designated initializer.
 
 // ### Identify operators
+
 // Check whether two constants or variables refer to the same single instance:
 // - Identical to (===)
 // - Not identical to (!==)
@@ -1917,15 +1988,13 @@ print("someLove is fakeLove? \(someLove === fakeLove)")
 // ```swift
 var shortTermLove: Love? = Love(looksPretty: true)
 shortTermLove = nil
+// // output:
+// // love disappears in a puff of logic
 // ```
-
-// Prints:
-
-// love disappears in a puff of logic
 
 // ### class vs struct
 
-// ***$interview$***
+// _Tip_: there are several differences between `class` and `struct`:
 
 // *class*:
 
@@ -2048,12 +2117,10 @@ for _ in 1...distance {
 }
 
 commentary(of: person)
-// // Print: "God saved you"
+// // output: "God saved you"
 // ```
 
-// ***$interview$***
-
-// In Swift, by default all the functions in protocol are __required__, unlike in Objective-C where `@optional` and `@required` can be used to annotate methods in a protocol.
+// _Tip_: in Swift, by default all the functions in protocol are __required__, unlike in Objective-C where `@optional` and `@required` can be used to annotate methods in a protocol.
 // There are two workarounds:
 
 // 1. prefix protocol and optional function with `@objc`, so function can be made `@optional`
@@ -2063,10 +2130,10 @@ commentary(of: person)
 
 // ## Generics
 
-// > It is __generally__ agreed that "Hello" is an appropriate greeting because if you entered a room and said "Goodbye," it could confuse a lot of people.
-// > -- Dolph Sharp, "I'm O.K., You're Not So Hot"
+// > It is __generally__ agreed that "Hello" is an appropriate greeting because if you entered a room and said "Goodbye," it could confuse a lot of people. -- Dolph Sharp, "I'm O.K., You're Not So Hot"
 
 // ### Generic Function
+
 
 // Suppose you want to create a function that swaps the values of its parameters, and the function has to work for different types. Instead of having one function per data type, you can have one single function with generic type. **It is like a super-type of different types.**
 
@@ -2085,41 +2152,48 @@ swapValues(&humanWorld, &hell)
 
 // ### Generic Types
 
-// Here we want to create a Box that contains objects of generic types
+// Suppose we want to describe the universe with matters.
 
 // ```swift
-struct Box<Stuff> {
-    var stuff = [Stuff]()
-    mutating func putin(_ stuff: Stuff) {
-        self.stuff.append(stuff)
+struct Universe<Matter> {
+    var matters = [Matter]()
+    mutating func create(_ matter: Matter) {
+        self.matters.append(matter)
     }
-    mutating func pickup() -> Stuff {
-        return stuff.removeLast()
+    mutating func reject() -> Matter {
+        return matters.removeLast()
     }
 }
 // ```
 
-// `Stuff` is a generic type - there's no need to hard code any real type (concrete or protocol) in the `Box` definition; When we create a `Box` instance, we need to specify a type that replaces `Stuff`:
+// `Matter` is a generic type - there's no need to hard code any real type (concrete or protocol) in the `Universe` definition; When we create a `Universe` instance, we need to specify a type that replaces `Matter`:
 
 // ```swift
-var magicBox = Box<String>()
-magicBox.putin("rabbit")
-magicBox.putin("apple")
-magicBox.putin("hat")
+struct Planet {
+    let name: String
+}
 
-print("Something from the box: \(magicBox.pickup())")
-// // print: hat
+var solarSystem = Universe<Planet>()
+solarSystem.create(Planet(name: "Mercury"))
+solarSystem.create(Planet(name: "Pluto"))
+solarSystem.create(Planet(name: "Venus"))
+
+print("Last planet being rejected by solar system: \(solarSystem.reject())")
+// // output:
+// // Last planet being rejected by solar system: Planet(name: "Venus")
 // ```
 
 // ### Type Constraints
-
-// ***$interview$***
 
 // ```swift
 // func fight<G: GoodProtocol, E: EvilProtocol>(somethingGood: G, somethingEvil: E)
 // ```
 
-// Why not:
+// The `<G: GoodProtocol, E: EvilProtocol>` syntax adds a type constraint to the placeholder. It defines that `G` and `E` needs to conform to the protocol `GoodProtocol` and `EvilProtocol`, respectively.
+
+// You cannot call `fight(somethingGood:somethingEvil:)` with two parameters that do not comform to something that respectively implement `GoodProtocol` and `EvilProtocol`.
+
+// Question: why the following doesn't work?
 
 // ```swift
 // func fight(somethingGood: GoodProtocol, somethingEvil: EvilProtocol)
@@ -2337,15 +2411,13 @@ private func privateFunctionRoom() {}
 
 // ### Access control levels
 
-// ***$interview$***
-
 // - `open` and `public` entities can be used within any source file from their defining module, and also in source files from other modules that imports the defining module. Usually used for framework public interface.
 // - `internal` entities can be used within any source file from defining module but not in any file outside.
 // - `file-private` entities can only be used by its own defining source file.
 // - `private` entities can be used only by the enclosing declaration and extensions of the declaration in the same file
 // - default access level is `internal`
 
-// *`open` vs `public`*
+// __`open` vs `public`__
 
 // - `public` classes and members can be subclassed / overridden only within its defining module.
 // - `open` classes and members can be subclassed / overridden within its defining module as well as importing module.
@@ -2390,9 +2462,7 @@ private func privateFunctionRoom() {}
 // - you can mark an extension with explicit access-level modifier, e.g. `private extension`
 // - a type alias can have an access level less than or equal to the access level of the type it aliases
 
-// **simple way to remember**
-// - the volume of a timber bucket depends on the shorted piece of timber
-// - imagine a passenger on a airplane has recently visited virus infected area and not feeling well on the plane, all passengers have to be examined.
+// __analog way to remember:__ the volume of a timber bucket depends on the shorted piece of timber.
 
 // [ToC](#table-of-contents)
 
@@ -3518,7 +3588,7 @@ func merge(meetingTimes: [MeetingTime]) -> [MeetingTime] {
         return meetingTimes
     }
     
-    var sortedTimes = meetingTimes.sorted { (time1, time2) -> Bool in
+    let sortedTimes = meetingTimes.sorted { (time1, time2) -> Bool in
         if time1.start != time2.start {
             return time1.start < time2.start
         } else {
