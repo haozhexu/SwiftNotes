@@ -6,7 +6,7 @@
 
 This is the playground I used during learning Swift, I mainly read [The Swift Programming Language](https://docs.swift.org/swift-book/index.html) from Apple, took notes and wrote code as I read.
 
-Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with some tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
+Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with some tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere. The notes is currently hosted on [Github](https://github.com/haozhexu/SwiftNotes).
 
 As a result, this markdown was directly generated from the code and comments in the playground.
 
