@@ -4,9 +4,13 @@
 
 (中文版请看[README.cn.md](./README.cn.md))
 
+_The source of this file is available on [Github](https://github.com/haozhexu/SwiftNotes) where you can find the XCode playground file._
+
+_The generated markdown is currently used as a Hugo generated content hosted on my website [haozhexu.me](https://www.haozhexu.me/article/2020/swiftnotes) for better readability._
+
 This is the playground I used during learning Swift, I mainly read [The Swift Programming Language](https://docs.swift.org/swift-book/index.html) from Apple, took notes and wrote code as I read.
 
-Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with some tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere. The notes is currently hosted on [Github](https://github.com/haozhexu/SwiftNotes).
+Soon I realised the notes could be organized in a way so that a human readable markdown could be generated with some tweaks, and I can even use [Hugo](https://gohugo.io/) to generate an HTML from it and host it somewhere.
 
 As a result, this markdown was directly generated from the code and comments in the playground.
 
@@ -69,11 +73,11 @@ print("Science may someday discover what faith has always known.")
 
 _constant:_
 
-> Something mysterious is formed, born in the silent void. waiting alone and unmoving, it is at once still and yet in _constant_ motion. It is the source of all programs. I do not know its name, so I will call it the Tao of Programming. - _The Tao of Programming_
+> Something mysterious is formed, born in the silent void. waiting alone and unmoving, it is at once still and yet in __constant__ motion. It is the source of all programs. I do not know its name, so I will call it the Tao of Programming. - _The Tao of Programming_
 
 _variable:_
 
-> Cloudy; _variable_ winds, with local showers; cooler; snow. - _Halcyon Jones_
+> Cloudy; __variable__ winds, with local showers; cooler; snow. - _Halcyon Jones_
 
 ```
 let <constant name>: <type> = <expression>
@@ -118,7 +122,7 @@ string interpolation was used above to include the name of a constant or variabl
 
 ### Integers
 
-> God made the integers; all else is the work of Man.
+> God made the __integers__; all else is the work of Man.
 > -- Kronecker
 
 ```swift
@@ -193,9 +197,9 @@ Apart from decimals, numbers with base 8, 16, or 2 (ie. binary) are sometimes us
 
 _Boolean_ type (`Bool`) in Swift is often referred to as _logical_ with values of either `true` or `false`.
 
-> The following statement is true.
+> The following statement is _true_.
 
-> The previous statement is false.
+> The previous statement is _false_.
 
 ```swift
 let fake = false
@@ -213,7 +217,7 @@ let (x, y) = (1, 2) // x is 1 and y is 2
 
 ### Arithmetic operator
 
-> Arithmetic is being able to count up to twenty without taking off your shoes. - Mickey Mouse
+> __Arithmetic__ is being able to count up to twenty without taking off your shoes. - Mickey Mouse
 
 ```swift
 1 + 2       // addition (+)
@@ -311,7 +315,7 @@ print(someArray[...3]) // [1, 2, 3, 4]
 
 ### if-else statement
 
-> If all else fails, immortality can always be assured by spectacular error. -- John Kenneth Galbraith
+> __If__ all __else__ fails, immortality can always be assured by spectacular error. -- John Kenneth Galbraith
 
 ```
 if <condition> {
@@ -397,9 +401,9 @@ print("Someone's life is \(lifeDescription).")
 
 ### Loops
 
-> Endless Loop: n., see Loop, Endless.
+> Endless Loop: n., see __Loop__, Endless.
 
-> Loop, Endless: n., see Endless Loop.
+> __Loop__, Endless: n., see Endless Loop.
 
 #### `while` Loop
 
@@ -425,7 +429,7 @@ repeat {
 } while <CONDITION>
 ```
 
-> Children seldom misquote you. In fact, they usually repeat word for word what you shouldn't have said.
+> Children seldom misquote you. In fact, they usually __repeat__ word for word what you shouldn't have said.
 
 ```swift
 var waterInCup = 5
@@ -466,7 +470,7 @@ for currentVersion in 1...totalVersions where currentVersion != versionNumberOfB
 
 **`continue` and Labeld Statements**
 
-> Trust in what you love, continue to do it, and it will take you where you need to go. -- Natalie Goldberg
+> Trust in what you love, __continue__ to do it, and it will take you where you need to go. -- Natalie Goldberg
 
 ```swift
 for currentVersion in 1...totalVersions {
@@ -526,7 +530,7 @@ lover: for currentLover in 1...numberOfLovers {
 
 ### Switch
 
-> There's no kill switch on awesome. -- Dilbert (Scott Adams)
+> There's no kill __switch__ on awesome. -- Dilbert (Scott Adams)
 
 - `switch` determines which `case` the _switched_ value matches
 - it works with any data types that can be compared
@@ -597,7 +601,7 @@ default:
 
 ## Functions
 
-> Character is higher than intellect. Thinking is the function. Living is the functionary. The stream retreats to its source. A great soul will be strong to live, as well as strong to think. -- Ralph Waldo Emerson
+> Character is higher than intellect. Thinking is the __function__. Living is the functionary. The stream retreats to its source. A great soul will be strong to live, as well as strong to think. -- Ralph Waldo Emerson
 
 ```
 func <function name>(<parameters>) -> <return type> {
@@ -1405,7 +1409,7 @@ Note: a simpler way to solve above problem is to use `components(separatedBy:)` 
 
 To avoid special characters or string interpolation, use _raw string_.
 
-> There is a tendency to mistake data for wisdom, just as there has always been a tendency to confuse logic with values, intelligence with insight. Unobstructed access to facts can produce unlimited good only if it is matched by the desire and ability to find out what they mean and where they lead. Facts are terrible things if left sprawling and unattended. They are too easily regarded as evaluated certainties rather than as the rawest of _raw_ materials crying to be processed into the texture of logic. -- Norman Cousins
+> There is a tendency to mistake data for wisdom, just as there has always been a tendency to confuse logic with values, intelligence with insight. Unobstructed access to facts can produce unlimited good only if it is matched by the desire and ability to find out what they mean and where they lead. Facts are terrible things if left sprawling and unattended. They are too easily regarded as evaluated certainties rather than as the rawest of __raw__ materials crying to be processed into the texture of logic. -- Norman Cousins
 
 ```swift
 let raw1 = #"Eating "raw" fish will not \(interpolate) the string including slash \"#
@@ -1417,7 +1421,7 @@ let raw3 = #"You can also use raw in raw: \#(raw1)"#
 
 ## Enumerations
 
-> the average pencil is seven inches long, with just a half-inch eraser-in **case** you thought optimism was dead. -- Robert Brault
+> the average pencil is seven inches long, with just a half-inch eraser-in __case__ you thought optimism was dead. -- Robert Brault
 
 Some history regarding switch-case - in case you need to show off your knowledge to friends:
 //
@@ -2237,7 +2241,7 @@ Prior to Swift 4, `class` is used in place of `AnyObject`, now it's made more cl
 ### Generic Function
 
 
-Suppose you want to create a function that swaps the values of its parameters, and the function has to work for different types. Instead of having one function per data type, you can have one single function with generic type. **It is like a super-type of different types.**
+Suppose you want to create a function that swaps the values of its parameters, and the function has to work for different types. Instead of having one function per data type, you can have one single function with generic type. __It is like a super-type of different types.__
 
 ```swift
 func swapValues<T>(_ a: inout T, _ b: inout T) {
@@ -2927,7 +2931,7 @@ print("Divine's life: \(divineLife)")
 
 ### Cleanup with `defer`
 
-> I expect to pass through life but once. If therefore, there be any kindness I can show, or any good thing I can do to any fellow being, let me do it now, and not defer or neglect it, as I shall not pass this way again. -- William Penn
+> I expect to pass through life but once. If therefore, there be any kindness I can show, or any good thing I can do to any fellow being, let me do it now, and not __defer__ or neglect it, as I shall not pass this way again. -- William Penn
 
 excuted when current scope exists, in reverse order; I guess it is to have a logical way of cleanup from the most recent to the least recent changes; It's like when you go upstairs from level 1 to level 3, and you want to go downstairs, you have to follow the reversed way as when you went up, that is level 3, 2, 1.
 
@@ -3026,7 +3030,7 @@ Conforming to `Codable` and make sure all stored properties are also codable.
 - several built-in types are already `Codable`: `String`, `Int`, `Double`, `Data`, `URL`
 - `Array`, `Dictionary`, `Optional` are `Codable` if they contain only `Codable` types
 
-__Example__
+Example:
 
 > a fool with a tool (is still a fool).
 
@@ -3198,8 +3202,6 @@ extension Book {
 [ToC](#table-of-contents)
 
 ## Data Structure in Swift
-
-***$interview$***
 
 ### Stack
 
@@ -3627,8 +3629,6 @@ result.forEach { print("\($0)") }
 [ToC](#table-of-contents)
 
 ## Sorting and Searching
-
-***$interview$***
 
 ### Merge Sort
 
