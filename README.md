@@ -102,9 +102,9 @@ var variable1 = 0.0, variable2 = 1.2, variable3 = 5.6
 ### Type Annotations
 
 ```swift
-var welcomeMessage: String
-var red, green, blue: Double
-var someNumber: Int
+var welcomeMessage: String = "Welcome!"
+var red: Double = 1.0
+var someNumber: Int = 9
 ```
 
 Semicolon (;) isn't required after each statement although you can;
@@ -124,10 +124,10 @@ string interpolation was used above to include the name of a constant or variabl
 ```swift
 // Int is usually used, it's the same size as `Int32` on 32-bit platform and same size as `Int64` on 64-bit platform
 let integer: Int
-let integer8: Int8 // signed 8-bit integer, UInt8 for unsigned
-let integer16: Int16 // signed 16-bit integer, UInt16 for unsigned
-let integer32: Int32 // signed 32-bit integer, UInt32 for unsigned
-let integer64: Int64 // signed 64-bit integer, UInt64 for unsigned
+let integer8: Int8 = 8 // signed 8-bit integer, UInt8 for unsigned
+let integer16: Int16 = 16 // signed 16-bit integer, UInt16 for unsigned
+let integer32: Int32 = 32 // signed 32-bit integer, UInt32 for unsigned
+let integer64: Int64 = 64 // signed 64-bit integer, UInt64 for unsigned
 ```
 
 #### Integer Bounds
@@ -1005,15 +1005,17 @@ Function without name:
 }
 ```
 
+> I go on working for the same reason a hen goes on laying eggs. -- H. L. Mencken
+
+For a long time the question exists that whether egg came first or chicken came first, we can figure it out using closure:
+
 ```swift
-let cups = ["A", "B", "C", "D", "E"]
-let biggestCup = cups.sorted { (c1: String, c2: String) -> Bool in
-    c1 > c2
-    }.first!
-let smallestCup = cups.sorted { (c1: String, c2: String) -> Bool in
-    c1 < c2
-    }.first!
-print("Biggest cup is \(biggestCup), most environemtnal friendly cup is \(smallestCup)")
+let matters = ["🥚", "🐓"]
+let sortedMatters = matters.sorted(by: { (m1: String, m2: String) -> Bool in
+    m1 < m2
+})
+print("first there's \(String(describing: sortedMatters.first!))")
+print("then there comes \(String(describing: sortedMatters.last!))")
 ```
 
 ### Inferring type from context
@@ -1021,28 +1023,30 @@ print("Biggest cup is \(biggestCup), most environemtnal friendly cup is \(smalle
 without parameter type:
 
 ```swift
-cups.sorted { (c1, c2) -> Bool in
-    c1 > c2
+matters.sorted { (m1, m2) -> Bool in
+    m1 > m2
 }
 ```
 
 without return type:
 
 ```swift
-cups.sorted { (c1, c2) in c1 > c2 }
+matters.sorted { (m1, m2) in m1 > m2 }
 ```
 
 shorthand argument names:
 
 ```swift
-cups.sorted { $0 > $1 }
+matters.sorted { $0 > $1 }
 ```
 
 operator methods:
 
 ```swift
-cups.sorted(by: >)
+matters.sorted(by: >)
 ```
+
+As a result, chicken and egg must exist at the same time for the comparison to work!
 
 - a closure can _capture_ constants and variables from the surrounding context in which it is defined.
 - closures are reference types
@@ -1124,13 +1128,96 @@ func ||(left: Bool, right: @autoclosure () -> Bool) -> Bool {
 }
 ```
 
-_tip_: Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code. In this regard, Swift is both object-oriented and functional programming language.
+### Higher Order Functions
+
+Closures in Swift enable higher order functions, which are functions that can either accept functions or closures as arguments, and/or return a function/closure.
+
+Swift has built-in support for things that are common in functional programming, such like `map`, `reduce`, `filter` and `compactMap`, which allows developer to focus only on results without having to write boiler-plate code. In this regard, Swift is both object-oriented and functional programming language.
+
+In this regard, Swift is both object-oriented and functional programming language.
 
 Example: due to the support of functional closures, many problems can be solved funtionally. For example, get all numbers between 0 to 100 that are 1. even and 2. squares of other numbers
 
 ```swift
 (0...10).map { $0 * $0 }.filter { $0 % 2 == 0 }
 ```
+
+Functional composition in mathematical term is to combine multiple functions into one function, the idea behind functional composition in Swift is applying one function to the result of another function.
+
+```swift
+func unique(_ array: [Int]) -> [Int] {
+    return array.reduce(into: []) { (result, number) in
+        if result.contains(number) == false {
+            result.append(number)
+        }
+    }
+}
+
+func even(_ array: [Int]) -> [Int] {
+    return array.filter { $0 % 2 == 0 }
+}
+
+func square(_ array: [Int]) -> [Int] {
+    return array.map { $0 * $0 }
+}
+
+precedencegroup Group { associativity: left }
+infix operator >>> : Group
+func >>><T, U, V>(left: @escaping (T) -> U, right: @escaping (U) -> V) -> ((T) -> V) {
+    return { right(left($0)) }
+}
+
+let testIntArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+var resultArray = (unique >>> even >>> square)(testIntArray)
+print("result: \(resultArray)")
+```
+
+#### map
+
+Map can be used to loop over a collection and apply the same operation to each element in the collection.
+
+```swift
+let numberOfMonks = [1, 2, 3]
+let hasWaterToDrink: [(Int, Bool)] = numberOfMonks.map { monks in
+    return (monks, monks < 3)
+}
+hasWaterToDrink.forEach { (numberOfMonks, hasWater) in
+    print("\(numberOfMonks) monks, water to drink? \(hasWater ? "YES" : "NO")")
+}
+// output:
+// 1 monks, water to drink? YES
+// 2 monks, water to drink? YES
+// 3 monks, water to drink? NO
+```
+
+#### compactMap / flatMap
+
+`compactMap` is the same as `map` but also handles optionals.
+
+```swift
+let couldBeNumbers = ["1", "3", "five", "12"]
+let compactedNumbers = couldBeNumbers.compactMap { Int($0) }
+print(compactedNumbers)
+// result: [1, 3, 12]
+let mappedNumbers = couldBeNumbers.map { Int($0) }
+print(mappedNumbers)
+// result: [Optional(1), Optional(3), nil, Optional(12)]
+```
+
+`flatMap` is to receive a single-level collection when each element is a sequence or collection:
+
+```swift
+let bloodTemperatureByGroup = ["A": [0, 36, 48], "B": [12, 32, 39]]
+let temperaturesMapped = bloodTemperatureByGroup.map { $0.value }
+print(temperaturesMapped)
+// output: [[12, 32, 39], [0, 36, 48]]
+let temperaturesFlatened = bloodTemperatureByGroup.flatMap { $0.value }
+print(temperaturesFlatened)
+// output: [12, 32, 39, 0, 36, 48]
+```
+
+General rule: use `compactMap` for mapping a sequence and mapped result could be an optional value; If not, use either map or flatMap depending on the form of result expected.
+
 
 [ToC](#table-of-contents)
 
@@ -1277,7 +1364,7 @@ print("Have you ever realised the word \"\(englishForDummy)\" is made up by \"\(
 ```
 
 Exercise: given a string, return another string which is a reverse of given string by words,
-e.g. "what the f**k" becomes "f**k the what"
+e.g. `what the f**k` becomes `f**k the what`
 
 ```swift
 func reverse<T>(_ things: inout [T], _ start: Int, _ end: Int) {
@@ -1378,7 +1465,7 @@ enum Direction {
     case east
 }
 
-var lostDirection: Direction
+var lostDirection: Direction = .north
 var nextDirection = Direction.east
 
 lostDirection = .north
@@ -1749,7 +1836,7 @@ var isPersistent = defaultPersistency
 var looksPretty: Bool // variable
 ```
 
-Computed property:
+### Computed property:
 
 ```swift
 // computed property must be variable
@@ -1758,7 +1845,7 @@ var tastesGood: Bool {
 }
 ```
 
-Lazy property:
+### Lazy property:
 
 ```swift
 lazy var complexity: Int = { [unowned self] in
@@ -1770,7 +1857,7 @@ lazy var complexity: Int = { [unowned self] in
 }()
 ```
     
-Initializer:
+### Initializer:
 
 ```swift
 // non-optional properties must be initialized before use
@@ -1780,7 +1867,7 @@ init(looksPretty: Bool, name: String? = nil) {
 }
 ```
 
-Instance method
+### Instance method
 
 ```swift
 func printDescription() {
@@ -1788,7 +1875,7 @@ func printDescription() {
 }
 ```
 
-Class/Type method:
+### Class/Type method:
 
 ```swift
 // `final` indicates cannot be overwritten
@@ -1838,7 +1925,7 @@ static func printNotes(about love: Love) {
 }
 ```
 
-Property Observer
+### Property Observer
 
 ```swift
     var notes: String? {
@@ -1887,6 +1974,10 @@ Hate is thorny
 Hate lasts forever
 Hate looks pretty but tastes bad
 ```
+
+### static vs class function:
+
+Both `static` and `class` can associate method of class, subclass can overrie `class` methods but not `static` methods.
 
 ```swift
 struct Address {
@@ -2122,6 +2213,20 @@ There are two workarounds:
 
 1. prefix protocol and optional function with `@objc`, so function can be made `@optional`
 2. provide a default implementation of protocol function via extension
+
+### Class Only Protocol
+
+Define a class only protocol:
+
+```swift
+protocol ClassOnlyProtocol: AnyObject {
+    func someMethodHere()
+}
+```
+
+So that `ClassOnlyProtocol` can be implemented by only class, which is reference type, other than value types like `struct`. One of the reason for needing this is for having delegate which is usually weak, thus value type cannot be used.
+
+Prior to Swift 4, `class` is used in place of `AnyObject`, now it's made more clear: they represent an existential for classes.
 
 [ToC](#table-of-contents)
 
@@ -2891,15 +2996,20 @@ We want to express that sweet and sour are the taste of the first time one falls
 
 ### Protocols
 
-*Encodable*
+_Encodable_
+
+A type that can encode itself into a different representation.
 
 ```swift
 func encode(to: Encoder) throws
 ```
 
-*Decodable*
+_Decodable_
+
+A type that can decode itself from a different representation.
 
 ```swift
+// creates a new instance by decoding from given decoder
 init(from decoder: Decoder) throws
 ```
 
@@ -2911,11 +3021,14 @@ typealias Codable = Encodable & Decodable
 
 ### Automatic coding
 
-Conforming to `Codable` and make sure all stored properties are also codable
+Conforming to `Codable` and make sure all stored properties are also codable.
 
-**Example**
+- several built-in types are already `Codable`: `String`, `Int`, `Double`, `Data`, `URL`
+- `Array`, `Dictionary`, `Optional` are `Codable` if they contain only `Codable` types
 
-a fool with a tool (is still a fool).
+__Example__
+
+> a fool with a tool (is still a fool).
 
 ```swift
 struct Fool: Codable {
@@ -2957,6 +3070,45 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 - include all properties in the enumeration including the ones that are not renamed
 - created by default, implemented when renaming is needed
 
+### Coding manually
+
+Suppose the JSON looks like:
+{"identifier": "Some One", name: "Foo", toolInHand: "Hammer"}
+
+```swift
+struct AnotherFool {
+    var id: String
+    var name: String
+    var tool: Tool
+    
+    // renaming properties
+    enum CodingKeys: String, CodingKey {
+        case id = "identifier"
+        case name
+        case toolInHand
+    }
+}
+
+extension AnotherFool: Encodable {
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(tool.name, forKey: .toolInHand)
+    }
+}
+
+extension AnotherFool: Decodable {
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(String.self, forKey: .id)
+        name = try values.decode(String.self, forKey: .name)
+        let toolInHand = try values.decode(String.self, forKey: .toolInHand)
+        tool = Tool(name: toolInHand)
+    }
+}
+```
+
 ### Limitation
 
 - `extension` cannot conform to `Codable`
@@ -2965,8 +3117,6 @@ fool = try! jsonDecoder.decode(Fool.self, from: jsonData)
 [ToC](#table-of-contents)
 
 ## Memory Safety
-
-***$interview$***
 
 Similar to Objective-C, memory management in Swift is also based on ARC (Automatic Reference Counting), when there's no reference to an object, its allocated memory will be released, otherwise, if there's at least one reference to the object, it will stay in memory until further notice.
 
